@@ -1,0 +1,14 @@
+---
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<a
+  class="inline-flex min-h-11 items-center justify-center rounded-full border border-white/30 bg-white/10 px-4 py-3 text-sm font-semibold text-white no-underline shadow-[inset_0_1px_0_rgb(255_255_255/0.2)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/20 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
+  {href}
+>
+  <slot />
+</a>

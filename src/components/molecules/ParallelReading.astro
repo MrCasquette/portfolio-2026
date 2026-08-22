@@ -1,0 +1,23 @@
+---
+import TimelineMarker from '../atoms/TimelineMarker.astro';
+
+interface Props {
+  marker: string | number;
+  build: string;
+  coordinate: string;
+}
+
+const { marker, build, coordinate } = Astro.props;
+---
+
+<div class="parallel-reading">
+  <article>
+    <h3>Construire</h3>
+    <p>{build}</p>
+  </article>
+  <TimelineMarker value={marker} />
+  <article>
+    <h3>Coordonner</h3>
+    <p>{coordinate}</p>
+  </article>
+</div>

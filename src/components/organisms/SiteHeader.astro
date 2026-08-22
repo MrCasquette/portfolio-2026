@@ -1,0 +1,20 @@
+---
+import Monogram from '../atoms/Monogram.astro';
+---
+
+<header
+  class="fixed top-5 left-1/2 z-10 flex min-h-18 w-[calc(100vw-2.5rem)] max-w-352 -translate-x-1/2 items-center justify-between rounded-3xl border border-white/25 bg-slate-900/40 p-2.5 pr-6 shadow-[0_1rem_2.5rem_rgb(15_23_42/0.2),inset_0_1px_0_rgb(255_255_255/0.2)] backdrop-blur-xl backdrop-saturate-150 max-sm:top-3 max-sm:min-h-17 max-sm:w-[calc(100vw-1.5rem)] max-sm:rounded-2xl max-sm:pr-3"
+>
+  <a
+    class="inline-flex items-center gap-4 pr-4 text-white no-underline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-white max-sm:gap-3"
+    href="#landing"
+    aria-label="Retour à l’accueil"
+  >
+    <Monogram />
+    <strong class="text-[0.95rem] tracking-wide max-sm:text-[0.82rem]">Vincent COTTALORDA</strong>
+  </a>
+  <p class="m-0 flex items-baseline gap-2 text-xs">
+    <strong class="text-[0.72rem] tracking-[0.14em] uppercase">Portfolio</strong>
+    <span class="text-white/60 max-sm:hidden">Concevoir des systèmes cohérents</span>
+  </p>
+</header>

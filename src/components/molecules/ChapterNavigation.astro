@@ -1,0 +1,19 @@
+---
+import ButtonLink from '../atoms/ButtonLink.astro';
+
+interface ItemType {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  label: string;
+  items: ItemType[];
+}
+
+const { label, items } = Astro.props;
+---
+
+<nav class="flex flex-wrap justify-between gap-6 max-sm:gap-3" aria-label={label}>
+  {items.map(item => <ButtonLink href={item.href}>{item.label}</ButtonLink>)}
+</nav>

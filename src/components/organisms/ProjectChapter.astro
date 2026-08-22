@@ -1,0 +1,64 @@
+---
+import ButtonLink from '../atoms/ButtonLink.astro';
+import ChapterNavigation from '../molecules/ChapterNavigation.astro';
+import ParallelReading from '../molecules/ParallelReading.astro';
+import type { PhaseType, ProjectType } from '../../data/portfolio';
+
+interface Props {
+  project: ProjectType;
+  phases: PhaseType[];
+  previousId: string;
+  nextId: string;
+}
+
+const { project, phases, previousId, nextId } = Astro.props;
+---
+
+<div class="project-column">
+  <section class="panel project-intro" id={project.id}>
+    <div>
+      <p>Projet {project.number} · Contenu à documenter</p>
+      <h2>{project.title}</h2>
+      <p>{project.summary}</p>
+    </div>
+    <ChapterNavigation
+      label={`Navigation du projet ${project.number}`}
+      items={[
+        { href: `#${previousId}`, label: '← Précédent' },
+        { href: `#${project.id}-phase-1`, label: 'Explorer ↓' },
+        { href: `#${nextId}`, label: 'Suivant →' },
+      ]}
+    />
+  </section>
+
+  {
+    phases.map((phase, phaseIndex) => (
+      <section class="panel project-phase" id={`${project.id}-phase-${phaseIndex + 1}`}>
+        <div class="phase-content">
+          <p>
+            Projet {project.number} · Phase {phaseIndex + 1}
+          </p>
+          <h2>{phase.title}</h2>
+          <ParallelReading
+            marker={phaseIndex + 1}
+            build={phase.build}
+            coordinate={phase.coordinate}
+          />
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="panel project-phase" id={`${project.id}-result`}>
+    <div class="phase-content">
+      <p>Projet {project.number} · Résultat</p>
+      <h2>Une solution cohérente dans son contexte.</h2>
+      <ParallelReading
+        marker="✓"
+        build="Un produit fonctionnel répondant à un besoin vérifiable."
+        coordinate="Une architecture comprise, partagée et capable d’évoluer."
+      />
+    </div>
+    <ButtonLink href={`#${project.id}`}>Revenir au projet ↑</ButtonLink>
+  </section>
+</div>
