@@ -1,145 +1,82 @@
 ---
-import ButtonLink from '../components/atoms/ButtonLink.astro';
-import ChapterNavigation from '../components/molecules/ChapterNavigation.astro';
-import PrimaryTimeline from '../components/organisms/PrimaryTimeline.astro';
-import ProjectChapter from '../components/organisms/ProjectChapter.astro';
+import AvailabilityPill from '../components/atoms/AvailabilityPill.astro';
+import Chip from '../components/atoms/Chip.astro';
+import Kicker from '../components/atoms/Kicker.astro';
+import CapabilityPanel from '../components/molecules/CapabilityPanel.astro';
+import ProjectCard from '../components/molecules/ProjectCard.astro';
+import NavigationRail from '../components/organisms/NavigationRail.astro';
+import ProjectSlide from '../components/organisms/ProjectSlide.astro';
 import SiteHeader from '../components/organisms/SiteHeader.astro';
-import { phases, projects } from '../data/portfolio';
+import Slide from '../components/templates/Slide.astro';
+import { contact, identity, landing, profile, projects, work } from '../data/portfolio';
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Vincent COTTALORDA — Portfolio">
+<Layout title={`${identity.name} — ${identity.tagline}`}>
   <SiteHeader />
 
-  <main class="portfolio" data-portfolio>
-    <section class="panel" id="landing">
-      <div>
-        <p>Profil transversal</p>
-        <h1>Comprendre l’ensemble. Construire avec cohérence.</h1>
-        <p>
-          J’analyse, je construis, je coordonne et j’accompagne la transformation d’une idée en
-          produit.
-        </p>
-      </div>
-      <ButtonLink href="#profile">Découvrir le profil →</ButtonLink>
-    </section>
+  <main class="deck">
+    <Slide id="landing">
+      <AvailabilityPill label={landing.availability} />
+      <h1 class="text-h1">
+        {
+          landing.title.map(line => (
+            <Fragment>
+              {line.split(landing.emphasis).flatMap((part, index) =>
+                index === 0 ? [part] : [<span class="text-accent">{landing.emphasis}</span>, part]
+              )}
+              <br />
+            </Fragment>
+          ))
+        }
+      </h1>
+      <p class="mt-[1.35rem] max-w-[48ch] text-lede text-ink-2">{landing.lede}</p>
+      <ul class="mt-[1.9rem] flex list-none flex-wrap gap-[0.4rem]" aria-label="Technologies">
+        {landing.stack.map(item => <li><Chip label={item} /></li>)}
+      </ul>
+    </Slide>
 
-    <section class="panel" id="profile">
-      <div>
-        <p>Profil</p>
-        <h2>Relier les étapes plutôt que les isoler.</h2>
-        <p>
-          Mon rôle est de comprendre suffisamment chaque couche d’un système pour faire des choix
-          cohérents, du besoin initial à la mise en œuvre.
-        </p>
-        <ul class="mt-7 flex list-none flex-wrap gap-2 p-0" aria-label="Capacités principales">
-          <li class="rounded-full border border-white/25 bg-white/10 px-3 py-2 text-xs font-semibold">Analyser</li>
-          <li class="rounded-full border border-white/25 bg-white/10 px-3 py-2 text-xs font-semibold">Construire</li>
-          <li class="rounded-full border border-white/25 bg-white/10 px-3 py-2 text-xs font-semibold">Coordonner</li>
-          <li class="rounded-full border border-white/25 bg-white/10 px-3 py-2 text-xs font-semibold">Accompagner</li>
-        </ul>
+    <Slide id="profile">
+      <Kicker text="01 — Profil" />
+      <h2 class="text-h2">{profile.title}</h2>
+      <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{profile.lede}</p>
+      <div class="mt-8 grid grid-cols-2 gap-[1.6rem] max-[760px]:grid-cols-1 max-[760px]:gap-4">
+        {profile.panels.map(panel => <CapabilityPanel title={panel.title} items={panel.items} />)}
       </div>
-      <ChapterNavigation
-        label="Navigation du profil"
-        items={[
-          { href: '#landing', label: '← Accueil' },
-          { href: '#work', label: 'Réalisations →' },
-        ]}
-      />
-    </section>
+    </Slide>
 
-    <section class="panel" id="work">
-      <div>
-        <p>Réalisations</p>
-        <h2>Des systèmes racontés comme des études de cas.</h2>
-        <p>
-          Chaque projet se lit selon deux perspectives : construire le produit et coordonner les
-          expertises qui lui donnent forme.
-        </p>
+    <Slide id="work">
+      <Kicker text="02 — Réalisations" />
+      <h2 class="text-h2">{work.title}</h2>
+      <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{work.lede}</p>
+      <div class="mt-8 grid grid-cols-3 gap-4 max-[820px]:grid-cols-1">
+        {projects.map((project, index) => <ProjectCard project={project} index={index + 1} />)}
       </div>
-      <ChapterNavigation
-        label="Navigation des réalisations"
-        items={[
-          { href: '#profile', label: '← Profil' },
-          { href: '#project-1', label: 'Voir les projets →' },
-        ]}
-      />
-    </section>
+    </Slide>
 
-    {
-      projects.map((project, projectIndex) => (
-        <ProjectChapter
-          project={project}
-          phases={phases}
-          previousId={projectIndex === 0 ? 'work' : projects[projectIndex - 1].id}
-          nextId={projectIndex === projects.length - 1 ? 'contact' : projects[projectIndex + 1].id}
-        />
-      ))
-    }
+    {projects.map((project, index) => <ProjectSlide project={project} index={index + 1} />)}
 
-    <section class="panel" id="contact">
-      <div>
-        <p>Contact</p>
-        <h2>Un profil inattendu peut être le bon profil.</h2>
-        <p>
-          Ce chapitre accueillera les coordonnées et les liens professionnels lorsque leur forme
-          définitive sera choisie.
-        </p>
-      </div>
-      <ButtonLink href="#project-3">← Dernier projet</ButtonLink>
-    </section>
+    <Slide id="contact">
+      <Kicker text="03 — Contact" />
+      <h2 class="text-h2">{contact.title}</h2>
+      <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{contact.lede}</p>
+      <ul class="mt-[1.9rem] flex list-none flex-wrap gap-[1.4rem] font-mono text-[0.85rem]">
+        {
+          contact.links.map(link => (
+            <li>
+              <a class="border-b border-accent-line text-accent hover:border-accent" href={link.href}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Slide>
   </main>
 
-  <PrimaryTimeline />
+  <NavigationRail />
 
   <script>
-    const portfolio = document.querySelector<HTMLElement>('[data-portfolio]');
-    const navigation = document.querySelector<HTMLElement>('[data-navigation]');
-    const navigationLinks = navigation?.querySelectorAll<HTMLAnchorElement>('a');
-
-    const updateNavigation = () => {
-      if (!portfolio || !navigation || !navigationLinks) return;
-
-      const activeIndex = Math.round(portfolio.scrollLeft / portfolio.clientWidth);
-      navigation.style.setProperty('--active-index', String(activeIndex));
-
-      navigationLinks.forEach((link, index) => {
-        if (index === activeIndex) link.setAttribute('aria-current', 'page');
-        else link.removeAttribute('aria-current');
-      });
-    };
-
-    portfolio?.addEventListener('scroll', updateNavigation, { passive: true });
-    window.addEventListener('resize', updateNavigation);
-    updateNavigation();
-
-    portfolio?.addEventListener(
-      'wheel',
-      event => {
-        const target = event.target instanceof Element ? event.target : null;
-        const projectColumn = target?.closest<HTMLElement>('.project-column');
-
-        const isInsideProject =
-          projectColumn && projectColumn.scrollTop >= projectColumn.clientHeight / 2;
-        const isHorizontalGesture = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-
-        if (isInsideProject && isHorizontalGesture) {
-          event.preventDefault();
-          return;
-        }
-
-        if (isInsideProject) return;
-
-        const isMouseWheel = event.deltaMode === WheelEvent.DOM_DELTA_LINE;
-        const isVerticalGesture = Math.abs(event.deltaY) > Math.abs(event.deltaX);
-        const isOnMainLevel = !projectColumn || projectColumn.scrollTop < 2;
-
-        if (!isMouseWheel || !isVerticalGesture || !isOnMainLevel) return;
-
-        event.preventDefault();
-        portfolio.scrollBy({ left: event.deltaY * 32 });
-      },
-      { passive: false }
-    );
+    import '../scripts/parcours';
   </script>
 </Layout>

@@ -1,0 +1,29 @@
+---
+import { statusLabels, type ProjectStatus } from '../../data/portfolio';
+
+interface Props {
+  status: ProjectStatus;
+}
+
+const { status } = Astro.props;
+
+/**
+ * Les trois états se distinguent par la forme autant que par la couleur :
+ * l'accent ne signale que ce qui tourne, et l'information ne repose jamais sur
+ * la seule teinte (DESIGN.md §5.2, §7).
+ */
+const styles: Record<ProjectStatus, string> = {
+  production: 'text-accent bg-accent-bg border-solid',
+  delivered: 'text-ink-3 border-solid',
+  wip: 'text-ink-2 border-dashed',
+};
+---
+
+<span
+  class:list={[
+    'self-start rounded-full border border-current px-2 py-[0.14rem] font-mono text-[0.66rem] whitespace-nowrap',
+    styles[status],
+  ]}
+>
+  {statusLabels[status]}
+</span>

@@ -1,0 +1,43 @@
+---
+import type { IncidentEvent } from '../../data/portfolio';
+
+interface Props {
+  events: IncidentEvent[];
+}
+
+const { events } = Astro.props;
+---
+
+{/*
+  Seule la première pastille est accentuée : l'accent marque le déclenchement,
+  pas la résolution — un jade en fin de chronologie se lirait comme une coche
+  de validation (DESIGN.md §3, §5.3).
+*/}
+<ol
+  class="relative mt-6 list-none pl-[1.4rem] before:absolute before:top-[0.7rem] before:bottom-[0.7rem] before:left-[0.19rem] before:w-px before:bg-line before:content-['']"
+>
+  {
+    events.map((event, index) => (
+      <li class="relative grid grid-cols-[4.6rem_1fr] gap-4 py-[0.45rem] max-[660px]:grid-cols-1 max-[660px]:gap-0">
+        <span
+          class:list={[
+            'absolute top-[0.7em] -left-[1.4rem] size-[0.42rem] rounded-full border border-bg',
+            index === 0 ? 'bg-accent' : 'bg-line',
+          ]}
+          aria-hidden="true"
+        />
+        <time class:list={['font-mono text-[0.76rem]', index === 0 ? 'text-accent' : 'text-ink-3']}>
+          {event.at}
+        </time>
+        <span
+          class:list={[
+            'text-[0.91rem]',
+            index === events.length - 1 ? 'text-ink' : 'text-ink-2',
+          ]}
+        >
+          {event.label}
+        </span>
+      </li>
+    ))
+  }
+</ol>

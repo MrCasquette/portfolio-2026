@@ -1,0 +1,67 @@
+---
+import { chapters } from '../../data/portfolio';
+---
+
+{/*
+  De vrais liens : la position du parcours reste dans l'URL, partageable et
+  restaurée au retour arrière. Le clavier fonctionne sans code, les flèches
+  gauche/droite sont ajoutées par-dessus (DESIGN.md §7).
+
+  L'état vit sur le <li> et non sur le <a> : le connecteur d'une étape à la
+  suivante doit s'effacer sur la dernière, et `:last-child` ne peut le voir que
+  depuis l'élément de liste.
+*/}
+<nav
+  class="fixed inset-x-0 bottom-0 z-30 flex h-rail items-center overflow-x-auto border-t border-line-soft bg-bg/92 backdrop-blur-[10px] [scrollbar-width:none]"
+  aria-label="Parcours"
+  data-rail
+>
+  <ol
+    class="relative flex w-full min-w-[640px] list-none px-gutter pb-[0.3rem]"
+    style={`--step-count:${chapters.length}`}
+    data-rail-track
+  >
+    {
+      chapters.map(chapter => (
+        <li
+          class="group relative flex flex-1 after:absolute after:top-[0.825rem] after:right-[calc(-50%+0.5rem)] after:left-[calc(50%+0.5rem)] after:h-px after:bg-line after:transition-colors after:duration-200 after:content-[''] data-[state=past]:after:bg-accent-line [&:last-of-type]:after:hidden"
+          data-rail-step={chapter.id}
+        >
+          <a
+            class="flex flex-1 flex-col items-center gap-[0.6rem] py-[0.4rem]"
+            href={`#${chapter.id}`}
+          >
+            <span
+              class="size-[0.85rem] rounded-full border border-line bg-bg transition-[background-color,border-color,box-shadow] duration-200 group-data-[state=past]:border-accent-line group-data-[state=past]:bg-accent-line group-data-[state=current]:border-accent group-data-[state=current]:bg-accent group-data-[state=current]:shadow-[0_0_0_4px_var(--color-accent-halo)]"
+              aria-hidden="true"
+            />
+            <span class="text-[0.78rem] whitespace-nowrap text-ink-3 transition-colors duration-200 group-hover:text-ink-2 group-data-[state=current]:font-medium group-data-[state=current]:text-ink">
+              {chapter.label}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+
+    {/*
+      Ligne courante. La boîte extérieure fait une largeur d'étape et porte le
+      déplacement ; la barre visible est centrée dedans.
+
+      Un élément absolu se résout entièrement sur la boîte de padding de son
+      conteneur — offsets *et* pourcentages de largeur. La gouttière doit donc
+      être compensée deux fois : `left` la rattrape, et la largeur d'étape la
+      retranche. Sans la seconde correction, l'erreur s'accumule d'une étape à
+      la suivante.
+
+      La transition n'est active qu'en mode vertical, où la position vient de
+      l'observateur et progresse par sauts. À l'horizontale elle est pilotée par
+      le défilement lui-même, donc déjà continue quelle que soit la distance.
+    */}
+    <span
+      class="pointer-events-none absolute bottom-0 left-gutter flex w-[calc((100%-2*var(--spacing-gutter))/var(--step-count))] justify-center [transform:translateX(calc(var(--active-index,0)*100%))] [[data-tracking=index]_&]:transition-transform [[data-tracking=index]_&]:duration-[280ms] [[data-tracking=index]_&]:ease-[cubic-bezier(0.22,1,0.36,1)]"
+      aria-hidden="true"
+    >
+      <span class="h-0.5 w-3/5 rounded-full bg-accent"></span>
+    </span>
+  </ol>
+</nav>

@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  items: readonly { readonly lead: string; readonly text: string }[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<section class="rounded-card border border-line-soft bg-surface p-[1.4rem]">
+  <h3 class="mb-4 font-mono text-[0.74rem] font-medium tracking-[0.1em] text-ink-3 uppercase">
+    {title}
+  </h3>
+  <ul class="flex list-none flex-col gap-3">
+    {
+      items.map(item => (
+        <li class="relative pl-4 text-body text-ink-2">
+          <span
+            class="absolute top-[0.62em] left-0 size-[0.32rem] rounded-full bg-accent-line"
+            aria-hidden="true"
+          />
+          <b class="font-medium text-ink">{item.lead}</b> {item.text}
+        </li>
+      ))
+    }
+  </ul>
+</section>

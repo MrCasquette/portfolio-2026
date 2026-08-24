@@ -2,198 +2,108 @@
 
 ## Statut du document
 
-Ce document décrit le concept éditorial et l'expérience de navigation validés pour le portfolio.
+Ce document décrit le concept éditorial et l'expérience de navigation.
 
-Il constitue la référence stable du projet. Les idées, hypothèses et formulations encore en cours de
-réflexion restent dans [`SCRATCHPAD.md`](../SCRATCHPAD.md).
-
-Ce document n'est ni une spécification graphique ni une liste définitive de contenus.
+Il décrit **quoi** montrer et **pourquoi**. [`DESIGN.md`](./DESIGN.md) décrit **comment** —
+et prime en cas de divergence. Les réflexions en cours restent dans
+[`SCRATCHPAD.md`](../SCRATCHPAD.md).
 
 ## Objectif
 
-Le portfolio présente un profil professionnel transversal à un employeur potentiel. Il ne cherche
-pas à vendre une prestation ni à convaincre indistinctement tous les recruteurs.
+Le portfolio présente un profil professionnel transversal à quelqu'un qui recrute —
+CDI ou mission. Pas un client final, qui passe par un autre site.
 
-Il doit permettre au visiteur de comprendre rapidement dans quels contextes Vincent COTTALORDA
-peut apporter le plus de valeur.
+Il défend une seule affirmation :
 
-Le message central est le suivant :
+> Il tient un système entier, et il le rend lisible aux autres.
 
-> Comprendre un système dans sa globalité afin de concevoir des solutions cohérentes.
+Les technologies servent de preuves. Elles ne constituent pas l'identité du profil.
 
-Les technologies employées servent de preuves. Elles ne constituent pas l'identité principale du
-profil.
+## Ce qui est démontré, et comment
 
-## Positionnement
+Deux moitiés, de statuts très différents :
 
-Le profil intervient à différentes étapes du cycle de vie d'un produit selon quatre capacités :
+- **Construire** — la preuve qu'un système existe, tourne, et a survécu à un incident.
+  Cette moitié se montre.
+- **Coordonner** — la preuve que le système reste opérable par quelqu'un d'autre.
+  Cette moitié **ne se nomme jamais**. Elle se déduit des artefacts.
 
-- analyser ;
-- construire ;
-- coordonner ;
-- accompagner.
+D'où la règle de rédaction qui gouverne tout le contenu : **rien n'est revendiqué,
+tout se déduit**. Les faits, oui. Les qualificatifs sur soi, non.
 
-Le portfolio ne présente pas ces capacités comme une simple liste de compétences. Il les démontre
-à travers des systèmes, des décisions et des résultats concrets.
+## Le registre de décisions
 
-## Deux contextes de lecture
+Une version antérieure de ce document décrivait une « lecture parallèle » : deux
+colonnes nommées *Construire* et *Coordonner*, alignées phase par phase le long d'une
+timeline verticale. Cette structure décrivait une intention. Le **registre de décisions**
+en est la réalisation.
 
-Chaque projet est présenté selon deux lectures complémentaires.
+Il occupe le même emplacement structurel — deux colonnes, une tension, une progression
+verticale — mais avec du contenu réel à la place d'un cadre abstrait :
 
-### Construire
-
-Cette lecture montre comment une idée devient un produit :
-
-- compréhension du besoin ;
-- prise en compte des contraintes ;
-- conception de la solution ;
-- réalisation ;
-- intégration et déploiement.
-
-Elle s'adresse implicitement aux structures qui recherchent une capacité d'intervention autonome
-et de bout en bout.
-
-### Coordonner
-
-Cette lecture montre comment plusieurs expertises s'articulent autour d'une architecture commune :
-
-- identification des domaines impliqués ;
-- définition des interfaces et des responsabilités ;
-- communication entre les expertises ;
-- arbitrages ;
-- maintien de la cohérence globale.
-
-Elle s'adresse implicitement aux structures dont les produits impliquent plusieurs domaines et
-plusieurs intervenants.
-
-Les types de structures visés ne doivent pas devenir des étiquettes explicites dans le site. Chaque
-visiteur doit pouvoir reconnaître son propre contexte dans la manière dont les projets sont
-présentés.
-
-## Lecture parallèle des projets
-
-« Construire » et « Coordonner » ne sont ni deux catégories de projets ni deux récits successifs. Ce
-sont deux lectures parallèles d'un même projet, mises en regard phase par phase.
-
-```text
-                        Projet
-                           ↓
-            Construire     │     Coordonner
-                           ↓
-Phase 1     Approche       ●     Approche
-            produit              collective
-                           ↓
-Phase 2     Approche       ●     Approche
-            produit              collective
-                           ↓
-Phase 3     Approche       ●     Approche
-            produit              collective
-                           ↓
-                        Résultat
+```
+┌─ RETENU ───────────────────┬─ ÉCARTÉ ────────────────────┐
+│ ● Serveur dédié bare metal │ ~~Infrastructure managée~~  │
+├────────────────────────────┴─────────────────────────────┤
+│ │ La charge est constante et le stockage dominant…       │
+└──────────────────────────────────────────────────────────┘
 ```
 
-Les deux colonnes partagent une seule progression verticale. Elles ne possèdent pas de zones de
-défilement indépendantes. L'alignement des phases doit permettre :
+Le rapport aux deux moitiés se maintient sans jamais être écrit :
 
-- de suivre uniquement la lecture correspondant à son contexte ;
-- de comparer les deux approches ;
-- de percevoir la polyvalence et la capacité d'adaptation du profil.
+- la colonne **Retenu** et la décision technique, c'est *Construire* ;
+- le **motif** — pourquoi, contre quoi, avec quelle conséquence — est l'artefact de
+  *Coordonner* : c'est lui qui rend le système intelligible à quelqu'un d'autre.
 
-Le portfolio doit distinguer les expériences réellement vécues des adaptations ou transpositions
-envisagées. Une mise en situation hypothétique ne doit jamais être présentée comme une preuve.
+Quelqu'un qui lit trois registres a compris que le profil sait transmettre, sans que
+le mot apparaisse une seule fois.
+
+**Deux contraintes fortes.** Chaque entrée doit correspondre à un arbitrage réel : un
+registre inventé se sent immédiatement. Et une décision **non encore tranchée** est une
+entrée légitime — c'est ce qui donne sa valeur à la pièce en chantier.
+
+## Les trois états
+
+Les réalisations sont montrées dans trois états, et c'est délibéré :
+
+- **en production** — prouve qu'on sait exploiter ;
+- **livré** — prouve un résultat ;
+- **en chantier** — prouve qu'on sait arbitrer.
+
+Les trois ensemble disent quelque chose qu'aucun ne dit seul. Un projet inachevé n'est
+pas une faiblesse à masquer, c'est le seul endroit où l'on voit un arbitrage en cours.
 
 ## Architecture du parcours
 
-Le parcours principal envisagé est :
-
 ```text
-Accueil → Profil → Réalisations → Projet 1 → Projet 2 → Projet 3 → Contact
+Accueil → Profil → Réalisations → Projet 01 → Projet 02 → Projet 03 → Contact
 ```
 
-Le nombre et le nom définitifs des projets dépendront du contenu disponible. Cette structure décrit
-une intention de parcours, pas une arborescence figée.
+Le nombre et le nom des projets dépendent du contenu disponible et **vont évoluer**.
+Cette structure décrit une intention de parcours, pas une arborescence figée : rien
+dans le code ne connaît la longueur du parcours à l'avance.
 
 ## Grammaire spatiale
 
-Le portfolio utilise deux axes complémentaires.
+Deux axes complémentaires.
 
-### Axe horizontal
+**Horizontal** — le parcours global. Aller à droite : chapitre suivant. C'est la
+navigation principale, matérialisée par le rail en bas d'écran.
 
-L'axe horizontal représente le parcours global. Aller vers la droite signifie passer au chapitre
-suivant ; aller vers la gauche signifie revenir au chapitre précédent.
+**Vertical** — l'approfondissement du chapitre courant : registre de décisions,
+chronologie d'incident, extrait de code.
 
-La navigation principale est donc une timeline horizontale :
+Le lecteur pressé traverse, le lecteur intéressé descend. Personne n'est filtré.
 
-```text
-Accueil → Profil → Réalisations → Projets → Contact
-```
-
-### Axe vertical
-
-L'axe vertical représente l'approfondissement du chapitre courant.
-
-Dans une étude de cas, il devient une timeline verticale :
-
-```text
-Introduction
-     ↓
-Phase 1
-     ↓
-Phase 2
-     ↓
-Phase 3
-     ↓
-Résultat
-```
-
-Chaque phase met en parallèle les lectures « Construire » et « Coordonner ».
-
-### Règle de navigation
-
-Au niveau principal, l'utilisateur peut naviguer horizontalement entre les chapitres. Lorsqu'il
-descend dans un chapitre, la navigation horizontale est verrouillée. Il doit revenir au sommet du
-chapitre avant de reprendre le parcours global.
-
-Cette règle donne un sens stable aux déplacements :
-
-- horizontalement, découvrir ;
-- verticalement, approfondir.
-
-L'accès à un niveau vertical se fait par une action explicite. Le site ne doit pas déclencher une
-descente automatique au simple passage ou à l'arrivée sur un chapitre.
+Sous 768 px, les deux axes tactiles se marchent dessus : le parcours se replie en
+défilement vertical unique.
 
 ## Navigation persistante
 
-### En-tête
+**En-tête** — fixe, il porte l'identité : nom et fonction du portfolio. Pas de menu.
 
-L'en-tête reste fixe au-dessus des cartes, sans les chevaucher. Il porte l'identité du site :
-
-- logo ou monogramme ;
-- Vincent COTTALORDA ;
-- nom ou fonction du portfolio ;
-- chapitre courant lorsque cette information devient utile.
-
-Il ne contient pas le menu principal.
-
-### Navigation basse
-
-La navigation principale reste fixe en bas de l'écran. Elle matérialise la timeline horizontale et
-permet :
-
-- de connaître sa position dans le parcours ;
-- d'accéder directement aux grands chapitres ;
-- de revenir rapidement au niveau principal.
-
-Sa forme exacte pourra différer entre desktop et mobile, mais sa position basse fait partie du
-concept.
-
-## Adaptation aux écrans
-
-Sur desktop, les lectures « Construire » et « Coordonner » sont présentées côte à côte autour de la
-timeline verticale.
-
-Sur mobile, elles sont empilées à l'intérieur d'une même phase. Elles restent associées au même
-jalon afin de préserver la comparaison sans introduire un nouvel axe horizontal concurrent.
+**Rail bas** — la navigation principale. Il matérialise la progression, donne la
+position courante et permet d'atteindre directement chaque chapitre.
 
 ## Principes UX
 
@@ -207,39 +117,12 @@ Le portfolio doit être :
 
 L'originalité doit toujours servir la compréhension du contenu.
 
-Le comportement natif du navigateur et le CSS sont privilégiés. JavaScript n'est utilisé que lorsque
-le comportement attendu ne peut pas être garanti autrement, notamment pour adapter la molette des
-souris et verrouiller correctement un axe de navigation.
-
-## Principes éditoriaux
-
-Chaque projet est une étude de cas et non une galerie ou une fiche technique. Son contenu doit
-s'appuyer sur des éléments tels que :
-
-- le problème ;
-- le contexte ;
-- les contraintes ;
-- les décisions ;
-- l'architecture ;
-- le résultat ;
-- le recul porté sur le projet.
-
-Le site ne doit pas prendre la forme d'un CV, d'une démonstration technologique ou d'une succession
-d'images sans récit.
-
-Le visiteur doit comprendre que le profil ne cherche pas à être le meilleur spécialiste de chaque
-domaine, mais qu'il en comprend suffisamment les interactions pour concevoir un ensemble cohérent.
+Le comportement natif du navigateur et le CSS sont privilégiés. JavaScript n'intervient
+que là où le comportement attendu ne peut pas être garanti autrement — et jamais pour
+détourner le défilement.
 
 ## Hors périmètre actuel
 
-Le concept ne fixe pas encore :
-
-- l'identité graphique définitive ;
-- le logo définitif ;
-- les textes finaux ;
+- les textes finaux et le contenu réel des registres ;
 - la liste et l'ordre définitifs des projets ;
-- le nombre exact de phases par projet ;
-- la formulation publique du positionnement professionnel ;
-- le comportement détaillé de la navigation basse sur les écrans étroits.
-
-Ces éléments seront définis à partir du contenu réel et des essais d'usage du prototype.
+- le second appui d'identité (cf. `DESIGN.md` §9).

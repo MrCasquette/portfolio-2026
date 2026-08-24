@@ -1,0 +1,58 @@
+---
+import type { Decision } from '../../data/portfolio';
+
+interface Props {
+  decision: Decision;
+}
+
+const { decision } = Astro.props;
+---
+
+<div
+  class="grid grid-cols-2 gap-x-[1.2rem] border-b border-line-soft py-[0.78rem] last:border-b-0 max-[660px]:grid-cols-1 max-[660px]:gap-x-0"
+>
+  {
+    decision.state === 'settled' ? (
+      <>
+        <p class="relative pl-[0.95rem] text-body font-normal text-ink">
+          <span
+            class="absolute top-[0.58em] left-0 size-[0.36rem] rounded-full bg-accent"
+            aria-hidden="true"
+          />
+          {decision.kept}
+        </p>
+        <p class="text-body text-ink-3 line-through decoration-1 max-[660px]:pl-[0.95rem]">
+          {decision.discarded}
+        </p>
+      </>
+    ) : (
+      <>
+        {/*
+          Rien n'est retenu : ni puce d'accent, ni barré. Les deux options
+          gardent le même poids, et l'état est nommé plutôt que déduit d'une
+          couleur (DESIGN.md §5.1, §7).
+        */}
+        <p class="col-span-full mb-[0.35rem] font-mono text-[0.65rem] tracking-[0.12em] text-ink-3 uppercase">
+          Non tranché
+        </p>
+        {decision.options.map(option => (
+          <p class="relative pl-[0.95rem] text-body font-normal text-ink-2">
+            <span
+              class="absolute top-[0.85em] left-0 h-px w-[0.36rem] bg-ink-3"
+              aria-hidden="true"
+            />
+            {option}
+          </p>
+        ))}
+      </>
+    )
+  }
+  <p
+    class:list={[
+      'col-span-full mt-2 border-l-2 py-[0.15rem] pl-[0.78rem] text-[0.88rem] leading-[1.6] text-ink-2',
+      decision.state === 'settled' ? 'border-accent-line' : 'border-line',
+    ]}
+  >
+    {decision.rationale}
+  </p>
+</div>

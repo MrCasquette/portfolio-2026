@@ -1,0 +1,204 @@
+/* ============================================================
+   Portfolio — thème
+   Tailwind v4. Importé une seule fois, depuis le layout racine.
+   Toute couleur, graisse ou rayon utilisé dans le projet vient d'ici.
+   Aucune valeur en dur dans les composants.
+   Référence : docs/DESIGN.md
+   ============================================================ */
+
+@import "@fontsource-variable/lexend";
+@import "@fontsource/jetbrains-mono/latin-400.css";
+@import "@fontsource/jetbrains-mono/latin-500.css";
+@import "tailwindcss";
+
+@theme {
+  /* ---------- Surfaces ----------
+     Le fond est muet : strictement neutre, aucune teinte.
+     Toute la chaleur du projet passe par l'accent. */
+  --color-bg: #151515;
+  --color-surface: #1c1c1c; /* cartes, panneaux, puces */
+  --color-surface-2: #212121; /* élévation supérieure */
+  --color-code: #1a1a1a; /* fond des blocs techniques */
+
+  --color-line: #323232; /* filet visible */
+  --color-line-soft: #282828; /* séparation discrète */
+
+  /* ---------- Texte ---------- */
+  --color-ink: #efeeec; /* titres, texte fort */
+  --color-ink-2: #a3a19d; /* texte courant, descriptions — 7,1:1 sur bg */
+  --color-ink-3: #807e7a; /* métadonnées, options écartées — 4,5:1 sur bg */
+
+  /* ---------- Accent ----------
+     Jade. Un seul accent sur tout le projet.
+     Il signale : ce qui tourne, les décisions retenues, les liens, la position. */
+  --color-accent: #45b08c; /* 6,8:1 sur bg */
+  --color-accent-line: #35705c; /* filets, puces franchies — 3,15:1, seuil composant UI */
+  --color-accent-bg: #1c2b26; /* remplissage de pastille */
+  --color-accent-halo: #45b08c38; /* halo de la pastille courante du rail */
+
+  /* ---------- Coloration syntaxique ----------
+     Dérivée de la palette ci-dessus. Presque monochrome :
+     la hiérarchie se fait par la clarté et la graisse, pas par la teinte.
+     L'accent pur en est absent — un bloc de code contient trop de chaînes
+     pour que le jade y garde sa rareté. */
+  --color-code-text: #cfcec9; /* identifiants, texte par défaut */
+  --color-code-key: #efeeec; /* mots-clés — employé avec font-weight 500 */
+  --color-code-string: #86c9ae; /* chaînes */
+  --color-code-value: #a8bfb4; /* nombres, littéraux */
+  --color-code-punct: #8a8884; /* ponctuation, opérateurs */
+  --color-code-comment: #6e6c68; /* commentaires */
+
+  /* ---------- Typographie ----------
+     Lexend a été choisie pour sa lisibilité, ce qui est cohérent
+     avec la thèse du portfolio. Elle est peu expressive :
+     le caractère vient de l'échelle et du contraste de graisse,
+     pas de la forme des lettres. */
+  --font-sans: "Lexend Variable", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --text-h1: clamp(1.9rem, 5.8vw, 3.6rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.035em;
+  --text-h1--font-weight: 600;
+
+  --text-h2: clamp(1.5rem, 3.5vw, 2.25rem);
+  --text-h2--line-height: 1.13;
+  --text-h2--letter-spacing: -0.03em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 1.1rem;
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.025em;
+  --text-h3--font-weight: 600;
+
+  --text-lede: clamp(1rem, 1.9vw, 1.16rem);
+  --text-lede--line-height: 1.55;
+
+  --text-body: 0.94rem;
+  --text-body--line-height: 1.6;
+
+  --text-meta: 0.73rem; /* mono : puces, légendes */
+  --text-kicker: 0.72rem; /* mono : sur-titres, capitales */
+  --text-kicker--letter-spacing: 0.18em;
+  --text-code: 0.77rem;
+  --text-code--line-height: 1.8;
+
+  /* ---------- Formes ---------- */
+  --radius-card: 6px;
+  --radius-chip: 3px;
+
+  /* ---------- Gabarit ---------- */
+  --spacing-header: 64px;
+  --spacing-rail: 88px;
+  --spacing-gutter: clamp(1.15rem, 5vw, 3.5rem);
+  --container-read: 62rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    height: 100dvh;
+    overflow: hidden;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* Lexend s'alourdit en 400 sur du paragraphe. Le corps est en 300. */
+    font-weight: 300;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  :focus-visible {
+    border-radius: 3px;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      /* biome-ignore lint/complexity/noImportantStyles: neutralisation transversale, doit primer sur toute déclaration de composant */
+      animation-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: idem */
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ============================================================
+   Gabarit du parcours
+   Le seul CSS non tokenisé du projet : il porte la mécanique de
+   défilement à deux axes, que les utilities ne savent pas exprimer.
+   Tout le reste vit dans les composants.
+   ============================================================ */
+
+.deck {
+  position: fixed;
+  inset: var(--spacing-header) 0 var(--spacing-rail) 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.deck::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  padding: clamp(1.5rem, 4vh, 3rem) var(--spacing-gutter);
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Pas d'`overscroll-behavior: contain` ici : la propagation vers .deck est
+     ce qui rend le parcours utilisable à la souris. Une molette ne produit que
+     du deltaY ; le navigateur le convertit lui-même en défilement horizontal
+     dès qu'il atteint un conteneur qui ne défile que sur cet axe. C'est du
+     comportement natif, pas un détournement de la molette (DESIGN.md §7). */
+  scroll-snap-align: center;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+/* Le contenu long se cale en haut ; le contenu court reste centré. */
+.slide > * {
+  width: 100%;
+  max-width: var(--container-read);
+  margin-inline: auto;
+}
+
+/* Sous 768 px, deux axes tactiles se marchent dessus : on replie
+   le parcours en défilement vertical unique (DESIGN.md §6.3). */
+@media (max-width: 768px) {
+  .deck {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-snap-type: y proximity;
+  }
+
+  .slide {
+    flex: 0 0 auto;
+    align-items: flex-start;
+    min-height: 100%;
+    overflow: visible;
+    scroll-snap-align: start;
+  }
+}

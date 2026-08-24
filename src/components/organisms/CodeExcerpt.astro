@@ -1,0 +1,26 @@
+---
+import { Code } from 'astro:components';
+import { codeTheme } from '../../styles/code-theme';
+import type { CodeExcerpt } from '../../data/portfolio';
+
+interface Props {
+  excerpt: CodeExcerpt;
+}
+
+const { excerpt } = Astro.props;
+---
+
+<figure class="mt-6 overflow-hidden rounded-card border border-line bg-code">
+  <figcaption
+    class="flex justify-between border-b border-line px-[0.9rem] py-[0.52rem] font-mono text-[0.69rem] text-ink-3"
+  >
+    <span>{excerpt.source}</span>
+    <span>extrait</span>
+  </figcaption>
+  <Code
+    class="!bg-code overflow-x-auto p-[0.9rem] text-code"
+    code={excerpt.code}
+    lang={excerpt.lang as never}
+    theme={codeTheme}
+  />
+</figure>

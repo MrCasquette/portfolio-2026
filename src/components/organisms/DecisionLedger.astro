@@ -1,0 +1,20 @@
+---
+import DecisionEntry from '../molecules/DecisionEntry.astro';
+import type { Decision } from '../../data/portfolio';
+
+interface Props {
+  decisions: Decision[];
+}
+
+const { decisions } = Astro.props;
+---
+
+<div class="mt-[1.55rem] border-t border-line">
+  <div
+    class="grid grid-cols-2 gap-x-[1.2rem] border-b border-line-soft py-[0.45rem] font-mono text-[0.65rem] tracking-[0.12em] text-ink-3 uppercase max-[660px]:grid-cols-1"
+  >
+    <span>Retenu</span>
+    <span>Écarté</span>
+  </div>
+  {decisions.map(decision => <DecisionEntry decision={decision} />)}
+</div>

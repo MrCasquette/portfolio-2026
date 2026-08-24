@@ -1,0 +1,29 @@
+---
+import Kicker from '../atoms/Kicker.astro';
+import StatePill from '../atoms/StatePill.astro';
+import CodeExcerpt from './CodeExcerpt.astro';
+import DecisionLedger from './DecisionLedger.astro';
+import IncidentTimeline from './IncidentTimeline.astro';
+import Slide from '../templates/Slide.astro';
+import type { Project } from '../../data/portfolio';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+---
+
+<Slide id={project.id}>
+  <Kicker text={`Projet ${String(index).padStart(2, '0')}`} />
+  <div class="flex flex-wrap items-center gap-3">
+    <h2 class="text-h2">{project.title}</h2>
+    <StatePill status={project.status} />
+  </div>
+  <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{project.intro}</p>
+
+  <DecisionLedger decisions={project.decisions} />
+  {project.incident && <IncidentTimeline events={project.incident} />}
+  {project.excerpt && <CodeExcerpt excerpt={project.excerpt} />}
+</Slide>

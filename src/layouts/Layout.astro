@@ -1,5 +1,5 @@
 ---
-import '../styles/global.css';
+import '../styles/theme.css';
 
 interface Props {
   title: string;
@@ -8,7 +8,7 @@ interface Props {
 
 const {
   title,
-  description = 'Portfolio de Vincent',
+  description = 'Vincent Cottalorda — trois systèmes, et les décisions qui les tiennent.',
 } = Astro.props;
 ---
 
@@ -16,9 +16,10 @@ const {
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
   </head>
   <body>

@@ -1,0 +1,24 @@
+---
+import StatePill from '../atoms/StatePill.astro';
+import type { Project } from '../../data/portfolio';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+---
+
+<article class="flex flex-col gap-[0.7rem] rounded-card border border-line-soft bg-surface p-[1.3rem]">
+  <StatePill status={project.status} />
+  <h3 class="text-h3">{project.title}</h3>
+  <p class="flex-1 text-body text-ink-2">{project.teaser}</p>
+  <a
+    class="font-mono text-[0.74rem] text-accent"
+    href={`#${project.id}`}
+    aria-label={`Voir le détail du projet ${index} — ${project.title}`}
+  >
+    Voir le détail →
+  </a>
+</article>
