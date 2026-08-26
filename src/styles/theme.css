@@ -1,9 +1,9 @@
 /* ============================================================
-   Portfolio — thème
-   Tailwind v4. Importé une seule fois, depuis le layout racine.
-   Toute couleur, graisse ou rayon utilisé dans le projet vient d'ici.
-   Aucune valeur en dur dans les composants.
-   Référence : docs/DESIGN.md
+   Portfolio — theme
+   Tailwind v4. Imported once, from the root layout.
+   Every colour, weight and radius used in the project comes from here.
+   No hard-coded values in components.
+   Reference: docs/DESIGN.md
    ============================================================ */
 
 @import "@fontsource-variable/lexend";
@@ -13,46 +13,44 @@
 
 @theme {
   /* ---------- Surfaces ----------
-     Le fond est muet : strictement neutre, aucune teinte.
-     Toute la chaleur du projet passe par l'accent. */
+     The background is mute: strictly neutral, no hue at all.
+     All the warmth of the project goes through the accent. */
   --color-bg: #151515;
-  --color-surface: #1c1c1c; /* cartes, panneaux, puces */
-  --color-surface-2: #212121; /* élévation supérieure */
-  --color-code: #1a1a1a; /* fond des blocs techniques */
+  --color-surface: #1c1c1c; /* cards, panels, chips */
+  --color-surface-2: #212121; /* higher elevation */
+  --color-code: #1a1a1a; /* background of technical blocks */
 
-  --color-line: #323232; /* filet visible */
-  --color-line-soft: #282828; /* séparation discrète */
+  --color-line: #323232; /* visible rule */
+  --color-line-soft: #282828; /* discreet separation */
 
-  /* ---------- Texte ---------- */
-  --color-ink: #efeeec; /* titres, texte fort */
-  --color-ink-2: #a3a19d; /* texte courant, descriptions — 7,1:1 sur bg */
-  --color-ink-3: #807e7a; /* métadonnées, options écartées — 4,5:1 sur bg */
+  /* ---------- Text ---------- */
+  --color-ink: #efeeec; /* headings, strong text */
+  --color-ink-2: #a3a19d; /* body text, descriptions — 7.1:1 on bg */
+  --color-ink-3: #807e7a; /* metadata, discarded options — 4.5:1 on bg */
 
   /* ---------- Accent ----------
-     Jade. Un seul accent sur tout le projet.
-     Il signale : ce qui tourne, les décisions retenues, les liens, la position. */
-  --color-accent: #45b08c; /* 6,8:1 sur bg */
-  --color-accent-line: #35705c; /* filets, puces franchies — 3,15:1, seuil composant UI */
-  --color-accent-bg: #1c2b26; /* remplissage de pastille */
-  --color-accent-halo: #45b08c38; /* halo de la pastille courante du rail */
+     Jade. A single accent across the whole project.
+     It signals: what is running, decisions kept, links, and position. */
+  --color-accent: #45b08c; /* 6.8:1 on bg */
+  --color-accent-line: #35705c; /* rules, passed bullets — 3.15:1, UI component floor */
+  --color-accent-bg: #1c2b26; /* pill fill */
+  --color-accent-halo: #45b08c38; /* halo of the rail's current bullet */
 
-  /* ---------- Coloration syntaxique ----------
-     Dérivée de la palette ci-dessus. Presque monochrome :
-     la hiérarchie se fait par la clarté et la graisse, pas par la teinte.
-     L'accent pur en est absent — un bloc de code contient trop de chaînes
-     pour que le jade y garde sa rareté. */
-  --color-code-text: #cfcec9; /* identifiants, texte par défaut */
-  --color-code-key: #efeeec; /* mots-clés — employé avec font-weight 500 */
-  --color-code-string: #86c9ae; /* chaînes */
-  --color-code-value: #a8bfb4; /* nombres, littéraux */
-  --color-code-punct: #8a8884; /* ponctuation, opérateurs */
-  --color-code-comment: #6e6c68; /* commentaires */
+  /* ---------- Syntax highlighting ----------
+     Derived from the palette above. Almost monochrome: hierarchy comes from
+     lightness and weight, not hue. The pure accent is absent — a code block
+     holds too many strings for jade to stay rare in it. */
+  --color-code-text: #cfcec9; /* identifiers, default text */
+  --color-code-key: #efeeec; /* keywords — used with font-weight 500 */
+  --color-code-string: #86c9ae; /* strings */
+  --color-code-value: #a8bfb4; /* numbers, literals */
+  --color-code-punct: #8a8884; /* punctuation, operators */
+  --color-code-comment: #6e6c68; /* comments */
 
-  /* ---------- Typographie ----------
-     Lexend a été choisie pour sa lisibilité, ce qui est cohérent
-     avec la thèse du portfolio. Elle est peu expressive :
-     le caractère vient de l'échelle et du contraste de graisse,
-     pas de la forme des lettres. */
+  /* ---------- Typography ----------
+     Lexend was chosen for its legibility, which is consistent with the
+     portfolio's thesis. It is not very expressive: character comes from scale
+     and weight contrast, not from letterforms. */
   --font-sans: "Lexend Variable", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
@@ -77,21 +75,21 @@
   --text-body: 0.94rem;
   --text-body--line-height: 1.6;
 
-  --text-meta: 0.73rem; /* mono : puces, légendes */
-  --text-kicker: 0.72rem; /* mono : sur-titres, capitales */
+  --text-meta: 0.73rem; /* mono: chips, captions */
+  --text-kicker: 0.72rem; /* mono: kickers, uppercase */
   --text-kicker--letter-spacing: 0.18em;
   --text-code: 0.77rem;
   --text-code--line-height: 1.8;
 
-  /* ---------- Formes ---------- */
+  /* ---------- Shapes ---------- */
   --radius-card: 6px;
   --radius-chip: 3px;
 
-  /* ---------- Mouvement ----------
-     Le seul mouvement d'ambiance du site : l'indice de défilement horizontal
-     du chapitre d'accueil. Cadré en §2 de DESIGN.md.
-     L'état à 0 % et 100 % est l'état visible, pour que la neutralisation par
-     `prefers-reduced-motion` laisse la flèche lisible. */
+  /* ---------- Motion ----------
+     The only ambient motion on the site: the horizontal scroll hint of the
+     landing chapter. Scoped in DESIGN.md §2.
+     The 0% and 100% state is the visible one, so that neutralisation through
+     `prefers-reduced-motion` leaves the arrow legible. */
   --animate-scroll-hint: scroll-hint 2.6s ease-in-out infinite;
 
   @keyframes scroll-hint {
@@ -107,13 +105,13 @@
     }
   }
 
-  /* ---------- Gabarit ---------- */
+  /* ---------- Layout ---------- */
   --spacing-header: 64px;
   --spacing-rail: 88px;
-  /* Hauteur du chemin, en fraction de la hauteur d'un chapitre.
-     Une seule valeur pour tout le parcours : c'est ce qui la fait lire comme
-     une ligne continue et non comme un trait par page. En pourcentage plutôt
-     qu'en rem pour tenir sur toute hauteur d'écran. */
+  /* Height of the path, as a fraction of a chapter's height.
+     A single value for the whole journey: that is what makes it read as one
+     continuous line rather than one rule per page. A percentage rather than
+     rem so it holds at any screen height. */
   --spacing-path: 62%;
   --spacing-gutter: clamp(1.15rem, 5vw, 3.5rem);
   --container-read: 62rem;
@@ -130,7 +128,7 @@
     background-color: var(--color-bg);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    /* Lexend s'alourdit en 400 sur du paragraphe. Le corps est en 300. */
+    /* Lexend gets heavy at 400 in body copy. Body text is 300. */
     font-weight: 300;
     line-height: 1.62;
     -webkit-font-smoothing: antialiased;
@@ -155,19 +153,19 @@
     *,
     *::before,
     *::after {
-      /* biome-ignore lint/complexity/noImportantStyles: neutralisation transversale, doit primer sur toute déclaration de composant */
+      /* biome-ignore lint/complexity/noImportantStyles: cross-cutting neutralisation, must win over any component declaration */
       animation-duration: 0.01ms !important;
-      /* biome-ignore lint/complexity/noImportantStyles: idem */
+      /* biome-ignore lint/complexity/noImportantStyles: same */
       transition-duration: 0.01ms !important;
     }
   }
 }
 
 /* ============================================================
-   Gabarit du parcours
-   Le seul CSS non tokenisé du projet : il porte la mécanique de
-   défilement à deux axes, que les utilities ne savent pas exprimer.
-   Tout le reste vit dans les composants.
+   Journey layout
+   The only untokenised CSS in the project: it carries the two-axis scrolling
+   mechanics, which utilities cannot express. Everything else lives in the
+   components.
    ============================================================ */
 
 .deck {
@@ -192,32 +190,32 @@
   padding: clamp(1.5rem, 4vh, 3rem) var(--spacing-gutter);
   overflow-x: hidden;
   overflow-y: auto;
-  /* Pas d'`overscroll-behavior: contain` ici : la propagation vers .deck est
-     ce qui rend le parcours utilisable à la souris. Une molette ne produit que
-     du deltaY ; le navigateur le convertit lui-même en défilement horizontal
-     dès qu'il atteint un conteneur qui ne défile que sur cet axe. C'est du
-     comportement natif, pas un détournement de la molette (DESIGN.md §7). */
+  /* No `overscroll-behavior: contain` here: chaining up to .deck is what makes
+     the journey usable with a mouse. A wheel only produces deltaY; the browser
+     converts it to horizontal scrolling on its own as soon as it reaches a
+     container that only scrolls on that axis. Native behaviour, not wheel
+     hijacking (DESIGN.md §7). */
   scroll-snap-align: center;
   scrollbar-width: thin;
   scrollbar-color: var(--color-line) transparent;
 }
 
-/* Colonne de lecture. Classe explicite et non `.slide > div` : le segment de
-   chemin est lui aussi un div enfant de la section, et il ne doit hériter ni
-   de la largeur ni du centrage. */
+/* Reading column. An explicit class rather than `.slide > div`: the path
+   segment is also a div child of the section, and must inherit neither the
+   width nor the centring. */
 .slide-content {
   position: relative;
-  /* Un élément positionné se peint au-dessus de tout ce qui ne l'est pas, quel
-     que soit l'ordre du document : sans ce cran, le chemin passerait devant le
-     contenu au lieu d'être interrompu par lui. */
+  /* A positioned element paints above anything that is not positioned,
+     whatever the document order: without this step the path would pass in
+     front of the content instead of being interrupted by it. */
   z-index: 1;
   width: 100%;
   max-width: var(--slide-max, var(--container-read));
   margin-inline: auto;
 }
 
-/* Chapitre dont la composition se pose sur le chemin : le contenu se termine
-   juste au-dessus de la ligne, qui devient l'horizon de la page. */
+/* Chapter whose composition rests on the path: the content ends just above
+   the line, which becomes the horizon of the page. */
 .slide-above-path > .slide-content {
   position: absolute;
   right: var(--spacing-gutter);
@@ -225,7 +223,7 @@
   left: var(--spacing-gutter);
 }
 
-/* En colonne unique le chemin n'a plus d'objet : plus d'axe horizontal à tenir. */
+/* In single-column mode the path has no purpose left: no horizontal axis to hold. */
 @media (max-width: 768px) {
   .slide-path {
     display: none;
@@ -236,8 +234,8 @@
   }
 }
 
-/* Sous 768 px, deux axes tactiles se marchent dessus : on replie
-   le parcours en défilement vertical unique (DESIGN.md §6.3). */
+/* Below 768px two touch axes fight each other: the journey folds into a
+   single vertical scroll (DESIGN.md §6.3). */
 @media (max-width: 768px) {
   .deck {
     flex-direction: column;
@@ -256,17 +254,17 @@
 }
 
 /* ============================================================
-   Le chemin
-   Un filet à hauteur constante qui matérialise l'axe horizontal. Il
-   accompagne les chapitres de survol et s'arrête au premier projet :
-   là où l'axe vertical prend le relais, il n'a plus d'objet.
+   The path
+   A rule at constant height that materialises the horizontal axis. It
+   accompanies the survey chapters and stops at the first project: where the
+   vertical axis takes over, it has no purpose left.
 
-   Un segment par chapitre plutôt qu'un élément unique large de tout le
-   parcours — les chapitres sont contigus, les segments se rejoignent, et
-   rien n'a besoin de connaître la longueur du parcours.
+   One segment per chapter rather than a single element spanning the whole
+   journey — chapters are contiguous, segments join up, and nothing needs to
+   know how long the journey is.
 
-   Il est peint avant le contenu : les éléments à fond opaque l'interrompent
-   d'eux-mêmes, ce qui produit le « ———| encadré |——— » sans découpe à écrire.
+   It is painted before the content: opaque-background elements interrupt it on
+   their own, which produces the "———| boxed |———" with no cut-out to write.
    ============================================================ */
 
 .slide-path {
@@ -279,21 +277,19 @@
   pointer-events: none;
 }
 
-/* Le chemin naît et meurt plutôt que d'être coupé net.
+/* The path is born and dies rather than being cut off.
 
-   L'extinction déborde volontairement sur le premier projet : un trait qui
-   s'arrêterait au bord de Réalisations rendrait la jointure de page visible et
-   se lirait comme une fin de site. Là, le parcours mène jusqu'au seuil puis
-   s'efface.
+   Its extinction deliberately spills onto the first project: a rule stopping at
+   the edge of the Work chapter would make the page joint visible and read as
+   the end of the site. Here the journey leads up to the threshold, then fades.
 
-   Le segment d'extinction est court et garde son dégradé tardif plutôt que de
-   s'effacer sur toute la largeur : un dégradé partant de zéro ferait faiblir le
-   trait dès la jointure, qui se lirait comme une mort à l'entrée. Ici le raccord
-   reste à pleine force, puis la ligne s'éteint — plein jusqu'à 14 % de l'écran,
-   éteint à 20 %, donc bien avant la colonne de lecture du projet.
+   The dying segment is short and keeps its late gradient rather than fading
+   across the full width: a gradient starting at zero would weaken the rule from
+   the joint onwards, which would read as dying on entry. Here the joint stays
+   at full strength, then the line goes out — solid to 14% of the screen, gone
+   at 20%, well before the project's reading column.
 
-   Les segments intermédiaires restent pleins, sans quoi chaque jointure de page
-   se verrait. */
+   Intermediate segments stay solid, otherwise every page joint would show. */
 .slide-path[data-fade="in"] {
   background: linear-gradient(to right, transparent, var(--color-line) 30%);
 }
@@ -304,8 +300,8 @@
   background: linear-gradient(to right, var(--color-line) 70%, transparent);
 }
 
-/* Sous la bascule en colonne unique, le décalage de départ n'a plus de sens :
-   il n'y a plus de colonne de droite sur laquelle s'aligner. */
+/* Once folded into a single column the start offset means nothing: there is no
+   right-hand column left to align on. */
 @media (max-width: 1023px) {
   .slide-path {
     left: 0;

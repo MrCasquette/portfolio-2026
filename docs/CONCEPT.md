@@ -1,45 +1,46 @@
-# Concept du portfolio
+# Portfolio concept
 
-## Statut du document
+## Status of this document
 
-Ce document décrit le concept éditorial et l'expérience de navigation.
+This document describes the editorial concept and the navigation experience.
 
-Il décrit **quoi** montrer et **pourquoi**. [`DESIGN.md`](./DESIGN.md) décrit **comment** —
-et prime en cas de divergence. Les réflexions en cours restent dans
+It describes **what** to show and **why**. [`DESIGN.md`](./DESIGN.md) describes **how** —
+and takes precedence in case of divergence. Work in progress stays in
 [`SCRATCHPAD.md`](../SCRATCHPAD.md).
 
-## Objectif
+The site's own copy is in French; this document is in English.
 
-Le portfolio présente un profil professionnel transversal à quelqu'un qui recrute —
-CDI ou mission. Pas un client final, qui passe par un autre site.
+## Purpose
 
-Il défend une seule affirmation :
+The portfolio presents a cross-disciplinary professional profile to someone hiring —
+permanent role or contract. Not an end client, who goes through a different site.
 
-> Il tient un système entier, et il le rend lisible aux autres.
+It defends a single claim:
 
-Les technologies servent de preuves. Elles ne constituent pas l'identité du profil.
+> He holds a whole system, and he makes it legible to others.
 
-## Ce qui est démontré, et comment
+Technologies serve as evidence. They are not the identity of the profile.
 
-Deux moitiés, de statuts très différents :
+## What is demonstrated, and how
 
-- **Construire** — la preuve qu'un système existe, tourne, et a survécu à un incident.
-  Cette moitié se montre.
-- **Coordonner** — la preuve que le système reste opérable par quelqu'un d'autre.
-  Cette moitié **ne se nomme jamais**. Elle se déduit des artefacts.
+Two halves, with very different standing:
 
-D'où la règle de rédaction qui gouverne tout le contenu : **rien n'est revendiqué,
-tout se déduit**. Les faits, oui. Les qualificatifs sur soi, non.
+- **Construire** — proof that a system exists, runs, and has survived an incident.
+  This half is shown.
+- **Coordonner** — proof that the system stays operable by someone else.
+  This half is **never named**. It is inferred from the artefacts.
 
-## Le registre de décisions
+Hence the writing rule that governs all content: **nothing is claimed, everything is
+inferred**. Facts, yes. Self-qualifiers, no.
 
-Une version antérieure de ce document décrivait une « lecture parallèle » : deux
-colonnes nommées *Construire* et *Coordonner*, alignées phase par phase le long d'une
-timeline verticale. Cette structure décrivait une intention. Le **registre de décisions**
-en est la réalisation.
+## The decision ledger
 
-Il occupe le même emplacement structurel — deux colonnes, une tension, une progression
-verticale — mais avec du contenu réel à la place d'un cadre abstrait :
+An earlier version of this document described a "parallel reading": two columns named
+*Construire* and *Coordonner*, aligned phase by phase along a vertical timeline. That
+structure described an intent. The **decision ledger** is its realisation.
+
+It occupies the same structural slot — two columns, one tension, a vertical progression —
+but with real content in place of an abstract frame:
 
 ```
 ┌─ RETENU ───────────────────┬─ ÉCARTÉ ────────────────────┐
@@ -49,80 +50,81 @@ verticale — mais avec du contenu réel à la place d'un cadre abstrait :
 └──────────────────────────────────────────────────────────┘
 ```
 
-Le rapport aux deux moitiés se maintient sans jamais être écrit :
+The relation to the two halves holds without ever being written:
 
-- la colonne **Retenu** et la décision technique, c'est *Construire* ;
-- le **motif** — pourquoi, contre quoi, avec quelle conséquence — est l'artefact de
-  *Coordonner* : c'est lui qui rend le système intelligible à quelqu'un d'autre.
+- the **Retenu** column and the technical decision are *Construire*;
+- the **rationale** — why, against what, with what consequence — is the artefact of
+  *Coordonner*: it is what makes the system intelligible to someone else.
 
-Quelqu'un qui lit trois registres a compris que le profil sait transmettre, sans que
-le mot apparaisse une seule fois.
+Someone who reads three ledgers has understood that the profile can transmit, without the
+word appearing once.
 
-**Deux contraintes fortes.** Chaque entrée doit correspondre à un arbitrage réel : un
-registre inventé se sent immédiatement. Et une décision **non encore tranchée** est une
-entrée légitime — c'est ce qui donne sa valeur à la pièce en chantier.
+**Two hard constraints.** Every entry must correspond to a real trade-off: an invented
+ledger is felt immediately. And a decision that is **not yet settled** is a legitimate
+entry — that is what gives the work-in-progress piece its value.
 
-## Les trois états
+## The three states
 
-Les réalisations sont montrées dans trois états, et c'est délibéré :
+Work is shown in three states, deliberately:
 
-- **en production** — prouve qu'on sait exploiter ;
-- **livré** — prouve un résultat ;
-- **en chantier** — prouve qu'on sait arbitrer.
+- **en production** — proves the ability to operate;
+- **livré** — proves a result;
+- **en chantier** — proves the ability to arbitrate.
 
-Les trois ensemble disent quelque chose qu'aucun ne dit seul. Un projet inachevé n'est
-pas une faiblesse à masquer, c'est le seul endroit où l'on voit un arbitrage en cours.
+Together they say something none of them says alone. An unfinished project is not a
+weakness to hide; it is the only place where a trade-off can be seen in progress.
 
-## Architecture du parcours
+## Journey architecture
 
 ```text
 Accueil → Profil → Réalisations → Projet 01 → Projet 02 → Projet 03 → Contact
 ```
 
-Le nombre et le nom des projets dépendent du contenu disponible et **vont évoluer**.
-Cette structure décrit une intention de parcours, pas une arborescence figée : rien
-dans le code ne connaît la longueur du parcours à l'avance.
+The number and names of projects depend on available content and **will change**. This
+structure describes an intended journey, not a fixed tree: nothing in the code knows the
+length of the journey in advance.
 
-## Grammaire spatiale
+## Spatial grammar
 
-Deux axes complémentaires.
+Two complementary axes.
 
-**Horizontal** — le parcours global. Aller à droite : chapitre suivant. C'est la
-navigation principale, matérialisée par le rail en bas d'écran.
+**Horizontal** — the overall journey. Going right means the next chapter. This is the
+main navigation, materialised by the bottom rail and by the path.
 
-**Vertical** — l'approfondissement du chapitre courant : registre de décisions,
-chronologie d'incident, extrait de code.
+**Vertical** — going deeper into the current chapter: decision ledger, incident timeline,
+code excerpt.
 
-Le lecteur pressé traverse, le lecteur intéressé descend. Personne n'est filtré.
+The reader in a hurry crosses; the interested reader descends. Nobody is filtered out.
 
-Sous 768 px, les deux axes tactiles se marchent dessus : le parcours se replie en
-défilement vertical unique.
+Below 768px the two touch axes fight each other, so the journey folds into a single
+vertical scroll.
 
-## Navigation persistante
+## Persistent navigation
 
-**En-tête** — fixe, il porte l'identité : nom et fonction du portfolio. Pas de menu.
+**Header** — fixed, carrying the identity: name and the function of the site. No menu.
+It only appears from the second chapter, since it is a reminder and has no purpose on the
+chapter that carries the identity.
 
-**Rail bas** — la navigation principale. Il matérialise la progression, donne la
-position courante et permet d'atteindre directement chaque chapitre.
+**Bottom rail** — the main navigation. It materialises progress, gives the current
+position, and allows reaching any chapter directly.
 
-## Principes UX
+## UX principles
 
-Le portfolio doit être :
+The portfolio must be:
 
-- original mais immédiatement compréhensible ;
-- accessible au clavier et compatible avec les préférences de réduction des animations ;
-- utilisable à la souris, au trackpad et au toucher ;
-- rapide à parcourir ;
-- centré sur la lecture et non sur la démonstration d'interface.
+- original but immediately understandable;
+- keyboard accessible and compatible with reduced-motion preferences;
+- usable with mouse, trackpad and touch;
+- quick to survey;
+- centred on reading, not on demonstrating an interface.
 
-L'originalité doit toujours servir la compréhension du contenu.
+Originality must always serve comprehension of the content.
 
-Le comportement natif du navigateur et le CSS sont privilégiés. JavaScript n'intervient
-que là où le comportement attendu ne peut pas être garanti autrement — et jamais pour
-détourner le défilement.
+Native browser behaviour and CSS come first. JavaScript only steps in where the expected
+behaviour cannot be guaranteed otherwise — and never to hijack scrolling.
 
-## Hors périmètre actuel
+## Currently out of scope
 
-- les textes finaux et le contenu réel des registres ;
-- la liste et l'ordre définitifs des projets ;
-- le second appui d'identité (cf. `DESIGN.md` §9).
+- final copy and the real content of the ledgers;
+- the definitive list and order of projects;
+- the second identity anchor (see `DESIGN.md` §9).

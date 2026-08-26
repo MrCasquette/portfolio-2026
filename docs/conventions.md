@@ -1,53 +1,65 @@
-# Conventions du projet
+# Project conventions
 
-Arbitrages actés, au sens de `~/.code-conform/docs/00-philosophy.md` §8.
-Ce document n'existe que pour les écarts et les choix non déductibles du code.
+Recorded arbitrations, in the sense of `~/.code-conform/docs/00-philosophy.md` §8.
+This document only exists for deviations and for choices that cannot be inferred from
+the code.
 
-## Documents de référence
+Trade-offs with a discarded alternative belong in [`decisions/`](./decisions/) instead.
+What stays here is the standing rule, not the reasoning behind it.
 
-`DESIGN.md` prime sur `CONCEPT.md`. Le premier décrit comment, le second pourquoi.
-`SCRATCHPAD.md` est un document de travail, sans autorité.
+## Reference documents
 
-## Tokens — posture B (sémantique)
+`DESIGN.md` takes precedence over `CONCEPT.md`. The first describes how, the second why.
+`decisions/` holds dated trade-offs. `SCRATCHPAD.md` is a working document with no
+authority.
 
-`atomic-design.md` §4. Palette neutre sans identité chromatique distinctive, monothème
-sombre assumé : le vocabulaire est celui de l'usage (`bg`, `surface`, `ink`, `line`,
-`accent`), pas celui de la marque.
+## Language
 
-SSOT unique : `src/styles/theme.css`. **Aucune valeur de couleur, graisse, rayon ou
-échelle typographique en dur dans un composant.** Un composant qui a besoin d'une
-couleur absente du thème signale un problème de conception, pas un manque dans le thème.
+Code, comments, documentation and file names are in **English**. Strings addressed to the
+visitor — `aria-label`, visible labels, everything in `portfolio.ts` — stay in **French**:
+the site is francophone.
 
-## Répartition CSS global / utilities
+## Tokens — posture B (semantic)
 
-- **`theme.css`** porte les tokens et le seul CSS non tokenisable : la mécanique de
-  défilement à deux axes (`.deck`, `.slide`), que les utilities ne savent pas exprimer.
-- **Tout le reste vit dans les composants**, en utilities Tailwind. Pas de classe
-  globale qui cible une structure de DOM (`.panel > div > p:first-child` et compagnie).
+`atomic-design.md` §4. Neutral palette with no distinctive chromatic identity, dark single
+theme: the vocabulary is one of usage (`bg`, `surface`, `ink`, `line`, `accent`), not of
+brand.
+
+Single source of truth: `src/styles/theme.css`. **No colour, weight, radius or typographic
+scale value hard-coded in a component.** A component needing a colour absent from the
+theme signals a design problem, not a gap in the theme.
+
+See [`decisions/0002-semantic-token-posture.md`](./decisions/0002-semantic-token-posture.md).
+
+## Global CSS versus utilities
+
+- **`theme.css`** carries the tokens and the only untokenisable CSS: the two-axis
+  scrolling mechanics (`.deck`, `.slide`) and the path, which utilities cannot express.
+- **Everything else lives in the components**, as Tailwind utilities. No global class
+  targeting a DOM structure (`.panel > div > p:first-child` and the like).
 
 ## Variants
 
-`Record<Variant, classes>` — cf. `StatePill.astro`. Pas de `tailwind-variants` tant
-qu'il n'y a pas de variants combinatoires, de slots ou de trois axes croisés.
+`Record<Variant, classes>` — see `StatePill.astro`. No `tailwind-variants` until there are
+combinatorial variants, slots, or three crossing axes.
 
-## Pas de Zod pour l'instant
+## No Zod for now
 
-`src/data/portfolio.ts` est de la donnée locale, typée à la compilation. Il n'y a pas
-de frontière externe : parser serait de la revalidation (philosophy §5).
+`src/data/portfolio.ts` is local data, typed at compile time. There is no external
+boundary: parsing would be revalidation (philosophy §5).
 
-Le jour où le contenu vient d'un CMS, ce module devient un schéma Zod et un client, et
-la frontière se place là — à un seul endroit.
+The day content comes from a CMS, this module becomes a Zod schema and a client, and the
+boundary sits there — in one place only.
 
-## Pas de DDD
+## No DDD
 
-Décision explicite : slicing simple (`src/data`, `src/components`, `src/scripts`), pas
-de `src/domain/<concept>/`. À réévaluer au branchement du CMS, pas avant.
+Explicit decision: simple slicing (`src/data`, `src/components`, `src/scripts`), no
+`src/domain/<concept>/`. To be reconsidered when the CMS is wired in, not before.
 
 ## Linting
 
-Biome est restreint à `src/**/*.ts`, `src/**/*.css` et aux fichiers JSON racine.
-Il ne parse que le frontmatter des fichiers `.astro` et signale comme inutilisées les
-props consommées dans le template. Les composants sont couverts par `pnpm type-check`
-(`astro check`).
+Biome is restricted to `src/**/*.ts`, `src/**/*.css` and root JSON files. It only parses
+the frontmatter of `.astro` files and reports props consumed in the template as unused.
+Components are covered by `pnpm type-check` (`astro check`).
 
-Pré-commit : `pnpm lint && pnpm type-check`.
+Pre-commit: `pnpm lint && pnpm type-check`.

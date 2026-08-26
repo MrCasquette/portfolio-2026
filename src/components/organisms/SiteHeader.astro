@@ -3,12 +3,12 @@ import { identity } from '../../data/portfolio';
 ---
 
 {/*
-  L'en-tête est un rappel d'identité : il n'a pas d'objet tant qu'on est encore
-  sur le chapitre qui la porte. Il apparaît au premier déplacement, c'est-à-dire
-  au moment où il devient utile.
+  The header is an identity reminder: it has no purpose while you are still on
+  the chapter that carries that identity. It appears on the first move, which is
+  the moment it becomes useful.
 */}
 <header
-  class="fixed inset-x-0 top-0 z-30 flex h-header items-center justify-between gap-4 border-b border-line-soft bg-bg/90 px-gutter backdrop-blur-[10px] transition-[opacity,translate] duration-300 data-[state=idle]:pointer-events-none data-[state=idle]:-translate-y-2 data-[state=idle]:opacity-0"
+  class="fixed inset-x-0 top-0 z-30 flex h-header items-center justify-between gap-4 border-b border-line-soft bg-bg px-gutter transition-[opacity,translate] duration-300 data-[state=idle]:pointer-events-none data-[state=idle]:-translate-y-2 data-[state=idle]:opacity-0"
   data-site-header
   data-state="idle"
 >

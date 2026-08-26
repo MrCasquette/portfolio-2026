@@ -1,12 +1,12 @@
 /**
- * Mécanique du parcours à deux axes.
+ * Two-axis journey mechanics.
  *
- * Le défilement reste natif : `scroll-snap` conduit la navigation, aucun index
- * n'est calculé pour piloter un `scrollTo`. Le script se limite à trois choses
- * que le CSS ne sait pas faire (DESIGN.md §6, §7) :
- *   1. refléter la position courante dans le rail ;
- *   2. annuler l'axe parasite d'un geste diagonal de trackpad ;
- *   3. brancher les flèches gauche/droite.
+ * Scrolling stays native: `scroll-snap` drives navigation, no index is computed
+ * to feed a `scrollTo`. This script only handles the three things CSS cannot
+ * (DESIGN.md §6, §7):
+ *   1. reflect the current position in the rail;
+ *   2. cancel the stray axis of a diagonal trackpad gesture;
+ *   3. wire the left/right arrow keys.
  */
 
 const ACTIVE_RATIO = 0.55;
@@ -20,15 +20,15 @@ if (deck && slides.length > 0) {
   let activeIndex = 0;
 
   /**
-   * Position de la ligne courante.
+   * Position of the current-chapter underline.
    *
-   * À l'horizontale elle est dérivée du défilement lui-même, en valeur
-   * fractionnaire : la barre suit exactement le mouvement, quelle que soit la
-   * distance parcourue. Un observateur d'intersection ne le permettrait pas —
-   * il est discret et n'émet rien pour les chapitres traversés lors d'un saut.
+   * Horizontally it is derived from the scroll offset itself, as a fractional
+   * value: the bar tracks the movement exactly, whatever the distance covered.
+   * An intersection observer could not do this — it is discrete and emits
+   * nothing for chapters crossed during a jump.
    *
-   * En mode vertical (sous 768 px) `scrollLeft` reste nul : on retombe alors
-   * sur l'index de l'observateur, et la transition CSS prend le relais.
+   * In vertical mode (below 768px) `scrollLeft` stays at zero, so we fall back
+   * on the observer index and let the CSS transition take over.
    */
   const trackIndicator = () => {
     if (!railTrack) return;
@@ -44,7 +44,7 @@ if (deck && slides.length > 0) {
     activeIndex = index;
     trackIndicator();
 
-    // L'en-tête ne rappelle une identité que si on a quitté le chapitre qui la porte.
+    // The header only recalls an identity once you have left the chapter carrying it.
     if (siteHeader) siteHeader.dataset.state = index === 0 ? 'idle' : 'visible';
 
     steps.forEach((step, stepIndex) => {
@@ -74,28 +74,28 @@ if (deck && slides.length > 0) {
   window.addEventListener('resize', trackIndicator);
 
   /**
-   * Conversion d'axe pour la molette.
+   * Wheel axis conversion.
    *
-   * Une souris ne produit que du deltaY : sans conversion, le parcours
-   * horizontal lui est purement inaccessible.
+   * A mouse only produces deltaY: without conversion the horizontal journey is
+   * simply unreachable with one.
    *
-   * On ne peut pas distinguer la souris du trackpad par `deltaMode` : macOS
-   * normalise les deux en pixels (DOM_DELTA_PIXEL), le test ne renvoie jamais
-   * DOM_DELTA_LINE. C'est donc la profondeur du chapitre qui arbitre, ce qui a
-   * l'avantage d'être un critère de contenu et non de matériel :
+   * Mouse and trackpad cannot be told apart through `deltaMode`: macOS
+   * normalises both to pixels (DOM_DELTA_PIXEL), so the check never returns
+   * DOM_DELTA_LINE. Chapter depth arbitrates instead, which has the advantage
+   * of being a content criterion rather than a hardware one:
    *
-   *   - chapitre sans profondeur → la molette verticale traverse le parcours ;
-   *   - chapitre avec du contenu à faire défiler → la molette y descend, et le
-   *     parcours reprend par propagation une fois le bas atteint.
+   *   - chapter without depth → a vertical wheel crosses the journey;
+   *   - chapter with scrollable content → the wheel descends into it, and the
+   *     journey resumes by scroll chaining once the bottom is reached.
    *
-   * La conversion est proportionnelle et ne pilote aucune navigation : pas
-   * d'index calculé, pas de `scrollTo` vers un chapitre, pas de verrou. C'est
-   * `scroll-snap` qui décide où le défilement se pose (DESIGN.md §7).
+   * The conversion is proportional and drives no navigation: no computed index,
+   * no `scrollTo` towards a chapter, no lock. `scroll-snap` alone decides where
+   * the scroll settles (DESIGN.md §7).
    */
   deck.addEventListener(
     'wheel',
     event => {
-      // Sous 768 px le parcours est replié en vertical : rien à convertir.
+      // Below 768px the journey folds into a single vertical axis: nothing to convert.
       if (deck.scrollWidth <= deck.clientWidth) return;
 
       const target = event.target instanceof Element ? event.target : null;
@@ -104,9 +104,9 @@ if (deck && slides.length > 0) {
       const isDescended = slide ? slide.scrollTop >= slide.clientHeight / 2 : false;
       const isHorizontalGesture = Math.abs(event.deltaX) > Math.abs(event.deltaY);
 
-      // Verrou d'axe : une fois engagé en descente, la composante horizontale
-      // d'un geste diagonal de trackpad est annulée pour que la page ne parte
-      // pas en biais.
+      // Axis lock: once engaged in a descent, the horizontal component of a
+      // diagonal trackpad gesture is cancelled so the page does not drift
+      // sideways.
       if (isDescended && isHorizontalGesture) {
         event.preventDefault();
         return;
@@ -114,8 +114,8 @@ if (deck && slides.length > 0) {
 
       if (isDescended) return;
 
-      // Le chapitre a de la profondeur : la molette doit pouvoir y descendre,
-      // sans quoi le contenu vertical devient inatteignable à la souris.
+      // The chapter has depth: the wheel must be able to descend into it, or
+      // vertical content becomes unreachable with a mouse.
       const hasDepth = slide ? slide.scrollHeight > slide.clientHeight + 1 : false;
       if (hasDepth) return;
 

@@ -1,19 +1,19 @@
 /**
- * Contenu du portfolio.
+ * Portfolio content.
  *
- * Donnée locale, typée à la compilation : pas de parsing ni de validation ici,
- * la frontière externe n'existe pas encore. Le jour où le contenu vient d'un
- * CMS, c'est ce module qui devient un schéma Zod et un client.
+ * Local data, typed at compile time: no parsing or validation here, the
+ * external boundary does not exist yet. The day content comes from a CMS, this
+ * module becomes a Zod schema and a client.
  */
 
 export type ProjectStatus = 'production' | 'delivered' | 'wip';
 
 /**
- * Une entrée du registre de décisions.
+ * One entry in the decision ledger.
  *
- * `settled` et `open` sont deux formes distinctes, pas une forme à laquelle il
- * manquerait un champ : une décision non tranchée n'a pas de retenu, et le rendu
- * doit refuser de lui donner la puce d'accent.
+ * `settled` and `open` are two distinct shapes, not one shape missing a field:
+ * an unsettled decision has nothing kept, and the rendering must refuse to give
+ * it the accent bullet.
  */
 export type Decision =
   | { state: 'settled'; kept: string; discarded: string; rationale: string }
@@ -31,11 +31,11 @@ export type Project = {
   id: string;
   title: string;
   status: ProjectStatus;
-  /** Résumé court, sur la carte des réalisations. */
+  /** Short summary, on the work card. */
   teaser: string;
-  /** Introduction du chapitre projet. */
+  /** Introduction to the project chapter. */
   intro: string;
-  /** Ce qui a été employé *sur ce projet* — pas un catalogue de maîtrise. */
+  /** What was used *on this project* — not a catalogue of mastery. */
   stack: string[];
   decisions: Decision[];
   incident?: IncidentEvent[];
@@ -50,7 +50,7 @@ export const identity = {
 export const landing = {
   availability: 'Disponible · CDI ou mission · à distance',
   title: ['Ce site montre', 'comment je décide,', 'avant de montrer avec quoi.'],
-  /** Mot mis en accent dans le titre — le seul de tout le site. */
+  /** The word accented in the heading — the only one on the whole site. */
   emphasis: 'décide',
   lede: "Développeur, à distance depuis l'Ardèche. Ce qui suit se lit dans l'ordre : d'abord d'où vient cette manière de travailler, ensuite des systèmes réels et les arbitrages qui les ont faits — y compris ceux qui ne sont pas encore tranchés.",
 } as const;
@@ -265,8 +265,8 @@ export const statusLabels: Record<ProjectStatus, string> = {
 };
 
 /**
- * Étapes du rail, dérivées du contenu : le nombre de projets n'est pas figé,
- * aucun composant ne doit connaître la longueur du parcours à l'avance.
+ * Rail steps, derived from the content: the number of projects is not fixed,
+ * and no component should know the length of the journey in advance.
  */
 export const chapters = [
   { id: 'landing', label: 'Accueil' },

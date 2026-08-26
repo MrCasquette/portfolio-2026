@@ -16,7 +16,7 @@ interface Props {
 const { project, index } = Astro.props;
 ---
 
-{/* Le chemin meurt ici : le premier projet est le seuil de l'axe vertical. */}
+{/* The path dies here: the first project is the threshold of the vertical axis. */}
 <Slide id={project.id} path={index === 1} pathFade="out">
   <Kicker text={`Projet ${String(index).padStart(2, '0')}`} />
   <div class="flex flex-wrap items-center gap-3">
@@ -26,9 +26,8 @@ const { project, index } = Astro.props;
   <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{project.intro}</p>
 
   {/*
-    Ce qui a été employé sur ce projet, et non un catalogue de maîtrise : à cet
-    endroit la liste devient jugeable, puisqu'elle se lit contre les arbitrages
-    qui suivent.
+    What was used on this project, not a catalogue of mastery: here the list
+    becomes judgeable, since it reads against the trade-offs that follow.
   */}
   <ul
     class="mt-[1.1rem] flex list-none flex-wrap gap-[0.4rem]"

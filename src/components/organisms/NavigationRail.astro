@@ -3,16 +3,16 @@ import { chapters } from '../../data/portfolio';
 ---
 
 {/*
-  De vrais liens : la position du parcours reste dans l'URL, partageable et
-  restaurée au retour arrière. Le clavier fonctionne sans code, les flèches
-  gauche/droite sont ajoutées par-dessus (DESIGN.md §7).
+  Real links: the position in the journey stays in the URL, shareable and
+  restored on back-navigation. The keyboard works with no code, and the
+  left/right arrows are layered on top (DESIGN.md §7).
 
-  L'état vit sur le <li> et non sur le <a> : le connecteur d'une étape à la
-  suivante doit s'effacer sur la dernière, et `:last-child` ne peut le voir que
-  depuis l'élément de liste.
+  State lives on the <li>, not the <a>: the connector from one step to the next
+  must disappear on the last one, and `:last-child` can only see that from the
+  list item.
 */}
 <nav
-  class="fixed inset-x-0 bottom-0 z-30 flex h-rail items-center overflow-x-auto border-t border-line-soft bg-bg/92 backdrop-blur-[10px] [scrollbar-width:none]"
+  class="fixed inset-x-0 bottom-0 z-30 flex h-rail items-center overflow-x-auto bg-bg [scrollbar-width:none]"
   aria-label="Parcours"
   data-rail
 >
@@ -44,18 +44,18 @@ import { chapters } from '../../data/portfolio';
     }
 
     {/*
-      Ligne courante. La boîte extérieure fait une largeur d'étape et porte le
-      déplacement ; la barre visible est centrée dedans.
+      Current-chapter underline. The outer box is one step wide and carries the
+      movement; the visible bar is centred inside it.
 
-      Un élément absolu se résout entièrement sur la boîte de padding de son
-      conteneur — offsets *et* pourcentages de largeur. La gouttière doit donc
-      être compensée deux fois : `left` la rattrape, et la largeur d'étape la
-      retranche. Sans la seconde correction, l'erreur s'accumule d'une étape à
-      la suivante.
+      An absolutely positioned element resolves entirely against its container's
+      padding box — offsets *and* percentage widths. The gutter must therefore be
+      compensated twice: `left` catches it up, and the step width subtracts it.
+      Without the second correction the error accumulates from one step to the
+      next.
 
-      La transition n'est active qu'en mode vertical, où la position vient de
-      l'observateur et progresse par sauts. À l'horizontale elle est pilotée par
-      le défilement lui-même, donc déjà continue quelle que soit la distance.
+      The transition is only active in vertical mode, where the position comes
+      from the observer and advances in jumps. Horizontally it is driven by the
+      scroll itself, so it is already continuous whatever the distance.
     */}
     <span
       class="pointer-events-none absolute bottom-0 left-gutter flex w-[calc((100%-2*var(--spacing-gutter))/var(--step-count))] justify-center [transform:translateX(calc(var(--active-index,0)*100%))] [[data-tracking=index]_&]:transition-transform [[data-tracking=index]_&]:duration-[280ms] [[data-tracking=index]_&]:ease-[cubic-bezier(0.22,1,0.36,1)]"

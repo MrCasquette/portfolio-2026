@@ -1,154 +1,158 @@
-# DESIGN.md — Portfolio Vincent Cottalorda
+# DESIGN.md — Vincent Cottalorda's portfolio
 
-Document de référence pour toute intervention sur l'interface.
-À lire avant d'écrire du CSS ou de créer un composant.
+Reference document for any change to the interface.
+Read it before writing CSS or creating a component.
 
-Il prime sur [`CONCEPT.md`](./CONCEPT.md) en cas de divergence.
+It takes precedence over [`CONCEPT.md`](./CONCEPT.md) in case of divergence.
+Dated trade-offs, with what was discarded, live in [`decisions/`](./decisions/).
 
----
-
-## 1. La thèse
-
-Le portfolio défend une seule affirmation :
-
-> **Il tient un système entier, et il le rend lisible aux autres.**
-
-Deux portes d'entrée pour la même affirmation :
-- **Construire** — la preuve qu'un système existe, tourne, et a survécu à un incident.
-- **Coordonner** — la preuve qu'il reste opérable par quelqu'un d'autre. *Jamais nommé, jamais revendiqué.* Cette moitié se démontre par les artefacts (registres de décisions, procédures, documentation lisible), pas par une déclaration.
-
-**Règle de rédaction qui découle de la thèse :** rien n'est revendiqué, tout se déduit.
-Interdits dans toute copie du site : « polyvalent », « passionné », « vision globale »,
-« je fais le lien entre les équipes », « autodidacte » en position de justification.
-Les faits, oui. Les qualificatifs sur soi, non.
-
-**Cible de lecture :** quelqu'un qui recrute — CDI ou mission. Pas un client final,
-qui passe par un autre site.
+The site's own copy is in French. This document, the code and the decision
+records are in English.
 
 ---
 
-## 2. Non négociable
+## 1. The thesis
 
-| Règle | Raison |
+The portfolio defends a single claim:
+
+> **He holds a whole system, and he makes it legible to others.**
+
+Two ways in to the same claim:
+- **Construire** — proof that a system exists, runs, and has survived an incident.
+- **Coordonner** — proof that it stays operable by someone else. *Never named, never
+  claimed.* This half is demonstrated through artefacts (decision ledgers, procedures,
+  legible documentation), not through a statement.
+
+**The writing rule that follows from the thesis:** nothing is claimed, everything is
+inferred. Banned from any copy on the site: « polyvalent », « passionné », « vision
+globale », « je fais le lien entre les équipes », « autodidacte » used as a
+justification. Facts, yes. Self-qualifiers, no.
+
+**Intended reader:** someone hiring — permanent role or contract. Not an end client,
+who goes through a different site.
+
+---
+
+## 2. Non-negotiable
+
+| Rule | Reason |
 |---|---|
-| Le fond est muet | Toutes les dérives esthétiques du projet sont venues d'un fond porteur de teinte : boue, ambre terminal, vieux papier. Le fond reste strictement neutre. |
-| Un seul accent | Le jade signale ce qui tourne, les décisions retenues, les liens et la position dans la navigation. Rien d'autre. Sa rareté fait sa force. |
-| Pas de décor | Pas de particules, pas de dégradés mesh, pas de textures simulées, pas de glassmorphism, pas de blobs. La profondeur se construit par empilement de surfaces et filets d'un pixel. |
-| Un seul mouvement à la fois | Transitions courtes sur les états. Aucune animation d'ambiance. `prefers-reduced-motion` respecté partout. |
-| Aucune couleur en dur | Toute valeur vient de `theme.css`. Un composant qui a besoin d'une couleur absente du thème signale un problème de conception, pas un manque dans le thème. |
-| Pas de thème d'éditeur importé | La coloration syntaxique est dérivée de la palette du site. Ne pas réintroduire Catppuccin, Nord, Dracula, Rosé Pine. |
+| The background is mute | Every aesthetic drift in this project came from a background carrying a hue: mud, terminal amber, old paper. The background stays strictly neutral. |
+| A single accent | Jade signals what is running, decisions kept, links, and position in the navigation. Nothing else. Its rarity is its strength. |
+| No decoration | No particles, no mesh gradients, no simulated textures, no glassmorphism, no blobs. Depth is built by stacking surfaces and one-pixel rules. |
+| One movement at a time | Short transitions on states. No ambient animation. `prefers-reduced-motion` honoured everywhere. |
+| No hard-coded colour | Every value comes from `theme.css`. A component needing a colour absent from the theme signals a design problem, not a gap in the theme. |
+| No imported editor theme | Syntax highlighting is derived from the site palette. Do not reintroduce Catppuccin, Nord, Dracula, Rosé Pine. |
 
-### Mouvement — l'exception admise
+### Motion — the one admitted exception
 
-La règle « aucune animation d'ambiance » connaît une exception, et une seule :
-**l'indice de défilement du chapitre d'accueil**. Une flèche seule, à droite de l'écran,
-dont l'opacité et la position oscillent légèrement.
+The "no ambient animation" rule has one exception and one only: **the scroll hint on the
+landing chapter**. A lone arrow at the right of the screen, whose opacity and position
+oscillate slightly.
 
-Elle est admise parce qu'elle n'est pas de l'ambiance : elle annonce le paradigme de
-navigation horizontale, que rien d'autre ne signale à l'arrivée sur le site. Elle est
-cadrée :
+It is admitted because it is not ambience: it announces the horizontal navigation
+paradigm, which nothing else signals on arrival. It is scoped:
 
-- **en `ink-3`, jamais en accent** — un indice de défilement n'est ni un lien, ni une
-  position, ni ce qui tourne ;
-- `aria-hidden` : c'est le rail bas qui porte la navigation réelle ;
-- l'état à 0 % et 100 % de l'animation **est l'état visible**, pour que la neutralisation
-  par `prefers-reduced-motion` laisse la flèche lisible plutôt que figée à demi effacée ;
-- masquée sous 1024 px, où le parcours se replie et où la flèche mentirait ;
-- le mouvement est déclaré dans `theme.css` (`--animate-scroll-hint`), pas dans le
-  composant : c'est un token comme un autre.
+- **in `ink-3`, never in the accent** — a scroll hint is neither a link, nor a position,
+  nor something running;
+- `aria-hidden`: the bottom rail carries the real navigation;
+- the animation's 0% and 100% state **is the visible state**, so that neutralisation by
+  `prefers-reduced-motion` leaves the arrow legible rather than frozen half-faded;
+- hidden below 1024px, where the journey folds and the arrow would lie;
+- the motion is declared in `theme.css` (`--animate-scroll-hint`), not in the component:
+  it is a token like any other.
 
-Aucune autre animation d'ambiance n'est admise. Une deuxième la banaliserait.
+No other ambient animation is admitted. A second one would make it ordinary.
 
-### Dérives d'accent déjà corrigées
+### Accent drifts already corrected
 
-Le POC HTML les contenait, elles ne doivent pas revenir :
+The HTML prototype contained these. They must not come back:
 
-- **Sur-titres de panneau en jade** (`Ce que je fais tourner`). Un intitulé de section
-  ne fait pas partie de la liste ci-dessus. Les sur-titres sont en `ink-3`, sans exception.
-- **Chaînes de caractères en `accent` pur** dans les blocs de code. Un extrait en contient
-  trop pour que la rareté tienne. Voir §5.4.
+- **Panel kickers in jade** (`Ce que je fais tourner`). A section heading is not on the
+  list above. Kickers are `ink-3`, without exception.
+- **String literals in pure `accent`** inside code blocks. An excerpt holds too many for
+  the rarity to survive. See §5.5.
 
-La seule exception assumée est le mot mis en accent dans le titre d'accueil
-(`qui les **tiennent**`) : un seul mot, sur un seul écran, sur tout le site.
+The one owned exception is the accented word in the landing heading: a single word, on a
+single screen, across the whole site.
 
 ---
 
 ## 3. Palette
 
-Tokens définis dans `src/styles/theme.css`. Rappel des rôles :
+Tokens defined in `src/styles/theme.css`. Roles, as a reminder:
 
 **Surfaces** — `bg` (#151515) → `surface` (#1C1C1C) → `surface-2` (#212121).
-Les blocs de code utilisent `code` (#1A1A1A), entre le fond et les cartes.
+Code blocks use `code` (#1A1A1A), between the background and the cards.
 
-**Texte** — `ink` pour les titres et le texte fort, `ink-2` pour le courant et les
-descriptions, `ink-3` pour les métadonnées et les options écartées.
+**Text** — `ink` for headings and strong text, `ink-2` for body copy and descriptions,
+`ink-3` for metadata and discarded options.
 
-**Accent** — `accent` (#45B08C) pour tout ce qui est actif. `accent-line` pour les
-filets et les puces d'étapes franchies. `accent-bg` pour le remplissage des pastilles.
-`accent-halo` pour le halo de la pastille courante du rail.
+**Accent** — `accent` (#45B08C) for anything active. `accent-line` for rules and passed
+step bullets. `accent-bg` for pill fills. `accent-halo` for the halo on the rail's
+current bullet.
 
-### Contrastes mesurés sur `bg`
+### Contrast measured on `bg`
 
-Deux valeurs de la première version échouaient et ont été relevées :
+Two values from the first version failed and were raised:
 
-| Token | Ratio | Seuil |
+| Token | Ratio | Threshold |
 |---|---|---|
-| `ink` | ~16:1 | AA texte ✅ |
-| `ink-2` #A3A19D | 7,1:1 | AA texte ✅ |
-| `ink-3` **#807E7A** | 4,51:1 | AA texte ✅ *(était #73716D à 3,75:1 — échec)* |
-| `accent` #45B08C | 6,8:1 | AA texte ✅ |
-| `accent-line` **#35705C** | 3,15:1 | composant UI ✅ *(était #295647 à 2,19:1 — échec)* |
+| `ink` | ~16:1 | AA text ✅ |
+| `ink-2` #A3A19D | 7.1:1 | AA text ✅ |
+| `ink-3` **#807E7A** | 4.51:1 | AA text ✅ *(was #73716D at 3.75:1 — fail)* |
+| `accent` #45B08C | 6.8:1 | AA text ✅ |
+| `accent-line` **#35705C** | 3.15:1 | UI component ✅ *(was #295647 at 2.19:1 — fail)* |
 
-`ink-3` porte les libellés du rail et les sur-titres : ce sont des éléments de
-navigation, pas de la décoration. Il devait passer AA.
+`ink-3` carries rail labels and kickers: those are navigation elements, not decoration.
+It had to pass AA.
 
-### Collisions à surveiller
+### Collisions to watch
 
-Le jade a deux voisinages dangereux, déjà traités — ne pas les réintroduire :
+Jade has two dangerous neighbourhoods, already handled — do not reintroduce them:
 
-1. **Vert « succès ».** Ne pas accentuer la fin d'une chronologie d'incident : ça se lit
-   comme une coche de validation. L'accent marque le **déclenchement**, pas la résolution.
-2. **Vert d'état.** Les états ne sont plus tous colorés. Voir §5.3.
-
----
-
-## 4. Typographie
-
-**Lexend** en display et en courant. **JetBrains Mono** pour tout ce qui est technique.
-Les deux sont auto-hébergées via Fontsource — aucune requête vers un tiers.
-
-Le mono n'est pas décoratif. Il porte : sur-titres (kickers), puces de technologies,
-légendes, horodatages, intitulés de colonnes, blocs de code, liens de contact.
-Cette répartition est structurelle : le mono marque ce qui relève de la machine,
-le sans ce qui relève du discours.
-
-Graisses :
-- corps `300` — Lexend s'alourdit visiblement en 400 sur du paragraphe
-- titres `600`
-- texte fort dans un paragraphe `500`
-- décisions retenues `400` (elles doivent primer sur les écartées, qui restent en 300)
-
-Ne pas dépasser 600 en titre. Lexend en 700 devient pâteuse aux grandes tailles.
-
-Les sur-titres sont en mono, capitales, `letter-spacing: 0.18em`, couleur `ink-3`.
-C'est le seul endroit où l'on emploie des capitales.
+1. **"Success" green.** Do not accent the end of an incident timeline: it reads as a
+   validation tick. The accent marks the **trigger**, not the resolution.
+2. **Status green.** States are no longer all coloured. See §5.3.
 
 ---
 
-## 5. Composants
+## 4. Typography
 
-### 5.1 Registre de décisions — élément signature
+**Lexend** for display and body. **JetBrains Mono** for anything technical. Both are
+self-hosted through Fontsource — no third-party request.
 
-C'est le composant central du site. Il porte à lui seul la singularité du portfolio.
-Il n'est pas décoratif : il remplace la description de projet classique.
+The mono is not decorative. It carries: kickers, technology chips, captions, timestamps,
+column headings, code blocks, contact links. This split is structural: mono marks what
+belongs to the machine, sans what belongs to the discourse.
 
-**C'est aussi la réalisation de la lecture parallèle** décrite dans `CONCEPT.md` :
-deux colonnes, une tension, un motif qui les relie. La colonne « Retenu » et la décision
-technique relèvent de *Construire*. Le motif — pourquoi, contre quoi, avec quelle
-conséquence — est l'artefact de *Coordonner* : ce qui rend le système intelligible à
-quelqu'un d'autre. Aucun des deux mots n'apparaît à l'écran.
+Weights:
+- body `300` — Lexend visibly gains weight at 400 in paragraphs
+- headings `600`
+- strong text inside a paragraph `500`
+- decisions kept `400` (they must outweigh discarded ones, which stay at 300)
 
-Structure : deux colonnes (`Retenu` / `Écarté`), puis une ligne de motif en pleine largeur.
+Do not go past 600 in a heading. Lexend at 700 turns doughy at large sizes.
+
+Kickers are mono, uppercase, `letter-spacing: 0.18em`, colour `ink-3`. That is the only
+place uppercase is used.
+
+---
+
+## 5. Components
+
+### 5.1 Decision ledger — signature element
+
+This is the central component of the site. It carries the portfolio's singularity on its
+own. It is not decorative: it replaces the conventional project description.
+
+**It is also the realisation of the parallel reading** described in `CONCEPT.md`: two
+columns, one tension, a rationale that links them. The "Retenu" column and the technical
+decision belong to *Construire*. The rationale — why, against what, with what consequence
+— is the artefact of *Coordonner*: what makes the system intelligible to someone else.
+Neither word appears on screen.
+
+Structure: two columns (`Retenu` / `Écarté`), then a full-width rationale row.
 
 ```
 ┌─ RETENU ──────────────────┬─ ÉCARTÉ ───────────────────┐
@@ -158,188 +162,238 @@ Structure : deux colonnes (`Retenu` / `Écarté`), puis une ligne de motif en pl
 └─────────────────────────────────────────────────────────┘
 ```
 
-- Colonne retenue : puce jade, `ink`, graisse 400.
-- Colonne écartée : `ink-3`, graisse 300, `line-through` d'un pixel.
-- Motif : `ink-2`, graisse 300, filet gauche de 2 px en `accent-line`.
-- Sous 660 px : les deux colonnes s'empilent, l'écartée garde son retrait gauche.
+- Kept column: jade bullet, `ink`, weight 400.
+- Discarded column: `ink-3`, weight 300, one-pixel `line-through`.
+- Rationale: `ink-2`, weight 300, 2px left rule in `accent-line`.
+- Below 660px the two columns stack; the discarded one keeps its left indent.
 
-#### La décision non tranchée
+#### The unsettled decision
 
-Une entrée peut porter une décision **non encore tranchée** — c'est ce qui donne sa
-valeur à la pièce en chantier. C'est une **forme distincte**, pas une décision résolue
-à laquelle il manquerait un champ, et le rendu doit le montrer :
+An entry may carry a decision that is **not yet settled** — that is what gives the
+work-in-progress piece its value. It is a **distinct shape**, not a resolved decision
+missing a field, and the rendering must show it:
 
-- intitulé mono `NON TRANCHÉ` en pleine largeur ;
-- **aucune puce jade** — rien n'est retenu, l'accent mentirait ;
-- **aucun barré** — rien n'est écarté ;
-- les deux options à poids égal, en `ink-2`, marquées d'un tiret neutre ;
-- filet du motif en `line` et non `accent-line`.
+- full-width mono label `NON TRANCHÉ`;
+- **no jade bullet** — nothing is kept, the accent would lie;
+- **no strikethrough** — nothing is discarded;
+- both options at equal weight, in `ink-2`, marked with a neutral dash;
+- rationale rule in `line`, not `accent-line`.
 
-Dans le modèle de données, c'est une union discriminée (`state: 'settled' | 'open'`),
-pas un champ optionnel.
+In the data model this is a discriminated union (`state: 'settled' | 'open'`), not an
+optional field.
 
-**Contrainte de contenu :** chaque entrée doit correspondre à un arbitrage réel.
-Un registre inventé se sent immédiatement et détruit la crédibilité de l'ensemble.
+**Content constraint:** every entry must correspond to a real trade-off. An invented
+ledger is felt immediately and destroys the credibility of the whole.
 
-### 5.2 Chapitre d'accueil — composition
+### 5.2 Landing chapter — composition
 
-Le hero est conçu pour un portfolio horizontal, pas comme un hero classique amputé de
-son illustration. Deux masses typographiques :
+The hero is designed for a horizontal portfolio, not as a classic hero stripped of its
+illustration. Two typographic masses:
 
-- **à gauche** : pastille de disponibilité, titre, puis un trait horizontal fin qui pose
-  la ligne d'horizon — décoratif, sans flèche ni animation ;
-- **à droite, décalé vers le bas** : le propos et les technologies.
+- **left**: heading, then the availability pill;
+- **right**: the lede.
 
-Le vide entre les deux masses est un élément de composition. Il ne doit pas être comblé,
-et surtout pas par une illustration ou un aplat.
+The void between the two masses is a compositional element. It must not be filled, least
+of all with an illustration or a flat colour.
 
-**Pas d'appel à l'action.** Le rail bas assure déjà la navigation ; un bouton
-dupliquerait la fonction et ramènerait le vocabulaire de la page produit.
+**No call to action.** The bottom rail already handles navigation; a button would
+duplicate the function and bring back product-page vocabulary.
 
-Le chapitre dépasse la colonne de lecture (`--slide-max`), sans quoi les deux masses se
-tassent et l'écart cesse d'être lisible comme une intention.
+The chapter exceeds the reading column (`--slide-max`), otherwise the two masses crowd
+together and the gap stops reading as an intention.
 
-### 5.3 Pastilles d'état
+The block is **anchored on the path** rather than centred in the chapter: the line is the
+horizon of the composition, and the heading sits just above it. At the path's height the
+left column stays empty — composed void, not a gap.
 
-Trois états, distingués par forme autant que par couleur, parce que l'accent ne doit
-signaler que ce qui tourne :
+### 5.3 State pills
 
-| État | Traitement |
+Three states, told apart by shape as much as by colour, because the accent must only
+signal what is running:
+
+| State | Treatment |
 |---|---|
-| `en production` | `accent` sur `accent-bg`, filet plein |
-| `livré` | `ink-3`, filet plein |
-| `en chantier` | `ink-2`, **filet tireté** |
+| `en production` | `accent` on `accent-bg`, solid rule |
+| `livré` | `ink-3`, solid rule |
+| `en chantier` | `ink-2`, **dashed rule** |
 
-### 5.4 Chronologie d'incident
+### 5.4 Incident timeline
 
-Filet vertical en `line`, pastilles rondes. **Seule la première pastille est accentuée.**
-Horodatages en mono. Le dernier événement passe en `ink` (état courant), sans accent.
+Vertical rule in `line`, round bullets. **Only the first bullet is accented.** Timestamps
+in mono. The last event moves to `ink` (current state), without accent.
 
-Optionnelle : tous les projets n'ont pas eu d'incident, et en fabriquer un tuerait la
-crédibilité aussi sûrement qu'un registre inventé.
+Optional: not every project has had an incident, and fabricating one would kill
+credibility as surely as an invented ledger.
 
-### 5.5 Bloc de code
+### 5.5 Code block
 
-Fond `code`, filet `line`, légende en mono avec la source à gauche et une mention
-à droite. Coloration presque monochrome : mots-clés en `code-key` **graisse 500**
-(la hiérarchie vient du poids), chaînes en `code-string`, valeurs en `code-value`,
-ponctuation et commentaires dans les gris.
+`code` background, `line` rule, mono caption with the source on the left and a mention on
+the right. Almost monochrome highlighting: keywords in `code-key` at **weight 500**
+(hierarchy comes from weight), strings in `code-string`, values in `code-value`,
+punctuation and comments in the greys.
 
-La coloration est produite par Shiki avec un thème défini dans `src/styles/code-theme.ts`,
-dérivé des tokens. **L'accent pur en est absent** : un extrait contient trop de chaînes
-pour que le jade y garde sa rareté. Le gras est réservé aux mots-clés — pas aux opérateurs.
+Highlighting is produced by Shiki with a theme defined in `src/styles/code-theme.ts`,
+derived from the tokens. **The pure accent is absent from it**: an excerpt holds too many
+strings for jade to stay rare. Bold is reserved for keywords — not operators.
 
-Ne pas ajouter de couleur supplémentaire. Si un langage semble en avoir besoin,
-c'est l'extrait qui est trop long, pas le thème qui est trop pauvre.
+Do not add another colour. If a language seems to need one, the excerpt is too long, not
+the theme too poor.
 
-### 5.6 Rail de navigation
+### 5.6 Navigation rail
 
-Étapes en bas d'écran, pastilles reliées par un filet.
-Franchies : `accent-line`. Courante : `accent` plein avec halo. À venir : `line`.
-Libellés en `ink-3`, la courante en `ink` graisse 500.
+Steps at the bottom of the screen, bullets joined by a rule.
+Passed: `accent-line`. Current: solid `accent` with a halo. Upcoming: `line`.
+Labels in `ink-3`, the current one in `ink` at weight 500.
 
-Deux contraintes d'implémentation :
+The current-chapter underline is **driven by the scroll offset**, as a fractional value,
+not by the intersection observer: an observer is discrete and emits nothing for chapters
+crossed during a jump, so the bar would lag on any move longer than one chapter.
 
-- **Ce sont des liens `<a href="#id">`, pas des boutons.** La position reste dans l'URL,
-  partageable et restaurée au retour arrière ; le clavier, le clic-milieu et l'historique
-  fonctionnent sans code. Les flèches gauche/droite sont ajoutées par-dessus.
-- **Le nombre d'étapes n'est jamais écrit en dur.** Le rail se dérive de `chapters`,
-  lui-même dérivé de `projects`. Ajouter un projet ne touche qu'à `portfolio.ts`.
+Three implementation constraints:
+
+- **These are `<a href="#id">` links, not buttons.** The position stays in the URL,
+  shareable and restored on back-navigation; keyboard, middle-click and history work
+  without code. Left/right arrows are layered on top.
+- **The number of steps is never hard-coded.** The rail derives from `chapters`, itself
+  derived from `projects`. Adding a project only touches `portfolio.ts`.
+- **No top border.** It doubled the connector rule twenty pixels below it and competed
+  with the path. The rail is separated by its opaque background alone.
+
+### 5.7 Site header
+
+It carries the identity — name and way of working — and **only appears from the second
+chapter onwards**. Its role is to remind; it has no purpose while the reader is still on
+the chapter that carries that identity. 300ms fade, `pointer-events: none` while hidden.
+
+Consequence to keep in mind: **the landing chapter must name Vincent.** Without it,
+nothing does on the first screen.
+
+Unlike the rail, the header keeps its bottom border: it overhangs the content, whereas
+the rail sits inside it.
+
+### 5.8 The path
+
+A one-pixel rule at constant height (`--spacing-path`) that materialises the horizontal
+axis, before anything has been read. It is the site's pre-attentive cue.
+
+- **One segment per chapter**, not a single element spanning the journey. Chapters are
+  contiguous, so segments join up, and nothing needs to know the journey's length.
+- **Painted under the reading column.** Opaque-background elements interrupt it on their
+  own, which produces `———| boxed |———` with no cut-out to write. `.slide-content` carries
+  an explicit `z-index`, without which the positioned path would paint in front.
+- **It is born, holds, then dies.** Fade-in on the landing, solid across Profile and
+  Work, and a short dying segment on the first project — where the vertical axis takes
+  over. Its death deliberately spills onto the project: a rule stopping at the page edge
+  would make the joint visible and read as the end of the site.
+- **Absent below 768px**, where the journey folds into a vertical scroll.
+
+Two constraints it imposes:
+
+- every survey chapter must carry a boxed element at the path's height, or the line
+  crosses a bare page;
+- `--spacing-path` is a single approximate value. While chapters stay vertically centred,
+  boxes crossing the line is a coincidence that will move with the content — see §9.
 
 ---
 
 ## 6. Navigation
 
-- **→ horizontal** : les sommets du parcours. Un survol complet donne la thèse entière.
-- **↓ vertical** : le détail à l'intérieur d'un chapitre. Registre, chronologie, code.
+- **→ horizontal**: the peaks of the journey. A full sweep gives the whole thesis.
+- **↓ vertical**: the detail inside a chapter. Ledger, timeline, code.
 
-Le lecteur pressé traverse, le lecteur intéressé descend. Personne n'est filtré.
+The reader in a hurry crosses; the interested reader descends. Nobody is filtered out.
 
-Trois points traités :
+Three points handled:
 
-1. **Verrou d'axe.** Les trackpads produisent des deltas diagonaux. Dès que le lecteur
-   est descendu dans un chapitre, la composante horizontale du geste est annulée. Le JS
-   **n'intercepte jamais la composante verticale et ne déclenche aucune navigation** :
-   `scroll-snap` conduit seul, il n'y a pas de `scrollTo` piloté ni d'index calculé.
-2. **Repli en vertical pur sous 768 px.** Deux axes tactiles se marchent dessus.
-3. **Signaler la descente** — *reste ouvert*, voir §9.
-
----
-
-## 7. Accessibilité — plancher
-
-- Contraste : voir le tableau mesuré en §3. `ink-3` est réservé aux métadonnées, aux
-  libellés du rail et aux textes barrés.
-- L'information n'est jamais portée par la couleur seule — d'où le filet tireté
-  sur « en chantier », le barré sur les options écartées, et l'intitulé `NON TRANCHÉ`.
-- Focus visible partout, `outline` jade à 2 px avec 3 px de décalage.
-- Le rail est composé de vrais liens. Flèches gauche/droite fonctionnelles.
-- Le défilement horizontal utilise `scroll-snap`. **Une seule conversion de molette est
-  admise**, et elle est cadrée : voir ci-dessous.
-
-### Molette — l'exception admise
-
-Une souris ne produit que du `deltaY`. Sans conversion, le parcours horizontal lui est
-purement inaccessible : c'est un défaut d'accessibilité, pas une préférence.
-
-La règle « jamais un détournement de la molette » visait le wheel-jacking du prototype —
-calcul d'index, `scrollTo` vers un chapitre, verrou de 500 ms. Ce qui est admis est
-strictement plus étroit :
-
-- **c'est la profondeur du chapitre qui arbitre, pas le matériel.** `deltaMode` ne
-  permet pas de séparer souris et trackpad : macOS normalise les deux en pixels, et
-  `DOM_DELTA_LINE` n'apparaît jamais. Un chapitre sans profondeur convertit la molette
-  verticale en traversée ; un chapitre qui a du contenu à faire défiler la laisse
-  descendre, et le parcours reprend par propagation une fois le bas atteint ;
-- la conversion est **proportionnelle** (`deck.scrollBy({ left: deltaY * 32 })`) : aucun
-  index n'est calculé, aucun chapitre n'est visé, aucun verrou temporel ;
-- **`scroll-snap` décide seul** où le défilement se pose ;
-- elle ne s'applique qu'au niveau principal : dès que le lecteur est descendu de plus
-  d'une demi-vue dans un chapitre, la molette redevient purement verticale.
-
-Toute évolution qui réintroduirait un index calculé ou un `scrollTo` vers un chapitre
-sort de l'exception et retombe sous l'interdiction.
+1. **Axis lock.** Trackpads produce diagonal deltas. As soon as the reader has descended
+   into a chapter, the horizontal component of the gesture is cancelled. The JS **never
+   intercepts the vertical component and triggers no navigation**: `scroll-snap` drives
+   alone, there is no scripted `scrollTo` and no computed index.
+2. **Folding into a single vertical axis below 768px.** Two touch axes fight each other.
+3. **Signalling the descent** — *still open*, see §9.
 
 ---
 
-## 8. Écarté, et pourquoi
+## 7. Accessibility — floor
 
-Cette section existe pour éviter de refaire le chemin. Chaque piste a été essayée.
+- Contrast: see the measured table in §3. `ink-3` is reserved for metadata, rail labels
+  and struck-through text.
+- Information is never carried by colour alone — hence the dashed rule on `en chantier`,
+  the strikethrough on discarded options, and the `NON TRANCHÉ` label.
+- Visible focus everywhere, jade `outline` at 2px with a 3px offset.
+- The rail is made of real links. Left/right arrows functional.
+- Horizontal scrolling uses `scroll-snap`. **One wheel conversion is admitted**, and it
+  is scoped: see below.
 
-| Écarté | Motif |
+### The wheel — the one admitted exception
+
+A mouse only produces `deltaY`. Without conversion the horizontal journey is simply
+unreachable with one: that is an accessibility defect, not a preference.
+
+The "never hijack the wheel" rule targeted the prototype's wheel-jacking — computed
+index, `scrollTo` towards a chapter, 500ms lock. What is admitted is strictly narrower:
+
+- **chapter depth arbitrates, not the hardware.** `deltaMode` cannot separate mouse from
+  trackpad: macOS normalises both to pixels, and `DOM_DELTA_LINE` never appears. A
+  chapter without depth converts a vertical wheel into a crossing; a chapter with
+  scrollable content lets it descend, and the journey resumes by scroll chaining once the
+  bottom is reached;
+- the conversion is **proportional** (`deck.scrollBy({ left: deltaY * 32 })`): no index is
+  computed, no chapter is targeted, no time lock;
+- **`scroll-snap` alone decides** where the scroll settles;
+- it only applies at the top level: once the reader has descended more than half a
+  viewport into a chapter, the wheel becomes purely vertical again.
+
+Any change reintroducing a computed index or a `scrollTo` towards a chapter leaves the
+exception and falls back under the prohibition.
+
+---
+
+## 8. Discarded, and why
+
+This section exists so the road is not walked twice. Every option here was tried.
+Dated records with full reasoning live in [`decisions/`](./decisions/).
+
+| Discarded | Reason |
 |---|---|
-| Dégradés violet-rose | Vocabulaire de page produit SaaS. Promet avant d'avoir prouvé. |
-| Glassmorphism | Le voile n'a rien derrière lui à flouter : il impose une palette saturée pour exister, et ne produit aucune profondeur. Coût sans bénéfice. |
-| Une teinte par chapitre | Sept identités chromatiques sans logique déductible. Fait de l'interface le sujet. |
-| Une teinte par lecture (Construire / Coordonner) | Même erreur sous un autre habillage : viole « un seul accent », et **nomme visuellement une dichotomie qu'on a décidé de ne pas revendiquer**. |
-| Registre « dandy britannique » (beige, kaki, tweed) | Une référence matérielle traduite en aplat de fond donne de la boue. Et c'est un costume : ça décrit une apparence, pas une manière de travailler. |
-| Serif d'affichage (Fraunces et apparentées) | Lecture vieillotte, en contradiction avec l'objectif de modernité. |
-| Monospace en titre (Martian Mono) | Combiné à un accent chaud sur fond sombre, produit un rendu terminal ambre. |
-| Fond crème + accent terracotta | Couple identifiable comme thème d'assistant IA, et produit un effet « vieux papier » proche des thèmes Obsidian. |
-| Orange `#D97757` | Testé et écarté au profit du jade, qui sort du registre chaud saturé des portfolios de dev. |
-| Couleur sémantique par thème (réflexion / architecture / code / débug) | Cette taxonomie n'existe pas dans le contenu. Cinq teintes actives détruisent la notion d'accent. |
-| Thème d'éditeur importé | Identité empruntée, immédiatement reconnue par les pairs. |
-| Particules en arrière-plan | Décor le plus répandu du genre. Contredit la règle « rien n'est revendiqué ». |
-| Ligne d'état avec métriques d'infrastructure | Signal trop spécialisé. Et sans données réelles câblées, contredit la promesse de preuve. |
-| Photographies de l'auteur | Une image sans sujet est un aplat décoratif. Le sujet ici — le travail — n'est pas photographiable. |
-| Poppins, Inter, Boldonse, Gabarito, Space Grotesk, Schibsted Grotesk | Testées. Lexend retenue. |
-| Colonnes nommées « Construire » / « Coordonner » | Nomment ce qui doit se déduire. Le registre de décisions occupe le même emplacement structurel avec du contenu réel à la place d'un cadre abstrait. |
+| Purple-pink gradients | SaaS product-page vocabulary. Promises before having proved. |
+| Glassmorphism | The veil has nothing behind it to blur: it forces a saturated palette in order to exist, and produces no depth at all. Cost without benefit. |
+| One hue per chapter | Seven chromatic identities with no inferable logic. Makes the interface the subject. |
+| One hue per reading (Construire / Coordonner) | The same mistake in other clothes: it violates "a single accent", and **visually names a dichotomy we decided not to claim**. |
+| "British dandy" register (beige, khaki, tweed) | A material reference translated into a flat background gives mud. And it is a costume: it describes an appearance, not a way of working. |
+| Display serif (Fraunces and relatives) | Reads dated, contradicting the aim of modernity. |
+| Monospace headings (Martian Mono) | Combined with a warm accent on a dark background, produces an amber terminal look. |
+| Cream background + terracotta accent | A pairing recognisable as an AI assistant theme, and it produces an "old paper" effect close to Obsidian themes. |
+| Orange `#D97757` | Tested and dropped in favour of jade, which steps outside the saturated warm register of developer portfolios. |
+| Semantic colour per theme (reflection / architecture / code / debugging) | That taxonomy does not exist in the content. Five active hues destroy the very notion of an accent. |
+| Imported editor theme | Borrowed identity, immediately recognised by peers. |
+| Background particles | The most common decoration of the genre. Contradicts "nothing is claimed". |
+| Status line with infrastructure metrics | Too specialised a signal. And without real data wired in, it contradicts the promise of proof. |
+| Photographs of the author | An image without a subject is a decorative flat. The subject here — the work — cannot be photographed. |
+| Poppins, Inter, Boldonse, Gabarito, Space Grotesk, Schibsted Grotesk | Tested. Lexend chosen. |
+| Columns named "Construire" / "Coordonner" | They name what should be inferred. The decision ledger occupies the same structural slot with real content in place of an abstract frame. |
+| Page bleed to signal horizontality | The reflex answer, and the most expensive: it costs exact 100% sizing, degrades `scroll-snap` precision, and a half-visible neighbouring screen is plainly ugly. The path produces the same pre-attentive cut inside the page. |
+| `backdrop-filter` on header and rail | Nothing left to blur on a flat background, and Chromium's compositing produces a visible tonal shift. |
 
 ---
 
-## 9. Ce qui reste ouvert
+## 9. Still open
 
-Quatre points. Aucun n'est réglé.
+Five points. None is settled.
 
-1. **Le second appui d'identité.** Le registre de décisions porte seul la singularité.
-   Ce qui viendra en renfort doit sortir du contenu, pas du décor. Deux pistes issues du
-   système existant : la **décision non tranchée** portée comme forme à part entière
-   (§5.1), et la **pastille « en chantier »** assumée sur un projet réel.
-2. **Le contenu réel.** Les registres, la chronologie et les extraits de code sont des
-   reconstitutions plausibles. Ils doivent être remplacés par les vraies notes.
-   Le contenu va évoluer : les projets arriveront, `portfolio.ts` est le seul point d'entrée.
-3. **Signaler la descente verticale** (§6.3). Sans signal, la profondeur n'est jamais
-   découverte. Un demi-bloc visible en bas de vue, ou un indicateur.
-4. **Le portrait cognitif.** Une justification de décision mentionnait une mémoire
-   épisodique peu fiable comme motif du choix d'Ansible. Argument fort, mais c'est
-   une divulgation personnelle. Décision à prendre, pas à trancher par défaut.
+1. **The second identity anchor.** The decision ledger carries the singularity alone.
+   Whatever reinforces it must come out of the content, not the decoration. Two leads
+   from the existing system: the **unsettled decision** carried as a form in its own right
+   (§5.1), and the **`en chantier` pill** owned on a real project.
+2. **Real content.** The ledgers, the timeline and the code excerpts are plausible
+   reconstructions. They must be replaced by the real notes. Content will evolve as
+   projects arrive; `portfolio.ts` is the single entry point, and it becomes a Zod schema
+   and a client the day it comes from the CMS.
+3. **Signalling the vertical descent** (§6.3). Without a cue, depth is never discovered.
+   A half-block visible at the bottom of the view, or an indicator.
+4. **Anchoring the survey chapters on the path** (§5.8). Profile and Work are still
+   centred vertically, so the path crossing their boxes is a coincidence rather than a
+   construction, and it will drift as content changes.
+5. **The cognitive portrait.** One decision rationale mentioned unreliable episodic memory
+   as the motive for choosing Ansible. A strong argument, but it is a personal
+   disclosure. A decision to be taken, not to be settled by default.

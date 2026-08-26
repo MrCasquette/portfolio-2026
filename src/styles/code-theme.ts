@@ -3,11 +3,11 @@ import type { ShikiConfig } from 'astro';
 type CodeTheme = Exclude<ShikiConfig['theme'], string | undefined>;
 
 /**
- * Coloration syntaxique dérivée de la palette du site.
+ * Syntax highlighting derived from the site palette.
  *
- * Aucun thème d'éditeur importé (DESIGN.md §2) : les six couleurs viennent de
- * theme.css. La hiérarchie se fait par la clarté et la graisse, pas par la
- * teinte — l'accent pur est volontairement absent.
+ * No imported editor theme (DESIGN.md §2): the six colours come from
+ * theme.css. Hierarchy comes from lightness and weight, not hue — the pure
+ * accent is deliberately absent.
  */
 const palette = {
   bg: '#1A1A1A',

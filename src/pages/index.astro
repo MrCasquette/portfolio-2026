@@ -17,9 +17,9 @@ import Layout from '../layouts/Layout.astro';
   <main class="deck">
     <Slide id="landing" max="78rem" path pathStart="44%" pathFade="in" abovePath>
       {/*
-        Deux masses typographiques au-dessus du chemin : le titre à gauche, le
-        propos à droite. Sous le titre, la pastille. À hauteur du chemin, la
-        colonne de gauche reste vide — c'est du vide construit, pas un manque.
+        Two typographic masses above the path: the heading on the left, the
+        lede on the right. The availability pill sits under the heading. At the
+        path's height the left column stays empty — composed void, not a gap.
       */}
       <div
         class="grid items-start gap-x-[clamp(2.5rem,7vw,7rem)] gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
@@ -48,10 +48,10 @@ import Layout from '../layouts/Layout.astro';
       </div>
 
       {/*
-        Indice de défilement, posé sur le chemin dont il prolonge la direction.
-        En `ink-3` et non en accent : ce n'est ni un lien, ni une position, ni ce
-        qui tourne. Décoratif au sens strict, donc masqué aux technologies
-        d'assistance — le rail bas porte la navigation réelle.
+        Scroll hint, resting on the path whose direction it extends. In `ink-3`
+        rather than the accent: it is neither a link, nor a position, nor
+        something running. Strictly decorative, hence hidden from assistive
+        technology — the bottom rail carries the real navigation.
       */}
       <span
         class="pointer-events-none absolute top-[var(--spacing-path)] right-gutter -translate-y-1/2 max-lg:hidden"
@@ -103,6 +103,6 @@ import Layout from '../layouts/Layout.astro';
   <NavigationRail />
 
   <script>
-    import '../scripts/parcours';
+    import '../scripts/journey';
   </script>
 </Layout>
