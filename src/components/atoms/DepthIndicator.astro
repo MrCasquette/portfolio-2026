@@ -1,0 +1,18 @@
+---
+{/*
+  A fake scrollbar for panelled chapters.
+
+  The native one had to be hidden: a vertical bar on the first screen of a
+  chapter contradicts the horizontal continuity the path sets up. But a real
+  scrollbar occupies layout, so revealing it on descent shifted the content.
+  This one is fixed and floats over the chapter, so it can appear and disappear
+  for free.
+
+  Purely a position readout — the rail carries navigation, and there is nothing
+  to drag here — so it is hidden from assistive technology.
+*/}
+---
+
+<div class="depth-indicator" data-depth-indicator data-state="idle" aria-hidden="true">
+  <span></span>
+</div>

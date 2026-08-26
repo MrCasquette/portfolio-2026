@@ -31,6 +31,11 @@ export type Project = {
   id: string;
   title: string;
   status: ProjectStatus;
+  /**
+   * The move this project stands for. The three read in order — Concevoir,
+   * Construire, Livrer — and that progression is what orders the array.
+   */
+  verb: string;
   /** Short summary, on the work card. */
   teaser: string;
   /** Introduction to the project chapter. */
@@ -98,14 +103,91 @@ export const profile = {
 
 export const work = {
   title: 'Trois pièces, trois états.',
-  lede: "Un projet fini prouve un résultat. Un projet qui tourne prouve qu'on sait l'exploiter. Un projet en cours prouve qu'on sait arbitrer. Les trois ensemble disent quelque chose qu'aucun ne dit seul.",
+  lede: "Un projet en cours prouve qu'on sait arbitrer. Un projet livré prouve un résultat. Un projet qui tourne prouve qu'on sait l'exploiter. Les trois se lisent dans cet ordre, et ensemble ils disent quelque chose qu'aucun ne dit seul.",
 } as const;
 
 export const projects: Project[] = [
   {
+    id: 'atelier',
+    title: 'Atelier',
+    status: 'wip',
+    verb: 'Concevoir',
+    teaser:
+      'Deux briques, Échoppe et Prisme, sur un socle commun. Montré avec ses arbitrages encore ouverts.',
+    intro:
+      "Ce projet n'est pas fini, et c'est pour ça qu'il est ici. Deux briques, Échoppe et Prisme, sur un socle commun. Les arbitrages en cours en disent plus long qu'un projet poli.",
+    stack: ['TypeScript', 'Vue', 'Postgres'],
+    decisions: [
+      {
+        state: 'settled',
+        kept: 'Un socle partagé, deux briques distinctes',
+        discarded: 'Deux applications indépendantes',
+        rationale:
+          'Le modèle de données est commun à 80 %. Le dupliquer, c’est signer pour deux migrations à chaque évolution.',
+      },
+      {
+        state: 'open',
+        options: [
+          'Attendre le deuxième usage réel pour fixer le périmètre du socle',
+          'Trancher maintenant, sur un seul usage',
+        ],
+        rationale:
+          "Factoriser trop tôt produit une abstraction qui ne sert qu'un cas. La décision reste ouverte tant qu'Échoppe est le seul consommateur.",
+      },
+    ],
+  },
+  {
+    id: 'plume',
+    title: 'Plume',
+    status: 'delivered',
+    verb: 'Construire',
+    teaser:
+      "Outil d'écriture open source. Périmètre fermé volontairement, avec la liste écrite de ce qu'il ne fera jamais.",
+    intro:
+      "Outil d'écriture open source. Ce qu'il fait, il le fait entièrement. Ce qu'il ne fera jamais est écrit dans le dépôt, parce qu'un périmètre non écrit finit toujours par s'étendre.",
+    stack: ['TypeScript', 'Bun', 'Elysia', 'Drizzle', 'Zod', 'CASL', 'Postgres'],
+    decisions: [
+      {
+        state: 'settled',
+        kept: 'Elysia · Bun · Drizzle · Zod · CASL',
+        discarded: 'Directus comme socle applicatif',
+        rationale:
+          "Le passage en licence MSCL rendait la dépendance risquée pour un projet destiné à durer. Payer la reconstruction une fois plutôt qu'hériter d'une contrainte que je ne contrôle pas.",
+      },
+      {
+        state: 'settled',
+        kept: 'Schéma validé à la frontière, typé de bout en bout',
+        discarded: 'Validation applicative au cas par cas',
+        rationale: 'Un seul endroit déclare la forme des données, le compilateur propage le reste.',
+      },
+      {
+        state: 'settled',
+        kept: 'Autorisation déclarative, testée isolément',
+        discarded: 'Contrôles dispersés dans les routes',
+        rationale:
+          "Une règle d'accès éparpillée est une règle qu'on ne peut pas relire. Celle-ci tient dans un fichier.",
+      },
+    ],
+    excerpt: {
+      source: "plume · politique d'accès",
+      lang: 'typescript',
+      code: `export const defineAbility = (user: User) => {
+  const { can, cannot, build } = new AbilityBuilder(createAbility)
+
+  can('read', 'Document', { published: true })
+  can('manage', 'Document', { authorId: user.id })
+  cannot('delete', 'Document', { locked: true })
+    .because('Un document verrouillé se déverrouille avant de se supprimer.')
+
+  return build()
+}`,
+    },
+  },
+  {
     id: 'infrastructure',
-    title: 'Infrastructure',
+    title: 'Mon serveur',
     status: 'production',
+    verb: 'Livrer',
     teaser:
       'Serveur dédié, une quinzaine de services, supervision et sauvegardes vérifiées. Un incident réel, documenté de bout en bout.',
     intro:
@@ -171,80 +253,6 @@ leakspeed: 10s
 capacity:  5   # 5 sondes en 10 s → bannissement`,
     },
   },
-  {
-    id: 'plume',
-    title: 'Plume',
-    status: 'delivered',
-    teaser:
-      "Outil d'écriture open source. Périmètre fermé volontairement, avec la liste écrite de ce qu'il ne fera jamais.",
-    intro:
-      "Outil d'écriture open source. Ce qu'il fait, il le fait entièrement. Ce qu'il ne fera jamais est écrit dans le dépôt, parce qu'un périmètre non écrit finit toujours par s'étendre.",
-    stack: ['TypeScript', 'Bun', 'Elysia', 'Drizzle', 'Zod', 'CASL', 'Postgres'],
-    decisions: [
-      {
-        state: 'settled',
-        kept: 'Elysia · Bun · Drizzle · Zod · CASL',
-        discarded: 'Directus comme socle applicatif',
-        rationale:
-          "Le passage en licence MSCL rendait la dépendance risquée pour un projet destiné à durer. Payer la reconstruction une fois plutôt qu'hériter d'une contrainte que je ne contrôle pas.",
-      },
-      {
-        state: 'settled',
-        kept: 'Schéma validé à la frontière, typé de bout en bout',
-        discarded: 'Validation applicative au cas par cas',
-        rationale: 'Un seul endroit déclare la forme des données, le compilateur propage le reste.',
-      },
-      {
-        state: 'settled',
-        kept: 'Autorisation déclarative, testée isolément',
-        discarded: 'Contrôles dispersés dans les routes',
-        rationale:
-          "Une règle d'accès éparpillée est une règle qu'on ne peut pas relire. Celle-ci tient dans un fichier.",
-      },
-    ],
-    excerpt: {
-      source: "plume · politique d'accès",
-      lang: 'typescript',
-      code: `export const defineAbility = (user: User) => {
-  const { can, cannot, build } = new AbilityBuilder(createAbility)
-
-  can('read', 'Document', { published: true })
-  can('manage', 'Document', { authorId: user.id })
-  cannot('delete', 'Document', { locked: true })
-    .because('Un document verrouillé se déverrouille avant de se supprimer.')
-
-  return build()
-}`,
-    },
-  },
-  {
-    id: 'atelier',
-    title: 'Atelier',
-    status: 'wip',
-    teaser:
-      'Deux briques, Échoppe et Prisme, sur un socle commun. Montré avec ses arbitrages encore ouverts.',
-    intro:
-      "Ce projet n'est pas fini, et c'est pour ça qu'il est ici. Deux briques, Échoppe et Prisme, sur un socle commun. Les arbitrages en cours en disent plus long qu'un projet poli.",
-    stack: ['TypeScript', 'Vue', 'Postgres'],
-    decisions: [
-      {
-        state: 'settled',
-        kept: 'Un socle partagé, deux briques distinctes',
-        discarded: 'Deux applications indépendantes',
-        rationale:
-          'Le modèle de données est commun à 80 %. Le dupliquer, c’est signer pour deux migrations à chaque évolution.',
-      },
-      {
-        state: 'open',
-        options: [
-          'Attendre le deuxième usage réel pour fixer le périmètre du socle',
-          'Trancher maintenant, sur un seul usage',
-        ],
-        rationale:
-          "Factoriser trop tôt produit une abstraction qui ne sert qu'un cas. La décision reste ouverte tant qu'Échoppe est le seul consommateur.",
-      },
-    ],
-  },
 ];
 
 export const contact = {
@@ -272,6 +280,13 @@ export const chapters = [
   { id: 'landing', label: 'Accueil' },
   { id: 'profile', label: 'Profil' },
   { id: 'work', label: 'Réalisations' },
+  /* Numbered, not named. Three reasons, in increasing order of weight: numbers
+     order themselves and so carry the progression the rail exists to show;
+     project names mean nothing to someone who has not read them yet, whereas
+     Réalisations is already the index that translates a number into a name; and
+     a name displayed permanently asserts a product identity before any page has
+     earned it. The kicker is the joint — it repeats the number and introduces
+     the verb. */
   ...projects.map((project, index) => ({
     id: project.id,
     label: `Projet ${String(index + 1).padStart(2, '0')}`,

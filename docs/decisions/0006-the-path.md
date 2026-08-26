@@ -55,9 +55,10 @@ running across the survey chapters.
   anchors to it instead of being centred.
 - Bad, because every survey chapter must carry a boxed element at its height, or
   the line crosses a bare page.
-- Bad, because `--spacing-path` is a single approximate value. As long as the
-  chapters stay vertically centred, boxes crossing the line is a coincidence and
-  will move with the content. Still open.
+- Bad, because `--spacing-path` was at first a single approximate value: with the
+  chapters vertically centred, boxes crossing the line was a coincidence that
+  moved with the content. Settled by
+  [`0010`](./0010-anchor-survey-chapters-on-the-path.md).
 
 ## More Information
 

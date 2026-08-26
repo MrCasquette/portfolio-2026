@@ -111,7 +111,13 @@
   /* Height of the path, as a fraction of a chapter's height.
      A single value for the whole journey: that is what makes it read as one
      continuous line rather than one rule per page. A percentage rather than
-     rem so it holds at any screen height. */
+     rem so it holds at any screen height.
+
+     Clearly below the middle, and that is the whole point: a rule at 50% cuts
+     the page in two and reads as a separator. Pushed down, it reads as a
+     horizon, which is what makes it a path. So this value is a fixed constraint
+     that content adapts to (`.slide-on-path`), never a variable to retune when
+     content changes height. */
   --spacing-path: 62%;
   --spacing-gutter: clamp(1.15rem, 5vw, 3.5rem);
   --container-read: 62rem;
@@ -223,6 +229,49 @@
   left: var(--spacing-gutter);
 }
 
+/* Chapter whose box row straddles the path: the row is centred on the line, the
+   head floats just above it.
+
+   Anchored by construction, not by measurement. `.slide-content` is placed at
+   the path's height — the same reference the path resolves its own `top`
+   against — and pulled up by half of its own height. The head is taken out of
+   the flow, so that height is exactly the box row's: the row ends up centred on
+   the line whatever it weighs.
+
+   The head is then hung off the top of that box rather than off the line, which
+   is what keeps the two from overlapping: half a tall row reaches well above the
+   path, and a head anchored on the line would sit underneath it. */
+.slide-on-path > .slide-content {
+  position: absolute;
+  top: var(--spacing-path);
+  right: var(--spacing-gutter);
+  left: var(--spacing-gutter);
+  transform: translateY(-50%);
+}
+
+.slide-on-path .slide-head {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 2.5rem);
+  left: 0;
+}
+
+/* Anchoring lifts the content out of the flow, so an overflow upwards becomes
+   unreachable: no scrollbar can reach what is above the top edge. Below this
+   height the chapter goes back to plain centred flow and gives up the crossing
+   rather than the readability. */
+@media (max-height: 700px) {
+  .slide-on-path > .slide-content,
+  .slide-on-path .slide-head {
+    position: static;
+    transform: none;
+  }
+
+  .slide-on-path .slide-row {
+    margin-top: 2.5rem;
+  }
+}
+
 /* In single-column mode the path has no purpose left: no horizontal axis to hold. */
 @media (max-width: 768px) {
   .slide-path {
@@ -231,6 +280,16 @@
 
   .slide-above-path > .slide-content {
     position: static;
+  }
+
+  .slide-on-path > .slide-content,
+  .slide-on-path .slide-head {
+    position: static;
+    transform: none;
+  }
+
+  .slide-on-path .slide-row {
+    margin-top: 2.5rem;
   }
 }
 
@@ -250,6 +309,147 @@
     min-height: 100%;
     overflow: visible;
     scroll-snap-align: start;
+  }
+}
+
+/* ============================================================
+   Chapter depth
+   A project chapter is not one page but a column of full-height panels, browsed
+   vertically. The horizontal journey still sees a single chapter.
+
+   The descent is deliberate: at the top of the column the wheel still crosses
+   the journey, and going down goes through the link. Without that rule a mouse
+   could no longer get past the first project, since any vertical gesture would
+   be swallowed by the depth (see journey.ts).
+
+   `scroll-snap-stop: always` forbids skipping a panel in one gesture: each
+   arbitrage is stopped on, which is the whole point of giving it a screen.
+   ============================================================ */
+
+.slide-deep {
+  align-items: stretch;
+  padding-block: 0;
+  scroll-snap-type: y mandatory;
+}
+
+/* No `scroll-behavior: smooth` here. It applies to user scrolling too, so every
+   wheel tick becomes an animation the next tick restarts: the column feels
+   stuck and has to be forced. The descent link smooths its own jump instead
+   (journey.ts). */
+
+/* The native scrollbar is gone for good. Showing it only at depth was the right
+   intent — a vertical bar on the first screen contradicts the horizontal
+   continuity the path sets up — but a real scrollbar occupies layout, so its
+   appearance shifted the content sideways. It is replaced by a floating
+   indicator, which costs nothing and can therefore come and go freely. */
+.slide-deep {
+  scrollbar-width: none;
+}
+
+.slide-deep::-webkit-scrollbar {
+  display: none;
+}
+
+/* Depth indicator: a fake scrollbar, laid over the chapter rather than inside
+   it. Fixed, so it belongs to the viewport and not to the scrolled content, and
+   sized on the same two ratios a real scrollbar uses — visible fraction, and
+   progress through the remainder. */
+.depth-indicator {
+  position: fixed;
+  top: calc(var(--spacing-header) + 2rem);
+  right: calc(var(--spacing-gutter) / 2);
+  bottom: calc(var(--spacing-rail) + 2rem);
+  z-index: 2;
+  width: 2px;
+  background: var(--color-line-soft);
+  opacity: 0;
+  transition: opacity 0.32s ease;
+  pointer-events: none;
+}
+
+.depth-indicator[data-state="visible"] {
+  opacity: 1;
+}
+
+.depth-indicator > span {
+  position: absolute;
+  top: calc(var(--depth-offset, 0) * (100% - var(--depth-extent, 1) * 100%));
+  right: 0;
+  left: 0;
+  height: calc(var(--depth-extent, 1) * 100%);
+  background: var(--color-accent-line);
+}
+
+/* Folded into one vertical axis the page has its own scrollbar again. */
+@media (max-width: 768px) {
+  .depth-indicator {
+    display: none;
+  }
+}
+
+/* Stretched, so its height is definite and the panels can size on it. */
+.slide-deep > .slide-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  padding-block: clamp(1.5rem, 4vh, 3rem);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Folded into one vertical axis, the column is already the page: panels go back
+   to being ordinary blocks, and a second snap axis would fight the first. */
+@media (max-width: 768px) {
+  .slide-deep {
+    scroll-snap-type: none;
+  }
+
+  .slide-panel {
+    min-height: 0;
+    scroll-snap-align: none;
+  }
+}
+
+/* The path, turned vertical.
+   Same rule, same token, same birth-and-death grammar — only the direction
+   changes, which is what says "another axis" without a word.
+
+   It obeys the three things that make the horizontal one read as a path: it
+   spans the whole dimension, it holds a constant position, and it is the frame
+   that cuts it — never the rule that stops. It is born at the top of the chapter
+   and runs off the bottom edge, where the rail begins: leaving the frame is what
+   says "it continues", exactly as the horizontal path running off the right edge
+   does. A rule ending on its own would say the opposite.
+
+   Alongside the reading column rather than behind it. The horizontal path is
+   interrupted by opaque content; a vertical one crossing a paragraph would show
+   between the lines instead. So the content hangs off it.
+
+   Static, deliberately. A cut in the page is pre-attentive by form — that was
+   the whole argument for the horizontal path — and the landing arrow keeps the
+   scarcity of being the site's one ambient motion (DESIGN.md §2). */
+.descent-path {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-1 * clamp(0.9rem, 1.8vw, 1.75rem));
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--color-line) 22%);
+  pointer-events: none;
+}
+
+/* Folded into a single vertical scroll, the descent is the page's own: there is
+   no second axis left to announce. */
+@media (max-width: 768px) {
+  .descent-path {
+    display: none;
   }
 }
 

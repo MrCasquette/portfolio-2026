@@ -287,12 +287,63 @@ axis, before anything has been read. It is the site's pre-attentive cue.
   would make the joint visible and read as the end of the site.
 - **Absent below 768px**, where the journey folds into a vertical scroll.
 
-Two constraints it imposes:
+- **Its height is a constraint, not a setting.** `--spacing-path` sits clearly below the
+  middle. A rule at 50% cuts the page in two and reads as a separator; pushed down it
+  reads as a horizon, which is what makes it a path. So content adapts to the line, never
+  the line to the content.
 
-- every survey chapter must carry a boxed element at the path's height, or the line
-  crosses a bare page;
-- `--spacing-path` is a single approximate value. While chapters stay vertically centred,
-  boxes crossing the line is a coincidence that will move with the content — see §9.
+The constraint it imposes: every survey chapter must carry a boxed element at the path's
+height, or the line crosses a bare page. Those chapters use `.slide-on-path` — the content
+is placed at the path's height, against the same box the path resolves its own `top`
+against, then pulled up by half of its own height. The head is taken out of the flow, so
+that height is exactly the box row's: the row lands centred on the line whatever it
+weighs. The head is then hung off the top of the row, not off the line — half a tall row
+reaches well above the path, and a head anchored on the line would sit underneath it.
+
+Nothing here reads a content height, so adding a panel, a card or a line of lede cannot
+desynchronise the crossing.
+
+Anchoring lifts the content out of the flow, and an overflow upwards is unreachable — no
+scrollbar reaches above the top edge. Below 700px of height the chapter goes back to
+centred flow and gives up the crossing rather than the readability.
+
+
+### 5.9 Chapter depth
+
+A project chapter is not one page but a column of full-height panels, browsed
+vertically. The horizontal journey still sees a single chapter.
+
+- **One panel per arbitrage.** Read three at a time a ledger is a table; read one screen
+  at a time it is an argument. Incident and excerpt take a panel each.
+- **A panel fits one screen.** `scroll-snap-type: y mandatory` turns anything taller into
+  content that is partly unreachable. A block that outgrows a screen is split in two —
+  never traded for fluid scrolling. This is a writing rule; nothing enforces it.
+- **`scroll-snap-stop: always`**, so a gesture cannot skip a panel.
+- **The descent is deliberate.** At the top of a column the wheel still crosses the
+  journey; going down goes through `Explorer ↓`. Without that rule a mouse could never get
+  past the first project, since depth would swallow every vertical gesture.
+- **No `scroll-behavior: smooth` on the column** — it applies to user scrolling too and
+  makes the wheel feel stuck. The descent links smooth their own jump.
+- **The wheel is amplified on both axes, by the same factor.** Native scrolling under a
+  mandatory snap has to cross half a panel before it tips, which takes several notches,
+  while the journey tips on one. Two physics for one grammar is what makes a snap feel
+  wrong.
+- **The scrollbar is a floating indicator**, not the native one: a vertical bar on the
+  first screen contradicts the horizontal continuity, and a real scrollbar occupies layout
+  so revealing it would shift the content.
+
+- **The descent is signalled by the path, turned vertical.** Same token, same grammar,
+  only the direction changes. It obeys the three things that make the horizontal one read
+  as a path: it spans the whole dimension, it holds a constant position, and it is the
+  frame that cuts it — born at the top of the chapter, running off the bottom edge where
+  the rail begins, exactly as the horizontal path runs off the right edge. A rule ending
+  on its own would say the axis ends. It runs *alongside* the reading column, not behind
+  it: a vertical rule crossing a paragraph would show between the lines. Static — a cut in
+  the page is pre-attentive by form, and the landing arrow keeps the scarcity of being the
+  one ambient motion (§2).
+
+Panels are derived from what a project carries: no incident, no empty screen.
+Recorded in [`0011`](./decisions/0011-project-chapters-as-snapped-panels.md).
 
 ---
 
@@ -310,7 +361,8 @@ Three points handled:
    intercepts the vertical component and triggers no navigation**: `scroll-snap` drives
    alone, there is no scripted `scrollTo` and no computed index.
 2. **Folding into a single vertical axis below 768px.** Two touch axes fight each other.
-3. **Signalling the descent** — *still open*, see §9.
+3. **Signalling the descent.** The path, turned vertical: a rule alongside the reading
+   column, running off the bottom edge of the chapter (§5.9).
 
 ---
 
@@ -371,6 +423,8 @@ Dated records with full reasoning live in [`decisions/`](./decisions/).
 | Status line with infrastructure metrics | Too specialised a signal. And without real data wired in, it contradicts the promise of proof. |
 | Photographs of the author | An image without a subject is a decorative flat. The subject here — the work — cannot be photographed. |
 | Poppins, Inter, Boldonse, Gabarito, Space Grotesk, Schibsted Grotesk | Tested. Lexend chosen. |
+| Animated mouse-wheel icon to signal the descent | It would lie about the mechanics: at the top of a column the wheel crosses the journey, it does not descend. And it depicts a device — no wheel on a trackpad, none at all on a phone — where what needs signalling is an axis. |
+| Retuning `--spacing-path` so the line crosses the boxes | Measures today's content, and a single added panel falsifies it. And the height carries meaning: near the middle the rule reads as a separator, not a horizon. The content is anchored on the line instead. |
 | Columns named "Construire" / "Coordonner" | They name what should be inferred. The decision ledger occupies the same structural slot with real content in place of an abstract frame. |
 | Page bleed to signal horizontality | The reflex answer, and the most expensive: it costs exact 100% sizing, degrades `scroll-snap` precision, and a half-visible neighbouring screen is plainly ugly. The path produces the same pre-attentive cut inside the page. |
 | `backdrop-filter` on header and rail | Nothing left to blur on a flat background, and Chromium's compositing produces a visible tonal shift. |
@@ -379,7 +433,7 @@ Dated records with full reasoning live in [`decisions/`](./decisions/).
 
 ## 9. Still open
 
-Five points. None is settled.
+Three points. None is settled.
 
 1. **The second identity anchor.** The decision ledger carries the singularity alone.
    Whatever reinforces it must come out of the content, not the decoration. Two leads
@@ -389,11 +443,6 @@ Five points. None is settled.
    reconstructions. They must be replaced by the real notes. Content will evolve as
    projects arrive; `portfolio.ts` is the single entry point, and it becomes a Zod schema
    and a client the day it comes from the CMS.
-3. **Signalling the vertical descent** (§6.3). Without a cue, depth is never discovered.
-   A half-block visible at the bottom of the view, or an indicator.
-4. **Anchoring the survey chapters on the path** (§5.8). Profile and Work are still
-   centred vertically, so the path crossing their boxes is a coincidence rather than a
-   construction, and it will drift as content changes.
-5. **The cognitive portrait.** One decision rationale mentioned unreliable episodic memory
+3. **The cognitive portrait.** One decision rationale mentioned unreliable episodic memory
    as the motive for choosing Ansible. A strong argument, but it is a personal
    disclosure. A decision to be taken, not to be settled by default.

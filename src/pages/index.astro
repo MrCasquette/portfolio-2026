@@ -1,5 +1,6 @@
 ---
 import AvailabilityPill from '../components/atoms/AvailabilityPill.astro';
+import DepthIndicator from '../components/atoms/DepthIndicator.astro';
 import Kicker from '../components/atoms/Kicker.astro';
 import CapabilityPanel from '../components/molecules/CapabilityPanel.astro';
 import ProjectCard from '../components/molecules/ProjectCard.astro';
@@ -62,20 +63,26 @@ import Layout from '../layouts/Layout.astro';
       </span>
     </Slide>
 
-    <Slide id="profile" path>
-      <Kicker text="01 — Profil" />
-      <h2 class="text-h2">{profile.title}</h2>
-      <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{profile.lede}</p>
-      <div class="mt-8 grid grid-cols-2 gap-[1.6rem] max-[760px]:grid-cols-1 max-[760px]:gap-4">
+    <Slide id="profile" path onPath>
+      <div class="slide-head">
+        <Kicker text="01 — Profil" />
+        <h2 class="text-h2">{profile.title}</h2>
+        <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{profile.lede}</p>
+      </div>
+      <div
+        class="slide-row grid grid-cols-2 gap-[1.6rem] max-[760px]:grid-cols-1 max-[760px]:gap-4"
+      >
         {profile.panels.map(panel => <CapabilityPanel title={panel.title} items={panel.items} />)}
       </div>
     </Slide>
 
-    <Slide id="work" path>
-      <Kicker text="02 — Réalisations" />
-      <h2 class="text-h2">{work.title}</h2>
-      <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{work.lede}</p>
-      <div class="mt-8 grid grid-cols-3 gap-4 max-[820px]:grid-cols-1">
+    <Slide id="work" path onPath>
+      <div class="slide-head">
+        <Kicker text="02 — Réalisations" />
+        <h2 class="text-h2">{work.title}</h2>
+        <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{work.lede}</p>
+      </div>
+      <div class="slide-row grid grid-cols-3 gap-4 max-[820px]:grid-cols-1">
         {projects.map((project, index) => <ProjectCard project={project} index={index + 1} />)}
       </div>
     </Slide>
@@ -100,6 +107,7 @@ import Layout from '../layouts/Layout.astro';
     </Slide>
   </main>
 
+  <DepthIndicator />
   <NavigationRail />
 
   <script>

@@ -10,11 +10,15 @@
  */
 
 const ACTIVE_RATIO = 0.55;
+/** Wheel amplification. One notch must cover enough ground for snap to settle
+    on the next unit — the same figure on both axes, so both feel alike. */
+const WHEEL_STEP = 32;
 const deck = document.querySelector<HTMLElement>('.deck');
 const slides = [...document.querySelectorAll<HTMLElement>('.slide')];
 const steps = [...document.querySelectorAll<HTMLElement>('[data-rail-step]')];
 const railTrack = document.querySelector<HTMLElement>('[data-rail-track]');
 const siteHeader = document.querySelector<HTMLElement>('[data-site-header]');
+const depthIndicator = document.querySelector<HTMLElement>('[data-depth-indicator]');
 
 if (deck && slides.length > 0) {
   let activeIndex = 0;
@@ -40,9 +44,36 @@ if (deck && slides.length > 0) {
     railTrack.style.setProperty('--active-index', position.toFixed(4));
   };
 
+  /**
+   * The fake scrollbar of a panelled chapter, sized on the two ratios a real
+   * one uses: the visible fraction of the column, and progress through the
+   * rest. Idle at the top, where a vertical bar would contradict the horizontal
+   * continuity the path sets up.
+   */
+  const reflectDepth = (slide: HTMLElement) => {
+    if (!depthIndicator) return;
+
+    const scrollable = slide.scrollHeight - slide.clientHeight;
+
+    depthIndicator.style.setProperty(
+      '--depth-extent',
+      (slide.clientHeight / slide.scrollHeight).toFixed(4),
+    );
+    depthIndicator.style.setProperty(
+      '--depth-offset',
+      (scrollable > 0 ? slide.scrollTop / scrollable : 0).toFixed(4),
+    );
+    depthIndicator.dataset.state = slide.scrollTop < 2 ? 'idle' : 'visible';
+  };
+
   const reflectPosition = (index: number) => {
     activeIndex = index;
     trackIndicator();
+
+    // Leaving a chapter takes its depth readout with it.
+    const current = slides[index];
+    if (current?.classList.contains('slide-deep')) reflectDepth(current);
+    else if (depthIndicator) depthIndicator.dataset.state = 'idle';
 
     // The header only recalls an identity once you have left the chapter carrying it.
     if (siteHeader) siteHeader.dataset.state = index === 0 ? 'idle' : 'visible';
@@ -73,6 +104,11 @@ if (deck && slides.length > 0) {
   deck.addEventListener('scroll', trackIndicator, { passive: true });
   window.addEventListener('resize', trackIndicator);
 
+  for (const slide of slides) {
+    if (!slide.classList.contains('slide-deep')) continue;
+    slide.addEventListener('scroll', () => reflectDepth(slide), { passive: true });
+  }
+
   /**
    * Wheel axis conversion.
    *
@@ -85,8 +121,10 @@ if (deck && slides.length > 0) {
    * of being a content criterion rather than a hardware one:
    *
    *   - chapter without depth → a vertical wheel crosses the journey;
-   *   - chapter with scrollable content → the wheel descends into it, and the
-   *     journey resumes by scroll chaining once the bottom is reached.
+   *   - chapter that merely overflows → the wheel descends into it, and the
+   *     journey resumes by scroll chaining once the bottom is reached;
+   *   - chapter built as a column of panels → it is crossed at the top like any
+   *     other, and only descended into through its link.
    *
    * The conversion is proportional and drives no navigation: no computed index,
    * no `scrollTo` towards a chapter, no lock. `scroll-snap` alone decides where
@@ -101,30 +139,49 @@ if (deck && slides.length > 0) {
       const target = event.target instanceof Element ? event.target : null;
       const slide = target?.closest<HTMLElement>('.slide');
 
-      const isDescended = slide ? slide.scrollTop >= slide.clientHeight / 2 : false;
       const isHorizontalGesture = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+      const isVerticalGesture = Math.abs(event.deltaY) > Math.abs(event.deltaX);
 
-      // Axis lock: once engaged in a descent, the horizontal component of a
-      // diagonal trackpad gesture is cancelled so the page does not drift
-      // sideways.
-      if (isDescended && isHorizontalGesture) {
+      // A chapter built as a column of panels only descends deliberately: at its
+      // top the wheel still crosses the journey, and the descent goes through
+      // the link. Without this a mouse could never get past the first project,
+      // since every vertical gesture would be swallowed by the depth.
+      const isPanelled = slide?.classList.contains('slide-deep') ?? false;
+      const isEngaged = slide ? slide.scrollTop >= 2 : false;
+
+      if (slide && isPanelled && isEngaged) {
+        // Axis lock: any depth means the reader is going down, so the sideways
+        // component of a diagonal trackpad gesture is cancelled.
+        if (isHorizontalGesture) {
+          event.preventDefault();
+          return;
+        }
+
+        if (!isVerticalGesture) return;
+
+        // Same amplification as the journey. Native scrolling under a mandatory
+        // snap has to cross half a panel before it tips, which takes several
+        // notches; the deck does not, and the two axes must feel alike.
         event.preventDefault();
+        slide.scrollBy({ top: event.deltaY * WHEEL_STEP });
         return;
       }
 
-      if (isDescended) return;
+      // An ordinary chapter that happens to overflow — a short viewport — keeps
+      // native scrolling, and the journey resumes by scroll chaining at the
+      // bottom. Its axis lock waits for a real descent rather than a stray pixel.
+      const overflows = slide ? slide.scrollHeight > slide.clientHeight + 1 : false;
 
-      // The chapter has depth: the wheel must be able to descend into it, or
-      // vertical content becomes unreachable with a mouse.
-      const hasDepth = slide ? slide.scrollHeight > slide.clientHeight + 1 : false;
-      if (hasDepth) return;
-
-      const isVerticalGesture = Math.abs(event.deltaY) > Math.abs(event.deltaX);
+      if (slide && !isPanelled && overflows) {
+        const isDescended = slide.scrollTop >= slide.clientHeight / 2;
+        if (isDescended && isHorizontalGesture) event.preventDefault();
+        return;
+      }
 
       if (!isVerticalGesture) return;
 
       event.preventDefault();
-      deck.scrollBy({ left: event.deltaY * 32 });
+      deck.scrollBy({ left: event.deltaY * WHEEL_STEP });
     },
     { passive: false },
   );
@@ -141,6 +198,29 @@ if (deck && slides.length > 0) {
       block: 'nearest',
     });
   };
+
+  /**
+   * The descent links smooth their own jump.
+   *
+   * `scroll-behavior: smooth` on the column would have done it in CSS, but it
+   * applies to user scrolling too and turns every wheel tick into an animation
+   * the next tick restarts. This is not scroll hijacking: the link moves to its
+   * own anchor, nothing intercepts a gesture, and without JavaScript the anchor
+   * still works — instantly.
+   */
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-depth-link]')) {
+    link.addEventListener('click', event => {
+      const target = document.querySelector<HTMLElement>(link.hash);
+      if (!target) return;
+
+      // No default navigation: it would push a hash the rail does not own.
+      event.preventDefault();
+      target.scrollIntoView({
+        behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    });
+  }
 
   window.addEventListener('keydown', event => {
     if (event.metaKey || event.ctrlKey || event.altKey) return;
