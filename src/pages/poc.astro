@@ -1,0 +1,384 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+/**
+ * POC — serpentine journey.
+ *
+ * One question only: does the path hold as an actual navigation structure
+ * rather than as a decoration laid over one?
+ *
+ * The mechanism: a single vertical scroll drives a two-dimensional
+ * translation. Steps sit on a grid, two consecutive ones differ by exactly one
+ * cell on exactly one axis, so the position is a linear interpolation between
+ * them. Scrolling always advances — there is no second gesture to choose, and
+ * therefore no mode to keep track of.
+ */
+type Step = { id: string; label: string; title: string; col: number; row: number };
+
+const steps: Step[] = [
+  { id: 'accueil', label: 'Accueil', title: 'Ce site montre comment je décide.', col: 0, row: 0 },
+  { id: 'profil', label: 'Profil', title: 'Je code depuis 2008.', col: 1, row: 0 },
+  { id: 'realisations', label: 'Réalisations', title: 'Trois pièces, trois états.', col: 2, row: 0 },
+
+  { id: 'p1', label: 'Projet 01 — Concevoir', title: 'Atelier', col: 3, row: 0 },
+  { id: 'p1-2', label: 'Atelier — Arbitrage 01', title: 'Un socle partagé', col: 3, row: 1 },
+  { id: 'p1-3', label: 'Atelier — Arbitrage 02', title: 'Périmètre non tranché', col: 3, row: 2 },
+
+  { id: 'p2', label: 'Projet 02 — Construire', title: 'Plume', col: 4, row: 2 },
+  { id: 'p2-2', label: 'Plume — Arbitrage 01', title: 'Elysia plutôt que Directus', col: 4, row: 3 },
+  { id: 'p2-3', label: 'Plume — Extrait', title: "Politique d'accès", col: 4, row: 4 },
+
+  { id: 'p3', label: 'Projet 03 — Livrer', title: 'Mon serveur', col: 5, row: 4 },
+  { id: 'p3-2', label: 'Mon serveur — Arbitrage 01', title: 'Bare metal', col: 5, row: 5 },
+  { id: 'p3-3', label: 'Mon serveur — Incident', title: 'Avril 2026', col: 5, row: 6 },
+
+  { id: 'contact', label: 'Contact', title: 'Ce que je cherche', col: 6, row: 6 },
+];
+
+/** Which way the path leaves a step, and therefore which way it arrives at the next. */
+const direction = (from: Step, to: Step) => (to.col > from.col ? 'right' : 'down');
+
+const segments = steps.map((step, index) => ({
+  step,
+  in: index === 0 ? null : direction(steps[index - 1], step),
+  out: index === steps.length - 1 ? null : direction(step, steps[index + 1]),
+}));
+
+/** A chapter starts wherever the path turns right — no list to maintain. */
+const chapters = segments
+  .map(({ step, in: entry }, index) => ({ step, index, isHead: entry !== 'down' }))
+  .filter(entry => entry.isHead);
+---
+
+<Layout title="POC — parcours serpentin">
+  {/* The scroll driver: one screen of height per step, and nothing else. */}
+  <div class="driver" style={`--step-count:${steps.length}`}>
+    {steps.map(step => <div class="anchor" id={step.id}></div>)}
+  </div>
+
+  <div class="view">
+    <div class="grid" data-grid>
+      {
+        segments.map(({ step, in: entry, out }) => (
+          <section class="cell" style={`--col:${step.col}; --row:${step.row}`}>
+            {/* The path. Segments join across cells, so it reads as one line. */}
+            {entry === 'right' && <i class="path path-h path-in" />}
+            {out === 'right' && <i class="path path-h path-out" />}
+            {entry === 'down' && <i class="path path-v path-in" />}
+            {out === 'down' && <i class="path path-v path-out" />}
+            {entry === null && <i class="path path-h path-out path-birth" />}
+            {out === null && <i class="path path-h path-in path-death" />}
+
+            <div class="content">
+              <p class="kicker">{step.label}</p>
+              <h2>{step.title}</h2>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* Minimal rail: enough to read the position and to fire the jumps. */}
+  <nav class="rail" style={`--chapter-count:${chapters.length}`} aria-label="Parcours">
+    <ol>
+      {
+        chapters.map(chapter => (
+          <li data-step={chapter.index}>
+            <a href={`#${chapter.step.id}`} data-jump={chapter.index}>
+              {chapter.step.label.split(' — ')[0]}
+            </a>
+          </li>
+        ))
+      }
+      <span class="rail-indicator" data-rail-indicator aria-hidden="true"></span>
+    </ol>
+  </nav>
+
+  <p class="readout" data-readout aria-hidden="true"></p>
+
+  <style>
+    /* The driver is the only scrollable thing on the page. Every step is a real
+       scroll offset, so anchors, keyboard and snap all work natively. */
+    .driver {
+      height: calc(var(--step-count) * 100dvh);
+    }
+
+    .anchor {
+      height: 100dvh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .view {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    /* Percentages in `translate` resolve against the element's own size, and the
+       grid is exactly one viewport, so a fractional cell offset interpolates. */
+    .grid {
+      position: absolute;
+      inset: 0;
+      transform: translate3d(calc(var(--x, 0) * -100%), calc(var(--y, 0) * -100%), 0);
+    }
+
+    .cell {
+      position: absolute;
+      top: calc(var(--row) * 100%);
+      left: calc(var(--col) * 100%);
+      width: 100%;
+      height: 100%;
+    }
+
+    .content {
+      position: absolute;
+      right: var(--spacing-gutter);
+      bottom: calc(100% - var(--spacing-path) + 2.5rem);
+      left: var(--spacing-gutter);
+      z-index: 1;
+    }
+
+    .kicker {
+      margin: 0 0 1.15rem;
+      font-family: var(--font-mono);
+      font-size: var(--text-kicker);
+      letter-spacing: var(--text-kicker--letter-spacing);
+      color: var(--color-ink-3);
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: var(--text-h2);
+      letter-spacing: var(--text-h2--letter-spacing);
+    }
+
+    /* The corner: where a horizontal segment meets a vertical one. */
+    .path {
+      position: absolute;
+      background: var(--color-line);
+    }
+
+    .path-h {
+      top: var(--spacing-path);
+      height: 1px;
+    }
+
+    .path-h.path-in {
+      left: 0;
+      width: var(--path-corner);
+    }
+
+    .path-h.path-out {
+      right: 0;
+      left: var(--path-corner);
+    }
+
+    .path-v {
+      left: var(--path-corner);
+      width: 1px;
+    }
+
+    .path-v.path-in {
+      top: 0;
+      height: var(--spacing-path);
+    }
+
+    .path-v.path-out {
+      top: var(--spacing-path);
+      bottom: 0;
+    }
+
+    /* It is born and it dies, at the two ends of the journey. */
+    .path-birth {
+      background: linear-gradient(to right, transparent, var(--color-line) 30%);
+    }
+
+    .path-death {
+      background: linear-gradient(to right, var(--color-line) 60%, transparent);
+    }
+
+    .rail {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding: 0 var(--spacing-gutter) 1.5rem;
+      background: var(--color-bg);
+    }
+
+    ol {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(var(--chapter-count), 1fr);
+      margin: 0;
+      padding: 1rem 0 0;
+      list-style: none;
+    }
+
+    li {
+      text-align: center;
+    }
+
+    a {
+      font-family: var(--font-mono);
+      font-size: var(--text-meta);
+      color: var(--color-ink-3);
+      text-decoration: none;
+    }
+
+    li[data-state="current"] a {
+      color: var(--color-ink);
+    }
+
+    .rail-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: calc(100% / var(--chapter-count));
+      height: 1px;
+      background: var(--color-accent);
+      transform: translateX(calc(var(--chapter-position, 0) * 100%));
+    }
+
+    .readout {
+      position: fixed;
+      right: var(--spacing-gutter);
+      bottom: 1.5rem;
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--text-meta);
+      color: var(--color-ink-3);
+    }
+  </style>
+
+  <style is:global>
+    /* The site locks the body; here it is the page itself that scrolls. */
+    body {
+      height: auto;
+      overflow: visible;
+    }
+
+    html {
+      /* Not `smooth`: it applies to user scrolling too, so every wheel notch
+         starts an animation the next one restarts. Jumps smooth themselves. */
+      scroll-behavior: auto;
+      scroll-snap-type: y mandatory;
+      --path-corner: 22%;
+    }
+  </style>
+
+  <script>
+    const grid = document.querySelector<HTMLElement>('[data-grid]');
+    const readout = document.querySelector<HTMLElement>('[data-readout]');
+    const indicator = document.querySelector<HTMLElement>('[data-rail-indicator]');
+    const cells = [...document.querySelectorAll<HTMLElement>('.cell')];
+    const railSteps = [...document.querySelectorAll<HTMLElement>('[data-step]')];
+
+    /** One notch, one step. Native scrolling under a mandatory snap has to cross
+        half a screen before it tips, which takes several notches. */
+    const WHEEL_STEP = 32;
+    /** How long one amplified notch is left to travel before another is taken. */
+    const SETTLE_MS = 320;
+
+    if (grid && cells.length > 1) {
+      const positions = cells.map(cell => ({
+        col: Number(cell.style.getPropertyValue('--col')),
+        row: Number(cell.style.getPropertyValue('--row')),
+      }));
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const heads = railSteps.map(step => Number(step.dataset.step));
+      const lastIndex = positions.length - 1;
+
+      const track = () => {
+        const unit = window.innerHeight;
+        const progress = Math.min(Math.max(window.scrollY / unit, 0), lastIndex);
+        const index = Math.min(Math.floor(progress), lastIndex - 1);
+        const ratio = progress - index;
+
+        const from = positions[index];
+        const to = positions[index + 1];
+
+        grid.style.setProperty('--x', (from.col + (to.col - from.col) * ratio).toFixed(4));
+        grid.style.setProperty('--y', (from.row + (to.row - from.row) * ratio).toFixed(4));
+
+        // The rail reads in chapters, the journey in steps. The indicator holds
+        // on the current chapter for the whole descent and only travels on the
+        // last leg — the one that actually leads to the next chapter. Moving it
+        // during a descent would say "between 01 and 02" when the reader is
+        // squarely inside 01.
+        let chapter = 0;
+        while (chapter < heads.length - 1 && progress >= heads[chapter + 1]) chapter += 1;
+
+        const next = heads[chapter + 1];
+        const within = next === undefined ? 0 : Math.min(Math.max(progress - (next - 1), 0), 1);
+
+        indicator?.style.setProperty('--chapter-position', (chapter + within).toFixed(4));
+        railSteps.forEach((step, stepIndex) => {
+          step.dataset.state = stepIndex === chapter ? 'current' : 'other';
+        });
+
+        if (readout) readout.textContent = `${Math.round(progress) + 1} / ${lastIndex + 1}`;
+      };
+
+      window.addEventListener('scroll', track, { passive: true });
+      window.addEventListener('resize', track);
+      track();
+
+      /**
+       * Same amplification on the only axis there is left, and the notch
+       * animates itself.
+       *
+       * `scroll-behavior: smooth` on the document would have done it in CSS, but
+       * it applies to every notch, and unamplified notches are small and
+       * frequent: each one restarts the previous animation and the page feels
+       * stuck. Amplified, one notch already covers a whole step, so smoothing it
+       * is one deliberate movement — guarded by a lock so a burst of notches
+       * cannot restart it mid-flight.
+       */
+      let animatingUntil = 0;
+
+      window.addEventListener(
+        'wheel',
+        event => {
+          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+          event.preventDefault();
+
+          const now = performance.now();
+          if (now < animatingUntil) return;
+          animatingUntil = now + SETTLE_MS;
+
+          window.scrollBy({
+            top: event.deltaY * WHEEL_STEP,
+            behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
+          });
+        },
+        { passive: false },
+      );
+
+      /**
+       * Jumps smooth themselves, but only when they are short. A jump across the
+       * whole staircase would fly through every intermediate cell diagonally —
+       * spectacular once, tiresome the second time.
+       */
+      const SMOOTH_RANGE = 2;
+
+      for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-jump]')) {
+        link.addEventListener('click', event => {
+          const targetIndex = Number(link.dataset.jump);
+          const distance = Math.abs(targetIndex - window.scrollY / window.innerHeight);
+          const isNear = distance <= SMOOTH_RANGE && !prefersReducedMotion.matches;
+
+          event.preventDefault();
+          window.scrollTo({
+            top: targetIndex * window.innerHeight,
+            behavior: isNear ? 'smooth' : 'auto',
+          });
+        });
+      }
+    }
+  </script>
+</Layout>

@@ -1,0 +1,75 @@
+---
+import type { Move } from '../../data/journey';
+
+interface Props {
+  id: string;
+  col: number;
+  row: number;
+  enters: Move | null;
+  leaves: Move | null;
+  /**
+   * How the content sits against the horizontal segment: `above` ends just over
+   * the line, `on` straddles it with a row of boxes. Ignored where the cell has
+   * no horizontal segment.
+   */
+  compose?: 'above' | 'on';
+  /** Maximum content width, when a chapter needs more than the reading column. */
+  max?: string;
+  /** Chapter this step belongs to, its rank inside it, and how deep it goes. */
+  chapter: number;
+  depth: number;
+  chapterDepth: number;
+}
+
+const {
+  id,
+  col,
+  row,
+  enters,
+  leaves,
+  compose = 'above',
+  max,
+  chapter,
+  depth,
+  chapterDepth,
+} = Astro.props;
+
+/**
+ * The cell's own piece of path. Segments meet at the corner — the crossing of
+ * `--spacing-path` and `--path-corner` — so consecutive cells join and the whole
+ * thing reads as one line rather than one rule per screen.
+ */
+const hasVertical = enters === 'down' || leaves === 'down';
+const hasHorizontal = !hasVertical || enters === 'right' || leaves === 'right';
+
+/* Content clears whichever segments the cell carries: beside the vertical one,
+   above the horizontal one. */
+const placement = [hasVertical && 'beside', hasHorizontal && compose]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<section
+  class="cell"
+  style={`--col:${col}; --row:${row}${max ? `; --cell-max:${max}` : ''}`}
+  data-step={id}
+  data-chapter={chapter}
+  data-depth={depth}
+  data-chapter-depth={chapterDepth}
+  id={id}
+>
+  {enters === 'right' && <i class="path path-h path-in" aria-hidden="true" />}
+  {leaves === 'right' && <i class="path path-h path-out" aria-hidden="true" />}
+  {enters === 'down' && <i class="path path-v path-in" aria-hidden="true" />}
+  {leaves === 'down' && <i class="path path-v path-out" aria-hidden="true" />}
+
+  {/* The path is born on the first step and dies on the last. */}
+  {enters === null && <i class="path path-h path-out path-birth" aria-hidden="true" />}
+  {leaves === null && <i class="path path-h path-in path-death" aria-hidden="true" />}
+
+  <div class="cell-content" data-placement={placement}>
+    <slot />
+  </div>
+
+  <slot name="edge" />
+</section>

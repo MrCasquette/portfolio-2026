@@ -119,18 +119,25 @@
      that content adapts to (`.slide-on-path`), never a variable to retune when
      content changes height. */
   --spacing-path: 62%;
+  /* Where the path turns: the horizontal segment meets the vertical one at the
+     crossing of these two. A single pair for the whole journey, which is what
+     makes the corners line up from one screen to the next. */
+  --spacing-corner: 22%;
   --spacing-gutter: clamp(1.15rem, 5vw, 3.5rem);
   --container-read: 62rem;
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    /* Not `smooth`: it applies to user scrolling too, so every wheel notch
+       starts an animation the next one restarts, and the page feels stuck. The
+       journey smooths its own notches instead (journey.ts). */
+    scroll-behavior: auto;
+    scroll-snap-type: y mandatory;
   }
 
   body {
-    height: 100dvh;
-    overflow: hidden;
+    min-height: 100dvh;
     background-color: var(--color-bg);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -168,192 +175,153 @@
 }
 
 /* ============================================================
-   Journey layout
-   The only untokenised CSS in the project: it carries the two-axis scrolling
-   mechanics, which utilities cannot express. Everything else lives in the
-   components.
+   The journey
+   One serpentine path: the survey runs right, each project descends, and the
+   end of a project turns right into the next. Scrolling always advances, so
+   there is no second gesture to choose and no mode to keep track of.
+
+   The mechanism is three elements. A driver, tall enough to hold one screen per
+   step, is the only thing that actually scrolls — which is what keeps anchors,
+   the keyboard and find-in-page working for free. A fixed view over it. And a
+   grid of one viewport, translated by the scroll position.
+
+   Two consecutive steps differ by exactly one cell on exactly one axis, so the
+   position is a linear interpolation between them (journey.ts).
    ============================================================ */
 
-.deck {
+.driver {
+  height: calc(var(--step-count) * 100dvh);
+}
+
+.driver-stop {
+  height: 100dvh;
+  scroll-snap-align: start;
+  /* One gesture cannot skip a step: each one is stopped on, which is the point
+     of giving it a screen. */
+  scroll-snap-stop: always;
+}
+
+.view {
   position: fixed;
   inset: var(--spacing-header) 0 var(--spacing-rail) 0;
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+  overflow: hidden;
 }
 
-.deck::-webkit-scrollbar {
-  display: none;
+/* Percentages in `translate` resolve against the element's own size, and the
+   grid is exactly one viewport, so a fractional cell offset interpolates. */
+.grid {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(calc(var(--x, 0) * -100%), calc(var(--y, 0) * -100%), 0);
 }
 
-.slide {
-  display: flex;
-  flex: 0 0 100%;
-  align-items: center;
-  padding: clamp(1.5rem, 4vh, 3rem) var(--spacing-gutter);
-  overflow-x: hidden;
-  overflow-y: auto;
-  /* No `overscroll-behavior: contain` here: chaining up to .deck is what makes
-     the journey usable with a mouse. A wheel only produces deltaY; the browser
-     converts it to horizontal scrolling on its own as soon as it reaches a
-     container that only scrolls on that axis. Native behaviour, not wheel
-     hijacking (DESIGN.md §7). */
-  scroll-snap-align: center;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-line) transparent;
-}
-
-/* Reading column. An explicit class rather than `.slide > div`: the path
-   segment is also a div child of the section, and must inherit neither the
-   width nor the centring. */
-.slide-content {
-  position: relative;
-  /* A positioned element paints above anything that is not positioned,
-     whatever the document order: without this step the path would pass in
-     front of the content instead of being interrupted by it. */
-  z-index: 1;
+.cell {
+  position: absolute;
+  top: calc(var(--row) * 100%);
+  left: calc(var(--col) * 100%);
   width: 100%;
-  max-width: var(--slide-max, var(--container-read));
+  height: 100%;
+}
+
+/* ---------- Composition against the path ----------
+   Content never crosses the line: it clears whichever segments its cell
+   carries. Beside the vertical one, above the horizontal one, or straddling it
+   with a row of boxes. */
+
+.cell-content {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-gutter);
+  left: var(--spacing-gutter);
+  z-index: 1;
+  max-width: var(--cell-max, var(--container-read));
   margin-inline: auto;
-}
-
-/* Chapter whose composition rests on the path: the content ends just above
-   the line, which becomes the horizon of the page. */
-.slide-above-path > .slide-content {
-  position: absolute;
-  right: var(--spacing-gutter);
-  bottom: calc(100% - var(--spacing-path) + 2.5rem);
-  left: var(--spacing-gutter);
-}
-
-/* Chapter whose box row straddles the path: the row is centred on the line, the
-   head floats just above it.
-
-   Anchored by construction, not by measurement. `.slide-content` is placed at
-   the path's height — the same reference the path resolves its own `top`
-   against — and pulled up by half of its own height. The head is taken out of
-   the flow, so that height is exactly the box row's: the row ends up centred on
-   the line whatever it weighs.
-
-   The head is then hung off the top of that box rather than off the line, which
-   is what keeps the two from overlapping: half a tall row reaches well above the
-   path, and a head anchored on the line would sit underneath it. */
-.slide-on-path > .slide-content {
-  position: absolute;
-  top: var(--spacing-path);
-  right: var(--spacing-gutter);
-  left: var(--spacing-gutter);
   transform: translateY(-50%);
 }
 
-.slide-on-path .slide-head {
+.cell-content[data-placement~="beside"] {
+  left: calc(var(--spacing-corner) + 2.5rem);
+}
+
+.cell-content[data-placement~="above"] {
+  top: auto;
+  bottom: calc(100% - var(--spacing-path) + 2.5rem);
+  transform: none;
+}
+
+/* Straddling: the row of boxes is centred on the line whatever it weighs, and
+   the head hangs off the top of the row — not off the line, since half a tall
+   row reaches well above it. */
+.cell-content[data-placement~="on"] {
+  top: var(--spacing-path);
+  bottom: auto;
+}
+
+.cell-content[data-placement~="on"] .cell-head {
   position: absolute;
   right: 0;
   bottom: calc(100% + 2.5rem);
   left: 0;
 }
 
-/* Anchoring lifts the content out of the flow, so an overflow upwards becomes
-   unreachable: no scrollbar can reach what is above the top edge. Below this
-   height the chapter goes back to plain centred flow and gives up the crossing
-   rather than the readability. */
-@media (max-height: 700px) {
-  .slide-on-path > .slide-content,
-  .slide-on-path .slide-head {
-    position: static;
-    transform: none;
-  }
+/* ---------- The path ----------
+   Segments meet at the corner, so consecutive cells join and the whole thing
+   reads as one line rather than one rule per screen. Painted under the content,
+   which carries an explicit `z-index`: a positioned element paints above
+   anything that is not, whatever the document order. */
 
-  .slide-on-path .slide-row {
-    margin-top: 2.5rem;
-  }
+.path {
+  position: absolute;
+  background: var(--color-line);
+  pointer-events: none;
 }
 
-/* In single-column mode the path has no purpose left: no horizontal axis to hold. */
-@media (max-width: 768px) {
-  .slide-path {
-    display: none;
-  }
-
-  .slide-above-path > .slide-content {
-    position: static;
-  }
-
-  .slide-on-path > .slide-content,
-  .slide-on-path .slide-head {
-    position: static;
-    transform: none;
-  }
-
-  .slide-on-path .slide-row {
-    margin-top: 2.5rem;
-  }
+.path-h {
+  top: var(--spacing-path);
+  height: 1px;
 }
 
-/* Below 768px two touch axes fight each other: the journey folds into a
-   single vertical scroll (DESIGN.md §6.3). */
-@media (max-width: 768px) {
-  .deck {
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: auto;
-    scroll-snap-type: y proximity;
-  }
-
-  .slide {
-    flex: 0 0 auto;
-    align-items: flex-start;
-    min-height: 100%;
-    overflow: visible;
-    scroll-snap-align: start;
-  }
+.path-h.path-in {
+  left: 0;
+  width: var(--spacing-corner);
 }
 
-/* ============================================================
-   Chapter depth
-   A project chapter is not one page but a column of full-height panels, browsed
-   vertically. The horizontal journey still sees a single chapter.
-
-   The descent is deliberate: at the top of the column the wheel still crosses
-   the journey, and going down goes through the link. Without that rule a mouse
-   could no longer get past the first project, since any vertical gesture would
-   be swallowed by the depth (see journey.ts).
-
-   `scroll-snap-stop: always` forbids skipping a panel in one gesture: each
-   arbitrage is stopped on, which is the whole point of giving it a screen.
-   ============================================================ */
-
-.slide-deep {
-  align-items: stretch;
-  padding-block: 0;
-  scroll-snap-type: y mandatory;
+.path-h.path-out {
+  right: 0;
+  left: var(--spacing-corner);
 }
 
-/* No `scroll-behavior: smooth` here. It applies to user scrolling too, so every
-   wheel tick becomes an animation the next tick restarts: the column feels
-   stuck and has to be forced. The descent link smooths its own jump instead
-   (journey.ts). */
-
-/* The native scrollbar is gone for good. Showing it only at depth was the right
-   intent — a vertical bar on the first screen contradicts the horizontal
-   continuity the path sets up — but a real scrollbar occupies layout, so its
-   appearance shifted the content sideways. It is replaced by a floating
-   indicator, which costs nothing and can therefore come and go freely. */
-.slide-deep {
-  scrollbar-width: none;
+.path-v {
+  left: var(--spacing-corner);
+  width: 1px;
 }
 
-.slide-deep::-webkit-scrollbar {
-  display: none;
+.path-v.path-in {
+  top: 0;
+  height: var(--spacing-path);
 }
 
-/* Depth indicator: a fake scrollbar, laid over the chapter rather than inside
-   it. Fixed, so it belongs to the viewport and not to the scrolled content, and
-   sized on the same two ratios a real scrollbar uses — visible fraction, and
-   progress through the remainder. */
+.path-v.path-out {
+  top: var(--spacing-path);
+  bottom: 0;
+}
+
+/* It is born on the first step and dies on the last, rather than being cut off. */
+.path-birth {
+  background: linear-gradient(to right, transparent, var(--color-line) 30%);
+}
+
+.path-death {
+  background: linear-gradient(to right, var(--color-line) 60%, transparent);
+}
+
+/* ---------- Depth indicator ----------
+   A fake scrollbar for the vertical legs. The native one is hidden: it would
+   say "down" on a journey that sometimes goes sideways, and it occupies layout,
+   so revealing it would shift the content. This one floats, costs nothing, and
+   only shows where the rail says nothing — the rail holds still during a
+   descent, on purpose. */
+
 .depth-indicator {
   position: fixed;
   top: calc(var(--spacing-header) + 2rem);
@@ -380,130 +348,52 @@
   background: var(--color-accent-line);
 }
 
-/* Folded into one vertical axis the page has its own scrollbar again. */
+/* ---------- Folded ----------
+   Below 768px there is no room for a second axis: the serpentine unrolls into
+   the plain vertical scroll it already is underneath. The path goes with it —
+   there is no horizontal axis left to materialise. */
+
 @media (max-width: 768px) {
-  .depth-indicator {
-    display: none;
-  }
-}
-
-/* Stretched, so its height is definite and the panels can size on it. */
-.slide-deep > .slide-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.slide-panel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100%;
-  padding-block: clamp(1.5rem, 4vh, 3rem);
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-/* Folded into one vertical axis, the column is already the page: panels go back
-   to being ordinary blocks, and a second snap axis would fight the first. */
-@media (max-width: 768px) {
-  .slide-deep {
+  html {
     scroll-snap-type: none;
   }
 
-  .slide-panel {
-    min-height: 0;
-    scroll-snap-align: none;
-  }
-}
-
-/* The path, turned vertical.
-   Same rule, same token, same birth-and-death grammar — only the direction
-   changes, which is what says "another axis" without a word.
-
-   It obeys the three things that make the horizontal one read as a path: it
-   spans the whole dimension, it holds a constant position, and it is the frame
-   that cuts it — never the rule that stops. It is born at the top of the chapter
-   and runs off the bottom edge, where the rail begins: leaving the frame is what
-   says "it continues", exactly as the horizontal path running off the right edge
-   does. A rule ending on its own would say the opposite.
-
-   Alongside the reading column rather than behind it. The horizontal path is
-   interrupted by opaque content; a vertical one crossing a paragraph would show
-   between the lines instead. So the content hangs off it.
-
-   Static, deliberately. A cut in the page is pre-attentive by form — that was
-   the whole argument for the horizontal path — and the landing arrow keeps the
-   scarcity of being the site's one ambient motion (DESIGN.md §2). */
-.descent-path {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: calc(-1 * clamp(0.9rem, 1.8vw, 1.75rem));
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--color-line) 22%);
-  pointer-events: none;
-}
-
-/* Folded into a single vertical scroll, the descent is the page's own: there is
-   no second axis left to announce. */
-@media (max-width: 768px) {
-  .descent-path {
+  .driver,
+  .path,
+  .depth-indicator {
     display: none;
   }
-}
 
-/* ============================================================
-   The path
-   A rule at constant height that materialises the horizontal axis. It
-   accompanies the survey chapters and stops at the first project: where the
-   vertical axis takes over, it has no purpose left.
+  .view {
+    position: static;
+    padding-top: var(--spacing-header);
+    padding-bottom: var(--spacing-rail);
+    overflow: visible;
+  }
 
-   One segment per chapter rather than a single element spanning the whole
-   journey — chapters are contiguous, segments join up, and nothing needs to
-   know how long the journey is.
+  .grid {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    transform: none;
+  }
 
-   It is painted before the content: opaque-background elements interrupt it on
-   their own, which produces the "———| boxed |———" with no cut-out to write.
-   ============================================================ */
+  .cell {
+    position: static;
+    width: auto;
+    height: auto;
+    min-height: 100dvh;
+    padding: clamp(1.5rem, 4vh, 3rem) var(--spacing-gutter);
+  }
 
-.slide-path {
-  position: absolute;
-  top: var(--spacing-path);
-  right: 0;
-  left: var(--path-start, 0);
-  height: 1px;
-  background: var(--color-line);
-  pointer-events: none;
-}
+  .cell-content,
+  .cell-content[data-placement~="on"] .cell-head {
+    position: static;
+    max-width: none;
+    transform: none;
+  }
 
-/* The path is born and dies rather than being cut off.
-
-   Its extinction deliberately spills onto the first project: a rule stopping at
-   the edge of the Work chapter would make the page joint visible and read as
-   the end of the site. Here the journey leads up to the threshold, then fades.
-
-   The dying segment is short and keeps its late gradient rather than fading
-   across the full width: a gradient starting at zero would weaken the rule from
-   the joint onwards, which would read as dying on entry. Here the joint stays
-   at full strength, then the line goes out — solid to 14% of the screen, gone
-   at 20%, well before the project's reading column.
-
-   Intermediate segments stay solid, otherwise every page joint would show. */
-.slide-path[data-fade="in"] {
-  background: linear-gradient(to right, transparent, var(--color-line) 30%);
-}
-
-.slide-path[data-fade="out"] {
-  right: auto;
-  width: 20%;
-  background: linear-gradient(to right, var(--color-line) 70%, transparent);
-}
-
-/* Once folded into a single column the start offset means nothing: there is no
-   right-hand column left to align on. */
-@media (max-width: 1023px) {
-  .slide-path {
-    left: 0;
+  .cell-content[data-placement~="on"] .cell-row {
+    margin-top: 2rem;
   }
 }

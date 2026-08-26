@@ -1,5 +1,5 @@
 ---
-import { chapters } from '../../data/portfolio';
+import { chapters } from '../../data/journey';
 ---
 
 {/*
@@ -26,6 +26,7 @@ import { chapters } from '../../data/portfolio';
         <li
           class="group relative flex flex-1 after:absolute after:top-[0.825rem] after:right-[calc(-50%+0.5rem)] after:left-[calc(50%+0.5rem)] after:h-px after:bg-line after:transition-colors after:duration-200 after:content-[''] data-[state=past]:after:bg-accent-line [&:last-of-type]:after:hidden"
           data-rail-step={chapter.id}
+          data-rail-target={chapter.step}
         >
           <a
             class="flex flex-1 flex-col items-center gap-[0.6rem] py-[0.4rem]"

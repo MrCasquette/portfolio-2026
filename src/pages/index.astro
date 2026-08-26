@@ -1,13 +1,18 @@
 ---
 import AvailabilityPill from '../components/atoms/AvailabilityPill.astro';
+import Chip from '../components/atoms/Chip.astro';
 import DepthIndicator from '../components/atoms/DepthIndicator.astro';
 import Kicker from '../components/atoms/Kicker.astro';
+import StatePill from '../components/atoms/StatePill.astro';
 import CapabilityPanel from '../components/molecules/CapabilityPanel.astro';
 import ProjectCard from '../components/molecules/ProjectCard.astro';
+import CodeExcerpt from '../components/organisms/CodeExcerpt.astro';
+import DecisionLedger from '../components/organisms/DecisionLedger.astro';
+import IncidentTimeline from '../components/organisms/IncidentTimeline.astro';
 import NavigationRail from '../components/organisms/NavigationRail.astro';
-import ProjectSlide from '../components/organisms/ProjectSlide.astro';
 import SiteHeader from '../components/organisms/SiteHeader.astro';
-import Slide from '../components/templates/Slide.astro';
+import Step from '../components/templates/Step.astro';
+import { steps } from '../data/journey';
 import { contact, identity, landing, profile, projects, work } from '../data/portfolio';
 import Layout from '../layouts/Layout.astro';
 ---
@@ -15,96 +20,162 @@ import Layout from '../layouts/Layout.astro';
 <Layout title={`${identity.name} — ${identity.tagline}`}>
   <SiteHeader />
 
-  <main class="deck">
-    <Slide id="landing" max="78rem" path pathStart="44%" pathFade="in" abovePath>
-      {/*
-        Two typographic masses above the path: the heading on the left, the
-        lede on the right. The availability pill sits under the heading. At the
-        path's height the left column stays empty — composed void, not a gap.
-      */}
-      <div
-        class="grid items-start gap-x-[clamp(2.5rem,7vw,7rem)] gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
-      >
-        <div>
-          <h1 class="text-h1">
-            {
-              landing.title.map(line => (
-                <Fragment>
-                  {line.split(landing.emphasis).flatMap((part, index) =>
-                    index === 0
-                      ? [part]
-                      : [<span class="text-accent">{landing.emphasis}</span>, part]
-                  )}
-                  <br />
-                </Fragment>
-              ))
-            }
-          </h1>
-          <p class="mt-[clamp(1.75rem,4vh,2.75rem)]">
-            <AvailabilityPill label={landing.availability} />
-          </p>
-        </div>
+  {/*
+    The scroll driver: one screen of height per step, and nothing else in it.
+    Every step is therefore a real scroll offset, which is what keeps anchors,
+    the keyboard and find-in-page working without a line of code.
+  */}
+  <div class="driver" style={`--step-count:${steps.length}`} aria-hidden="true">
+    {steps.map(() => <div class="driver-stop"></div>)}
+  </div>
 
-        <p class="text-lede text-ink-2">{landing.lede}</p>
-      </div>
+  <main class="view">
+    <div class="grid" data-grid>
+      {
+        steps.map(step => {
+          const { content } = step;
 
-      {/*
-        Scroll hint, resting on the path whose direction it extends. In `ink-3`
-        rather than the accent: it is neither a link, nor a position, nor
-        something running. Strictly decorative, hence hidden from assistive
-        technology — the bottom rail carries the real navigation.
-      */}
-      <span
-        class="pointer-events-none absolute top-[var(--spacing-path)] right-gutter -translate-y-1/2 max-lg:hidden"
-        slot="edge"
-        aria-hidden="true"
-      >
-        <span class="block animate-scroll-hint font-mono text-2xl text-ink-3">→</span>
-      </span>
-    </Slide>
+          if (content.kind === 'landing') {
+            return (
+              <Step {...step} compose="above" max="78rem">
+                <div class="grid items-start gap-x-[clamp(2.5rem,7vw,7rem)] gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+                  <div>
+                    <h1 class="text-h1">
+                      {landing.title.map(line => (
+                        <Fragment>
+                          {line
+                            .split(landing.emphasis)
+                            .flatMap((part, partIndex) =>
+                              partIndex === 0
+                                ? [part]
+                                : [<span class="text-accent">{landing.emphasis}</span>, part]
+                            )}
+                          <br />
+                        </Fragment>
+                      ))}
+                    </h1>
+                    <p class="mt-[clamp(1.75rem,4vh,2.75rem)]">
+                      <AvailabilityPill label={landing.availability} />
+                    </p>
+                  </div>
+                  <p class="text-lede text-ink-2">{landing.lede}</p>
+                </div>
+              </Step>
+            );
+          }
 
-    <Slide id="profile" path onPath>
-      <div class="slide-head">
-        <Kicker text="01 — Profil" />
-        <h2 class="text-h2">{profile.title}</h2>
-        <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{profile.lede}</p>
-      </div>
-      <div
-        class="slide-row grid grid-cols-2 gap-[1.6rem] max-[760px]:grid-cols-1 max-[760px]:gap-4"
-      >
-        {profile.panels.map(panel => <CapabilityPanel title={panel.title} items={panel.items} />)}
-      </div>
-    </Slide>
+          if (content.kind === 'profile') {
+            return (
+              <Step {...step} compose="on">
+                <div class="cell-head">
+                  <Kicker text="01 — Profil" />
+                  <h2 class="text-h2">{profile.title}</h2>
+                  <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{profile.lede}</p>
+                </div>
+                <div class="cell-row grid grid-cols-2 gap-[1.6rem] max-[760px]:grid-cols-1 max-[760px]:gap-4">
+                  {profile.panels.map(panel => (
+                    <CapabilityPanel title={panel.title} items={panel.items} />
+                  ))}
+                </div>
+              </Step>
+            );
+          }
 
-    <Slide id="work" path onPath>
-      <div class="slide-head">
-        <Kicker text="02 — Réalisations" />
-        <h2 class="text-h2">{work.title}</h2>
-        <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{work.lede}</p>
-      </div>
-      <div class="slide-row grid grid-cols-3 gap-4 max-[820px]:grid-cols-1">
-        {projects.map((project, index) => <ProjectCard project={project} index={index + 1} />)}
-      </div>
-    </Slide>
+          if (content.kind === 'work') {
+            return (
+              <Step {...step} compose="on">
+                <div class="cell-head">
+                  <Kicker text="02 — Réalisations" />
+                  <h2 class="text-h2">{work.title}</h2>
+                  <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{work.lede}</p>
+                </div>
+                <div class="cell-row grid grid-cols-3 gap-4 max-[820px]:grid-cols-1">
+                  {projects.map((project, cardIndex) => (
+                    <ProjectCard project={project} index={cardIndex + 1} />
+                  ))}
+                </div>
+              </Step>
+            );
+          }
 
-    {projects.map((project, index) => <ProjectSlide project={project} index={index + 1} />)}
+          if (content.kind === 'project') {
+            return (
+              <Step {...step}>
+                <Kicker
+                  text={`Projet ${String(content.number).padStart(2, '0')} — ${content.project.verb}`}
+                />
+                <div class="flex flex-wrap items-center gap-3">
+                  <h2 class="text-h2">{content.project.title}</h2>
+                  <StatePill status={content.project.status} />
+                </div>
+                <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">
+                  {content.project.intro}
+                </p>
+                <ul
+                  class="mt-[1.1rem] flex list-none flex-wrap gap-[0.4rem]"
+                  aria-label={`Technologies employées sur ${content.project.title}`}
+                >
+                  {content.project.stack.map(item => (
+                    <li>
+                      <Chip label={item} />
+                    </li>
+                  ))}
+                </ul>
+              </Step>
+            );
+          }
 
-    <Slide id="contact">
-      <Kicker text="03 — Contact" />
-      <h2 class="text-h2">{contact.title}</h2>
-      <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{contact.lede}</p>
-      <ul class="mt-[1.9rem] flex list-none flex-wrap gap-[1.4rem] font-mono text-[0.85rem]">
-        {
-          contact.links.map(link => (
-            <li>
-              <a class="border-b border-accent-line text-accent hover:border-accent" href={link.href}>
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </Slide>
+          if (content.kind === 'decision') {
+            return (
+              <Step {...step}>
+                <Kicker
+                  text={`${content.project.title} — Arbitrage ${String(content.position).padStart(2, '0')} / ${String(content.total).padStart(2, '0')}`}
+                />
+                <DecisionLedger decisions={[content.decision]} />
+              </Step>
+            );
+          }
+
+          if (content.kind === 'incident') {
+            return (
+              <Step {...step}>
+                <Kicker text={`${content.project.title} — Incident`} />
+                <IncidentTimeline events={content.events} />
+              </Step>
+            );
+          }
+
+          if (content.kind === 'excerpt') {
+            return (
+              <Step {...step}>
+                <Kicker text={`${content.project.title} — Extrait`} />
+                <CodeExcerpt excerpt={content.excerpt} />
+              </Step>
+            );
+          }
+
+          return (
+            <Step {...step} compose="above">
+              <Kicker text="03 — Contact" />
+              <h2 class="text-h2">{contact.title}</h2>
+              <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{contact.lede}</p>
+              <ul class="mt-[1.9rem] flex list-none flex-wrap gap-[1.4rem] font-mono text-[0.85rem]">
+                {contact.links.map(link => (
+                  <li>
+                    <a
+                      class="border-b border-accent-line text-accent hover:border-accent"
+                      href={link.href}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Step>
+          );
+        })
+      }
+    </div>
   </main>
 
   <DepthIndicator />
