@@ -21,7 +21,7 @@ import { chapters } from '../../data/journey';
       chapters.map((chapter, index) => (
         <li
           class="group relative flex flex-1"
-          style={`--fill:clamp(0,calc(var(--active-index,0) - ${index}),1)`}
+          style={`--fill:clamp(0,calc(var(--active-index,0) - ${index}),1); --lit:clamp(0,calc(var(--active-index,0) - ${index - 1}),1)`}
           data-rail-step={chapter.id}
           data-rail-target={chapter.step}
         >
@@ -59,20 +59,24 @@ import { chapters } from '../../data/journey';
             {/*
               Two layers, so the bullet lights up instead of switching colour:
               the ring holds the place at all times, and the fill grows from the
-              centre while it fades in. Eased out — the movement arrives rather
-              than stops, which reads as ignition rather than as a state change.
+              centre while it fades in.
 
-              `transition` on its own already covers scale, opacity, colour and
-              shadow. Naming the properties by hand was both redundant and
-              wrong: Tailwind v4 emits the standalone `scale` property, so a
-              transition on `transform` animated nothing.
+              Driven by the scroll, not by a transition. `--lit` is the share of
+              the way *into* this chapter already covered — the fill of the
+              connector that leads to it — so the bullet lights up across the
+              whole lateral leg, at the speed of that connector and of the
+              underline. A transition started it on arrival instead, once the
+              movement was over, and that lateness is what read as abrupt: no
+              curve and no duration could fix a cue that fires after the fact.
+
+              The first bullet resolves to 1 from the outset: nothing leads to it.
             */}
             <span
-              class="grid size-3.5 place-items-center rounded-full border border-line bg-bg transition duration-500 ease-in group-data-[state=past]:border-accent-line group-data-[state=current]:border-accent group-data-[state=current]:shadow-halo"
+              class="grid size-3.5 place-items-center rounded-full border border-line bg-bg transition duration-500 group-data-[state=past]:border-accent-line group-data-[state=current]:border-accent group-data-[state=current]:shadow-halo"
               aria-hidden="true"
             >
               <span
-                class="size-full scale-0 rounded-full bg-accent-line opacity-0 transition duration-500 ease-in group-data-[state=past]:scale-100 group-data-[state=past]:opacity-100 group-data-[state=current]:scale-100 group-data-[state=current]:bg-accent group-data-[state=current]:opacity-100"
+                class="size-full scale-(--lit) rounded-full bg-accent-line opacity-(--lit) transition-colors duration-500 group-data-[state=current]:bg-accent"
               />
             </span>
             <span class="text-rail whitespace-nowrap text-ink-3 transition-colors duration-500 group-hover:text-ink-2 group-data-[state=current]:font-medium group-data-[state=current]:text-ink">
