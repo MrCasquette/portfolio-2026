@@ -17,9 +17,6 @@ const WHEEL_STEP = 32;
 /** How long one amplified notch is left to travel before another is taken.
     A free-spinning wheel keeps emitting long after the hand has left it. */
 const SETTLE_MS = 320;
-/** Beyond this many steps a jump cuts instead of gliding: crossing the whole
-    staircase diagonally is spectacular once and tiresome afterwards. */
-const SMOOTH_RANGE = 2;
 
 const grid = document.querySelector<HTMLElement>('[data-grid]');
 const cells = [...document.querySelectorAll<HTMLElement>('.cell')];
@@ -152,18 +149,24 @@ if (grid && cells.length > 1) {
     { passive: false },
   );
 
-  /** Rail jumps glide when they are short and cut when they are not. */
+  /**
+   * Rail jumps always glide, whatever the distance.
+   *
+   * A long jump does not cut across the grid: it follows the path, cell by
+   * cell, so the reader watches the very journey being skipped. Guarding it by
+   * distance would have cut exactly the survey chapters, which are the most
+   * legible ones to travel — they are purely horizontal.
+   */
   for (const step of railSteps) {
     const link = step.querySelector('a');
     const target = Number(step.dataset.railTarget);
     if (!link || Number.isNaN(target)) continue;
 
     link.addEventListener('click', event => {
-      const distance = Math.abs(target - readPosition());
       event.preventDefault();
       window.scrollTo({
         top: target * window.innerHeight,
-        behavior: distance <= SMOOTH_RANGE && !prefersReducedMotion.matches ? 'smooth' : 'auto',
+        behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
       });
     });
   }
