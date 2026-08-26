@@ -6,10 +6,6 @@ import { chapters } from '../../data/journey';
   Real links: the position in the journey stays in the URL, shareable and
   restored on back-navigation. The keyboard works with no code, and the
   left/right arrows are layered on top (DESIGN.md §7).
-
-  State lives on the <li>, not the <a>: the connector from one step to the next
-  must disappear on the last one, and `:last-child` can only see that from the
-  list item.
 */}
 <nav
   class="fixed inset-x-0 bottom-0 z-30 flex h-rail items-center overflow-x-auto bg-bg [scrollbar-width:none]"
@@ -17,26 +13,69 @@ import { chapters } from '../../data/journey';
   data-rail
 >
   <ol
-    class="relative flex w-full min-w-[640px] list-none px-gutter pb-[0.3rem]"
+    class="relative flex w-full min-w-160 list-none px-gutter pb-1"
     style={`--step-count:${chapters.length}`}
     data-rail-track
   >
     {
-      chapters.map(chapter => (
+      chapters.map((chapter, index) => (
         <li
-          class="group relative flex flex-1 after:absolute after:top-[0.825rem] after:right-[calc(-50%+0.5rem)] after:left-[calc(50%+0.5rem)] after:h-px after:bg-line after:transition-colors after:duration-200 after:content-[''] data-[state=past]:after:bg-accent-line [&:last-of-type]:after:hidden"
+          class="group relative flex flex-1"
+          style={`--fill:clamp(0,calc(var(--active-index,0) - ${index}),1)`}
           data-rail-step={chapter.id}
           data-rail-target={chapter.step}
         >
+          {/*
+            The connector fills rather than switching. `--fill` is the share of
+            the way to the next chapter already covered, so the line grows at
+            exactly the speed the underline travels — one movement read twice,
+            instead of a bar that glides past a rail that snaps.
+
+            Declared inline rather than as a Tailwind arbitrary property: the
+            generator drops `[--fill:clamp(…)]`, and an undefined variable makes
+            the whole `transform` invalid, which shows every connector full.
+
+            `--fill` is declared inline rather than as a Tailwind arbitrary
+            property: the generator drops `[--fill:clamp(…)]`, and an undefined
+            variable invalidates the whole `transform`, which shows every
+            connector full.
+
+            Rendered only between two chapters: no connector hangs off the last
+            bullet, and no `:last-of-type` rule is needed to hide one.
+          */}
+          {index < chapters.length - 1 && (
+            <span
+              class="pointer-events-none absolute top-3.25 right-[calc(-50%+0.5rem)] left-[calc(50%+0.5rem)] h-px bg-line"
+              aria-hidden="true"
+            >
+              <span class="block h-px origin-left bg-accent-line scale-x-(--fill)" />
+            </span>
+          )}
+
           <a
-            class="flex flex-1 flex-col items-center gap-[0.6rem] py-[0.4rem]"
+            class="flex flex-1 flex-col items-center gap-2.5 py-1.5"
             href={`#${chapter.id}`}
           >
+            {/*
+              Two layers, so the bullet lights up instead of switching colour:
+              the ring holds the place at all times, and the fill grows from the
+              centre while it fades in. Eased out — the movement arrives rather
+              than stops, which reads as ignition rather than as a state change.
+
+              `transition` on its own already covers scale, opacity, colour and
+              shadow. Naming the properties by hand was both redundant and
+              wrong: Tailwind v4 emits the standalone `scale` property, so a
+              transition on `transform` animated nothing.
+            */}
             <span
-              class="size-[0.85rem] rounded-full border border-line bg-bg transition-[background-color,border-color,box-shadow] duration-200 group-data-[state=past]:border-accent-line group-data-[state=past]:bg-accent-line group-data-[state=current]:border-accent group-data-[state=current]:bg-accent group-data-[state=current]:shadow-[0_0_0_4px_var(--color-accent-halo)]"
+              class="grid size-3.5 place-items-center rounded-full border border-line bg-bg transition duration-500 ease-in group-data-[state=past]:border-accent-line group-data-[state=current]:border-accent group-data-[state=current]:shadow-halo"
               aria-hidden="true"
-            />
-            <span class="text-[0.78rem] whitespace-nowrap text-ink-3 transition-colors duration-200 group-hover:text-ink-2 group-data-[state=current]:font-medium group-data-[state=current]:text-ink">
+            >
+              <span
+                class="size-full scale-0 rounded-full bg-accent-line opacity-0 transition duration-500 ease-in group-data-[state=past]:scale-100 group-data-[state=past]:opacity-100 group-data-[state=current]:scale-100 group-data-[state=current]:bg-accent group-data-[state=current]:opacity-100"
+              />
+            </span>
+            <span class="text-rail whitespace-nowrap text-ink-3 transition-colors duration-500 group-hover:text-ink-2 group-data-[state=current]:font-medium group-data-[state=current]:text-ink">
               {chapter.label}
             </span>
           </a>
@@ -53,13 +92,10 @@ import { chapters } from '../../data/journey';
       compensated twice: `left` catches it up, and the step width subtracts it.
       Without the second correction the error accumulates from one step to the
       next.
-
-      The transition is only active in vertical mode, where the position comes
-      from the observer and advances in jumps. Horizontally it is driven by the
-      scroll itself, so it is already continuous whatever the distance.
     */}
     <span
-      class="pointer-events-none absolute bottom-0 left-gutter flex w-[calc((100%-2*var(--spacing-gutter))/var(--step-count))] justify-center [transform:translateX(calc(var(--active-index,0)*100%))] [[data-tracking=index]_&]:transition-transform [[data-tracking=index]_&]:duration-[280ms] [[data-tracking=index]_&]:ease-[cubic-bezier(0.22,1,0.36,1)]"
+      class="pointer-events-none absolute bottom-0 left-gutter flex w-[calc((100%-2*var(--spacing-gutter))/var(--step-count))] justify-center translate-x-(--rail-shift)"
+      style="--rail-shift:calc(var(--active-index,0) * 100%)"
       aria-hidden="true"
     >
       <span class="h-0.5 w-3/5 rounded-full bg-accent"></span>

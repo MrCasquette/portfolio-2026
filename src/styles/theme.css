@@ -78,10 +78,12 @@
   --text-meta: 0.73rem; /* mono: chips, captions */
   --text-kicker: 0.72rem; /* mono: kickers, uppercase */
   --text-kicker--letter-spacing: 0.18em;
+  --text-rail: 0.78rem; /* rail labels */
   --text-code: 0.77rem;
   --text-code--line-height: 1.8;
 
   /* ---------- Shapes ---------- */
+  --shadow-halo: 0 0 0 4px var(--color-accent-halo); /* rail, current bullet */
   --radius-card: 6px;
   --radius-chip: 3px;
 
@@ -134,6 +136,15 @@
        journey smooths its own notches instead (journey.ts). */
     scroll-behavior: auto;
     scroll-snap-type: y mandatory;
+    /* The driver is plumbing, not a surface: its bar would say "down" on a
+       journey that sometimes goes sideways, and its length would announce
+       eighteen screens of scrolling. The rail, the path and the depth readout
+       carry the position instead. */
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
   }
 
   body {
@@ -208,8 +219,12 @@
 }
 
 /* Percentages in `translate` resolve against the element's own size, and the
-   grid is exactly one viewport, so a fractional cell offset interpolates. */
-.grid {
+   grid is exactly one viewport, so a fractional cell offset interpolates.
+
+   Named `journey-grid`, not `grid`: that one belongs to Tailwind, and taking it
+   here gave `position:absolute; inset:0` to every grid container in the
+   project — the rail bullets, the landing layout, the panel rows. */
+.journey-grid {
   position: absolute;
   inset: 0;
   transform: translate3d(calc(var(--x, 0) * -100%), calc(var(--y, 0) * -100%), 0);
@@ -371,7 +386,7 @@
     overflow: visible;
   }
 
-  .grid {
+  .journey-grid {
     position: static;
     display: flex;
     flex-direction: column;
