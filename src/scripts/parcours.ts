@@ -14,6 +14,7 @@ const deck = document.querySelector<HTMLElement>('.deck');
 const slides = [...document.querySelectorAll<HTMLElement>('.slide')];
 const steps = [...document.querySelectorAll<HTMLElement>('[data-rail-step]')];
 const railTrack = document.querySelector<HTMLElement>('[data-rail-track]');
+const siteHeader = document.querySelector<HTMLElement>('[data-site-header]');
 
 if (deck && slides.length > 0) {
   let activeIndex = 0;
@@ -42,6 +43,9 @@ if (deck && slides.length > 0) {
   const reflectPosition = (index: number) => {
     activeIndex = index;
     trackIndicator();
+
+    // L'en-tête ne rappelle une identité que si on a quitté le chapitre qui la porte.
+    if (siteHeader) siteHeader.dataset.state = index === 0 ? 'idle' : 'visible';
 
     steps.forEach((step, stepIndex) => {
       const state = stepIndex === index ? 'current' : stepIndex < index ? 'past' : 'upcoming';

@@ -87,9 +87,34 @@
   --radius-card: 6px;
   --radius-chip: 3px;
 
+  /* ---------- Mouvement ----------
+     Le seul mouvement d'ambiance du site : l'indice de défilement horizontal
+     du chapitre d'accueil. Cadré en §2 de DESIGN.md.
+     L'état à 0 % et 100 % est l'état visible, pour que la neutralisation par
+     `prefers-reduced-motion` laisse la flèche lisible. */
+  --animate-scroll-hint: scroll-hint 2.6s ease-in-out infinite;
+
+  @keyframes scroll-hint {
+    0%,
+    100% {
+      opacity: 0.85;
+      transform: translateX(0);
+    }
+
+    50% {
+      opacity: 1;
+      transform: translateX(0.4rem);
+    }
+  }
+
   /* ---------- Gabarit ---------- */
   --spacing-header: 64px;
   --spacing-rail: 88px;
+  /* Hauteur du chemin, en fraction de la hauteur d'un chapitre.
+     Une seule valeur pour tout le parcours : c'est ce qui la fait lire comme
+     une ligne continue et non comme un trait par page. En pourcentage plutôt
+     qu'en rem pour tenir sur toute hauteur d'écran. */
+  --spacing-path: 62%;
   --spacing-gutter: clamp(1.15rem, 5vw, 3.5rem);
   --container-read: 62rem;
 }
@@ -177,11 +202,38 @@
   scrollbar-color: var(--color-line) transparent;
 }
 
-/* Le contenu long se cale en haut ; le contenu court reste centré. */
-.slide > * {
+/* Colonne de lecture. Classe explicite et non `.slide > div` : le segment de
+   chemin est lui aussi un div enfant de la section, et il ne doit hériter ni
+   de la largeur ni du centrage. */
+.slide-content {
+  position: relative;
+  /* Un élément positionné se peint au-dessus de tout ce qui ne l'est pas, quel
+     que soit l'ordre du document : sans ce cran, le chemin passerait devant le
+     contenu au lieu d'être interrompu par lui. */
+  z-index: 1;
   width: 100%;
-  max-width: var(--container-read);
+  max-width: var(--slide-max, var(--container-read));
   margin-inline: auto;
+}
+
+/* Chapitre dont la composition se pose sur le chemin : le contenu se termine
+   juste au-dessus de la ligne, qui devient l'horizon de la page. */
+.slide-above-path > .slide-content {
+  position: absolute;
+  right: var(--spacing-gutter);
+  bottom: calc(100% - var(--spacing-path) + 2.5rem);
+  left: var(--spacing-gutter);
+}
+
+/* En colonne unique le chemin n'a plus d'objet : plus d'axe horizontal à tenir. */
+@media (max-width: 768px) {
+  .slide-path {
+    display: none;
+  }
+
+  .slide-above-path > .slide-content {
+    position: static;
+  }
 }
 
 /* Sous 768 px, deux axes tactiles se marchent dessus : on replie
@@ -200,5 +252,62 @@
     min-height: 100%;
     overflow: visible;
     scroll-snap-align: start;
+  }
+}
+
+/* ============================================================
+   Le chemin
+   Un filet à hauteur constante qui matérialise l'axe horizontal. Il
+   accompagne les chapitres de survol et s'arrête au premier projet :
+   là où l'axe vertical prend le relais, il n'a plus d'objet.
+
+   Un segment par chapitre plutôt qu'un élément unique large de tout le
+   parcours — les chapitres sont contigus, les segments se rejoignent, et
+   rien n'a besoin de connaître la longueur du parcours.
+
+   Il est peint avant le contenu : les éléments à fond opaque l'interrompent
+   d'eux-mêmes, ce qui produit le « ———| encadré |——— » sans découpe à écrire.
+   ============================================================ */
+
+.slide-path {
+  position: absolute;
+  top: var(--spacing-path);
+  right: 0;
+  left: var(--path-start, 0);
+  height: 1px;
+  background: var(--color-line);
+  pointer-events: none;
+}
+
+/* Le chemin naît et meurt plutôt que d'être coupé net.
+
+   L'extinction déborde volontairement sur le premier projet : un trait qui
+   s'arrêterait au bord de Réalisations rendrait la jointure de page visible et
+   se lirait comme une fin de site. Là, le parcours mène jusqu'au seuil puis
+   s'efface.
+
+   Le segment d'extinction est court et garde son dégradé tardif plutôt que de
+   s'effacer sur toute la largeur : un dégradé partant de zéro ferait faiblir le
+   trait dès la jointure, qui se lirait comme une mort à l'entrée. Ici le raccord
+   reste à pleine force, puis la ligne s'éteint — plein jusqu'à 14 % de l'écran,
+   éteint à 20 %, donc bien avant la colonne de lecture du projet.
+
+   Les segments intermédiaires restent pleins, sans quoi chaque jointure de page
+   se verrait. */
+.slide-path[data-fade="in"] {
+  background: linear-gradient(to right, transparent, var(--color-line) 30%);
+}
+
+.slide-path[data-fade="out"] {
+  right: auto;
+  width: 20%;
+  background: linear-gradient(to right, var(--color-line) 70%, transparent);
+}
+
+/* Sous la bascule en colonne unique, le décalage de départ n'a plus de sens :
+   il n'y a plus de colonne de droite sur laquelle s'aligner. */
+@media (max-width: 1023px) {
+  .slide-path {
+    left: 0;
   }
 }

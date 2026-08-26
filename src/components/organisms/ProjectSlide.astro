@@ -1,4 +1,5 @@
 ---
+import Chip from '../atoms/Chip.astro';
 import Kicker from '../atoms/Kicker.astro';
 import StatePill from '../atoms/StatePill.astro';
 import CodeExcerpt from './CodeExcerpt.astro';
@@ -15,13 +16,30 @@ interface Props {
 const { project, index } = Astro.props;
 ---
 
-<Slide id={project.id}>
+{/* Le chemin meurt ici : le premier projet est le seuil de l'axe vertical. */}
+<Slide id={project.id} path={index === 1} pathFade="out">
   <Kicker text={`Projet ${String(index).padStart(2, '0')}`} />
   <div class="flex flex-wrap items-center gap-3">
     <h2 class="text-h2">{project.title}</h2>
     <StatePill status={project.status} />
   </div>
   <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{project.intro}</p>
+
+  {/*
+    Ce qui a été employé sur ce projet, et non un catalogue de maîtrise : à cet
+    endroit la liste devient jugeable, puisqu'elle se lit contre les arbitrages
+    qui suivent.
+  */}
+  <ul
+    class="mt-[1.1rem] flex list-none flex-wrap gap-[0.4rem]"
+    aria-label={`Technologies employées sur ${project.title}`}
+  >
+    {project.stack.map(item => (
+      <li>
+        <Chip label={item} />
+      </li>
+    ))}
+  </ul>
 
   <DecisionLedger decisions={project.decisions} />
   {project.incident && <IncidentTimeline events={project.incident} />}

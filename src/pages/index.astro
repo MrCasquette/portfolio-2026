@@ -1,6 +1,5 @@
 ---
 import AvailabilityPill from '../components/atoms/AvailabilityPill.astro';
-import Chip from '../components/atoms/Chip.astro';
 import Kicker from '../components/atoms/Kicker.astro';
 import CapabilityPanel from '../components/molecules/CapabilityPanel.astro';
 import ProjectCard from '../components/molecules/ProjectCard.astro';
@@ -16,27 +15,54 @@ import Layout from '../layouts/Layout.astro';
   <SiteHeader />
 
   <main class="deck">
-    <Slide id="landing">
-      <AvailabilityPill label={landing.availability} />
-      <h1 class="text-h1">
-        {
-          landing.title.map(line => (
-            <Fragment>
-              {line.split(landing.emphasis).flatMap((part, index) =>
-                index === 0 ? [part] : [<span class="text-accent">{landing.emphasis}</span>, part]
-              )}
-              <br />
-            </Fragment>
-          ))
-        }
-      </h1>
-      <p class="mt-[1.35rem] max-w-[48ch] text-lede text-ink-2">{landing.lede}</p>
-      <ul class="mt-[1.9rem] flex list-none flex-wrap gap-[0.4rem]" aria-label="Technologies">
-        {landing.stack.map(item => <li><Chip label={item} /></li>)}
-      </ul>
+    <Slide id="landing" max="78rem" path pathStart="44%" pathFade="in" abovePath>
+      {/*
+        Deux masses typographiques au-dessus du chemin : le titre à gauche, le
+        propos à droite. Sous le titre, la pastille. À hauteur du chemin, la
+        colonne de gauche reste vide — c'est du vide construit, pas un manque.
+      */}
+      <div
+        class="grid items-start gap-x-[clamp(2.5rem,7vw,7rem)] gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
+      >
+        <div>
+          <h1 class="text-h1">
+            {
+              landing.title.map(line => (
+                <Fragment>
+                  {line.split(landing.emphasis).flatMap((part, index) =>
+                    index === 0
+                      ? [part]
+                      : [<span class="text-accent">{landing.emphasis}</span>, part]
+                  )}
+                  <br />
+                </Fragment>
+              ))
+            }
+          </h1>
+          <p class="mt-[clamp(1.75rem,4vh,2.75rem)]">
+            <AvailabilityPill label={landing.availability} />
+          </p>
+        </div>
+
+        <p class="text-lede text-ink-2">{landing.lede}</p>
+      </div>
+
+      {/*
+        Indice de défilement, posé sur le chemin dont il prolonge la direction.
+        En `ink-3` et non en accent : ce n'est ni un lien, ni une position, ni ce
+        qui tourne. Décoratif au sens strict, donc masqué aux technologies
+        d'assistance — le rail bas porte la navigation réelle.
+      */}
+      <span
+        class="pointer-events-none absolute top-[var(--spacing-path)] right-gutter -translate-y-1/2 max-lg:hidden"
+        slot="edge"
+        aria-hidden="true"
+      >
+        <span class="block animate-scroll-hint font-mono text-2xl text-ink-3">→</span>
+      </span>
     </Slide>
 
-    <Slide id="profile">
+    <Slide id="profile" path>
       <Kicker text="01 — Profil" />
       <h2 class="text-h2">{profile.title}</h2>
       <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{profile.lede}</p>
@@ -45,7 +71,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </Slide>
 
-    <Slide id="work">
+    <Slide id="work" path>
       <Kicker text="02 — Réalisations" />
       <h2 class="text-h2">{work.title}</h2>
       <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{work.lede}</p>

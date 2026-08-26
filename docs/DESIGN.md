@@ -38,6 +38,27 @@ qui passe par un autre site.
 | Aucune couleur en dur | Toute valeur vient de `theme.css`. Un composant qui a besoin d'une couleur absente du thème signale un problème de conception, pas un manque dans le thème. |
 | Pas de thème d'éditeur importé | La coloration syntaxique est dérivée de la palette du site. Ne pas réintroduire Catppuccin, Nord, Dracula, Rosé Pine. |
 
+### Mouvement — l'exception admise
+
+La règle « aucune animation d'ambiance » connaît une exception, et une seule :
+**l'indice de défilement du chapitre d'accueil**. Une flèche seule, à droite de l'écran,
+dont l'opacité et la position oscillent légèrement.
+
+Elle est admise parce qu'elle n'est pas de l'ambiance : elle annonce le paradigme de
+navigation horizontale, que rien d'autre ne signale à l'arrivée sur le site. Elle est
+cadrée :
+
+- **en `ink-3`, jamais en accent** — un indice de défilement n'est ni un lien, ni une
+  position, ni ce qui tourne ;
+- `aria-hidden` : c'est le rail bas qui porte la navigation réelle ;
+- l'état à 0 % et 100 % de l'animation **est l'état visible**, pour que la neutralisation
+  par `prefers-reduced-motion` laisse la flèche lisible plutôt que figée à demi effacée ;
+- masquée sous 1024 px, où le parcours se replie et où la flèche mentirait ;
+- le mouvement est déclaré dans `theme.css` (`--animate-scroll-hint`), pas dans le
+  composant : c'est un token comme un autre.
+
+Aucune autre animation d'ambiance n'est admise. Une deuxième la banaliserait.
+
 ### Dérives d'accent déjà corrigées
 
 Le POC HTML les contenait, elles ne doivent pas revenir :
@@ -87,7 +108,7 @@ Le jade a deux voisinages dangereux, déjà traités — ne pas les réintroduir
 
 1. **Vert « succès ».** Ne pas accentuer la fin d'une chronologie d'incident : ça se lit
    comme une coche de validation. L'accent marque le **déclenchement**, pas la résolution.
-2. **Vert d'état.** Les états ne sont plus tous colorés. Voir §5.2.
+2. **Vert d'état.** Les états ne sont plus tous colorés. Voir §5.3.
 
 ---
 
@@ -160,7 +181,25 @@ pas un champ optionnel.
 **Contrainte de contenu :** chaque entrée doit correspondre à un arbitrage réel.
 Un registre inventé se sent immédiatement et détruit la crédibilité de l'ensemble.
 
-### 5.2 Pastilles d'état
+### 5.2 Chapitre d'accueil — composition
+
+Le hero est conçu pour un portfolio horizontal, pas comme un hero classique amputé de
+son illustration. Deux masses typographiques :
+
+- **à gauche** : pastille de disponibilité, titre, puis un trait horizontal fin qui pose
+  la ligne d'horizon — décoratif, sans flèche ni animation ;
+- **à droite, décalé vers le bas** : le propos et les technologies.
+
+Le vide entre les deux masses est un élément de composition. Il ne doit pas être comblé,
+et surtout pas par une illustration ou un aplat.
+
+**Pas d'appel à l'action.** Le rail bas assure déjà la navigation ; un bouton
+dupliquerait la fonction et ramènerait le vocabulaire de la page produit.
+
+Le chapitre dépasse la colonne de lecture (`--slide-max`), sans quoi les deux masses se
+tassent et l'écart cesse d'être lisible comme une intention.
+
+### 5.3 Pastilles d'état
 
 Trois états, distingués par forme autant que par couleur, parce que l'accent ne doit
 signaler que ce qui tourne :
@@ -171,7 +210,7 @@ signaler que ce qui tourne :
 | `livré` | `ink-3`, filet plein |
 | `en chantier` | `ink-2`, **filet tireté** |
 
-### 5.3 Chronologie d'incident
+### 5.4 Chronologie d'incident
 
 Filet vertical en `line`, pastilles rondes. **Seule la première pastille est accentuée.**
 Horodatages en mono. Le dernier événement passe en `ink` (état courant), sans accent.
@@ -179,7 +218,7 @@ Horodatages en mono. Le dernier événement passe en `ink` (état courant), sans
 Optionnelle : tous les projets n'ont pas eu d'incident, et en fabriquer un tuerait la
 crédibilité aussi sûrement qu'un registre inventé.
 
-### 5.4 Bloc de code
+### 5.5 Bloc de code
 
 Fond `code`, filet `line`, légende en mono avec la source à gauche et une mention
 à droite. Coloration presque monochrome : mots-clés en `code-key` **graisse 500**
@@ -193,7 +232,7 @@ pour que le jade y garde sa rareté. Le gras est réservé aux mots-clés — pa
 Ne pas ajouter de couleur supplémentaire. Si un langage semble en avoir besoin,
 c'est l'extrait qui est trop long, pas le thème qui est trop pauvre.
 
-### 5.5 Rail de navigation
+### 5.6 Rail de navigation
 
 Étapes en bas d'écran, pastilles reliées par un filet.
 Franchies : `accent-line`. Courante : `accent` plein avec halo. À venir : `line`.

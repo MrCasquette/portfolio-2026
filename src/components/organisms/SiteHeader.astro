@@ -2,8 +2,15 @@
 import { identity } from '../../data/portfolio';
 ---
 
+{/*
+  L'en-tête est un rappel d'identité : il n'a pas d'objet tant qu'on est encore
+  sur le chapitre qui la porte. Il apparaît au premier déplacement, c'est-à-dire
+  au moment où il devient utile.
+*/}
 <header
-  class="fixed inset-x-0 top-0 z-30 flex h-header items-center justify-between gap-4 border-b border-line-soft bg-bg/90 px-gutter backdrop-blur-[10px]"
+  class="fixed inset-x-0 top-0 z-30 flex h-header items-center justify-between gap-4 border-b border-line-soft bg-bg/90 px-gutter backdrop-blur-[10px] transition-[opacity,translate] duration-300 data-[state=idle]:pointer-events-none data-[state=idle]:-translate-y-2 data-[state=idle]:opacity-0"
+  data-site-header
+  data-state="idle"
 >
   <p class="text-base font-semibold tracking-[-0.03em] whitespace-nowrap">
     {identity.name}<span class="text-accent">.</span>

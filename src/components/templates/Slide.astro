@@ -1,13 +1,36 @@
 ---
 interface Props {
   id: string;
+  /** Largeur maximale du contenu, si le chapitre demande plus que la lecture courante. */
+  max?: string;
+  /** Segment de chemin pour ce chapitre. Absent des chapitres à profondeur. */
+  path?: boolean;
+  /** Départ du segment, si le chemin ne naît pas au bord gauche. */
+  pathStart?: string;
+  /** Apparition ou extinction du chemin, aux deux extrémités du parcours. */
+  pathFade?: 'in' | 'out';
+  /** Composition posée sur le chemin plutôt que centrée dans le chapitre. */
+  abovePath?: boolean;
+  /** Le contenu du slot `edge` échappe à la colonne de lecture : il se place
+      librement dans le chapitre, en repère de bord d'écran. */
 }
 
-const { id } = Astro.props;
+const { id, max, path = false, pathStart, pathFade, abovePath = false } = Astro.props;
 ---
 
-<section class="slide" id={id}>
-  <div>
+<section class:list={['slide relative', abovePath && 'slide-above-path']} id={id}>
+  {
+    path && (
+      <div
+        class="slide-path"
+        style={pathStart ? `--path-start:${pathStart}` : undefined}
+        data-fade={pathFade}
+        aria-hidden="true"
+      />
+    )
+  }
+  <div class="slide-content" style={max ? `--slide-max:${max}` : undefined}>
     <slot />
   </div>
+  <slot name="edge" />
 </section>

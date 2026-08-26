@@ -35,6 +35,8 @@ export type Project = {
   teaser: string;
   /** Introduction du chapitre projet. */
   intro: string;
+  /** Ce qui a été employé *sur ce projet* — pas un catalogue de maîtrise. */
+  stack: string[];
   decisions: Decision[];
   incident?: IncidentEvent[];
   excerpt?: CodeExcerpt;
@@ -47,11 +49,10 @@ export const identity = {
 
 export const landing = {
   availability: 'Disponible · CDI ou mission · à distance',
-  title: ['Trois systèmes,', 'et les décisions', 'qui les tiennent.'],
+  title: ['Ce site montre', 'comment je décide,', 'avant de montrer avec quoi.'],
   /** Mot mis en accent dans le titre — le seul de tout le site. */
-  emphasis: 'tiennent',
-  lede: 'Un serveur en production, un outil livré, un chantier en cours. Chacun raconté par ce qui a été retenu et ce qui a été écarté — pas par une liste de fonctionnalités.',
-  stack: ['TypeScript', 'Bun', 'Elysia', 'Vue', 'Postgres', 'Debian', 'Docker', 'Ansible'],
+  emphasis: 'décide',
+  lede: "Développeur, à distance depuis l'Ardèche. Ce qui suit se lit dans l'ordre : d'abord d'où vient cette manière de travailler, ensuite des systèmes réels et les arbitrages qui les ont faits — y compris ceux qui ne sont pas encore tranchés.",
 } as const;
 
 export const profile = {
@@ -109,6 +110,7 @@ export const projects: Project[] = [
       'Serveur dédié, une quinzaine de services, supervision et sauvegardes vérifiées. Un incident réel, documenté de bout en bout.',
     intro:
       "La configuration vit dans un dépôt, pas dans ma mémoire. C'est une contrainte que je me suis imposée tôt et qui s'est révélée être la meilleure décision d'exploitation que j'aie prise.",
+    stack: ['Debian', 'Docker', 'Ansible', 'CrowdSec'],
     decisions: [
       {
         state: 'settled',
@@ -177,6 +179,7 @@ capacity:  5   # 5 sondes en 10 s → bannissement`,
       "Outil d'écriture open source. Périmètre fermé volontairement, avec la liste écrite de ce qu'il ne fera jamais.",
     intro:
       "Outil d'écriture open source. Ce qu'il fait, il le fait entièrement. Ce qu'il ne fera jamais est écrit dans le dépôt, parce qu'un périmètre non écrit finit toujours par s'étendre.",
+    stack: ['TypeScript', 'Bun', 'Elysia', 'Drizzle', 'Zod', 'CASL', 'Postgres'],
     decisions: [
       {
         state: 'settled',
@@ -222,6 +225,7 @@ capacity:  5   # 5 sondes en 10 s → bannissement`,
       'Deux briques, Échoppe et Prisme, sur un socle commun. Montré avec ses arbitrages encore ouverts.',
     intro:
       "Ce projet n'est pas fini, et c'est pour ça qu'il est ici. Deux briques, Échoppe et Prisme, sur un socle commun. Les arbitrages en cours en disent plus long qu'un projet poli.",
+    stack: ['TypeScript', 'Vue', 'Postgres'],
     decisions: [
       {
         state: 'settled',
