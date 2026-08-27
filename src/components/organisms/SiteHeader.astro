@@ -8,14 +8,14 @@ import { identity } from '../../data/portfolio';
   the moment it becomes useful.
 */}
 <header
-  class="fixed inset-x-0 top-0 z-30 flex h-header items-center justify-between gap-4 border-b border-line-soft bg-bg px-gutter transition-[opacity,translate] duration-300 data-[state=idle]:pointer-events-none data-[state=idle]:-translate-y-2 data-[state=idle]:opacity-0"
+  class="fixed inset-x-0 top-0 z-30 flex h-header items-center justify-between gap-4 border-b border-line-soft bg-bg px-gutter transition duration-300 data-[state=idle]:pointer-events-none data-[state=idle]:-translate-y-2 data-[state=idle]:opacity-0"
   data-site-header
   data-state="idle"
 >
-  <p class="text-base font-semibold tracking-[-0.03em] whitespace-nowrap">
+  <p class="text-base font-semibold tracking-tight whitespace-nowrap">
     {identity.name}<span class="text-accent">.</span>
   </p>
-  <p class="font-mono text-[0.78rem] whitespace-nowrap text-ink-2 max-[620px]:hidden">
+  <p class="hidden font-mono text-meta whitespace-nowrap text-ink-2 sm:block">
     {identity.tagline}
   </p>
 </header>

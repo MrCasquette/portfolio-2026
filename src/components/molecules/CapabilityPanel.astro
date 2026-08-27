@@ -7,19 +7,18 @@ interface Props {
 const { title, items } = Astro.props;
 ---
 
-<section class="rounded-card border border-line-soft bg-surface p-[1.4rem]">
-  <h3 class="mb-4 font-mono text-[0.74rem] font-medium tracking-[0.1em] text-ink-3 uppercase">
+<section class="rounded-card border border-line-soft bg-surface p-5.5">
+  <h3 class="mb-4 font-mono text-meta font-medium tracking-widest text-ink-3 uppercase">
     {title}
   </h3>
   <ul class="flex list-none flex-col gap-3">
     {
       items.map(item => (
-        <li class="relative pl-4 text-body text-ink-2">
-          <span
-            class="absolute top-[0.62em] left-0 size-[0.32rem] rounded-full bg-accent-line"
-            aria-hidden="true"
-          />
-          <b class="font-medium text-ink">{item.lead}</b> {item.text}
+        <li class="flex gap-2 text-body text-ink-2">
+          <span class="mt-2 size-1.5 shrink-0 rounded-full bg-accent-line" aria-hidden="true" />
+          <span>
+            <b class="font-medium text-ink">{item.lead}</b> {item.text}
+          </span>
         </li>
       ))
     }

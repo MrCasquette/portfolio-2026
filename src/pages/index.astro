@@ -38,7 +38,7 @@ import Layout from '../layouts/Layout.astro';
           if (content.kind === 'landing') {
             return (
               <Step {...step} compose="above" max="78rem">
-                <div class="grid items-start gap-x-[clamp(2.5rem,7vw,7rem)] gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+                <div class="grid items-start gap-x-12 gap-y-10 lg:gap-x-24 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
                   <div>
                     <h1 class="text-h1">
                       {landing.title.map(line => (
@@ -54,7 +54,7 @@ import Layout from '../layouts/Layout.astro';
                         </Fragment>
                       ))}
                     </h1>
-                    <p class="mt-[clamp(1.75rem,4vh,2.75rem)]">
+                    <p class="mt-8">
                       <AvailabilityPill label={landing.availability} />
                     </p>
                   </div>
@@ -70,9 +70,9 @@ import Layout from '../layouts/Layout.astro';
                 <div class="cell-head">
                   <Kicker text="01 — Profil" />
                   <h2 class="text-h2">{profile.title}</h2>
-                  <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{profile.lede}</p>
+                  <p class="mt-4 max-w-prose text-base text-ink-2">{profile.lede}</p>
                 </div>
-                <div class="cell-row grid grid-cols-2 gap-[1.6rem] max-[760px]:grid-cols-1 max-[760px]:gap-4">
+                <div class="cell-row grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                   {profile.panels.map(panel => (
                     <CapabilityPanel title={panel.title} items={panel.items} />
                   ))}
@@ -87,9 +87,9 @@ import Layout from '../layouts/Layout.astro';
                 <div class="cell-head">
                   <Kicker text="02 — Réalisations" />
                   <h2 class="text-h2">{work.title}</h2>
-                  <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{work.lede}</p>
+                  <p class="mt-4 max-w-prose text-base text-ink-2">{work.lede}</p>
                 </div>
-                <div class="cell-row grid grid-cols-3 gap-4 max-[820px]:grid-cols-1">
+                <div class="cell-row grid grid-cols-1 gap-4 md:grid-cols-3">
                   {projects.map((project, cardIndex) => (
                     <ProjectCard project={project} index={cardIndex + 1} />
                   ))}
@@ -108,11 +108,11 @@ import Layout from '../layouts/Layout.astro';
                   <h2 class="text-h2">{content.project.title}</h2>
                   <StatePill status={content.project.status} />
                 </div>
-                <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">
+                <p class="mt-4 max-w-prose text-base text-ink-2">
                   {content.project.intro}
                 </p>
                 <ul
-                  class="mt-[1.1rem] flex list-none flex-wrap gap-[0.4rem]"
+                  class="mt-4.5 flex list-none flex-wrap gap-1.5"
                   aria-label={`Technologies employées sur ${content.project.title}`}
                 >
                   {content.project.stack.map(item => (
@@ -158,8 +158,8 @@ import Layout from '../layouts/Layout.astro';
             <Step {...step} compose="above">
               <Kicker text="03 — Contact" />
               <h2 class="text-h2">{contact.title}</h2>
-              <p class="mt-[0.9rem] max-w-[58ch] text-[0.99rem] text-ink-2">{contact.lede}</p>
-              <ul class="mt-[1.9rem] flex list-none flex-wrap gap-[1.4rem] font-mono text-[0.85rem]">
+              <p class="mt-4 max-w-prose text-base text-ink-2">{contact.lede}</p>
+              <ul class="mt-7.5 flex list-none flex-wrap gap-5.5 font-mono text-sm">
                 {contact.links.map(link => (
                   <li>
                     <a

@@ -12,13 +12,13 @@ const { excerpt } = Astro.props;
 
 <figure class="mt-6 overflow-hidden rounded-card border border-line bg-code">
   <figcaption
-    class="flex justify-between border-b border-line px-[0.9rem] py-[0.52rem] font-mono text-[0.69rem] text-ink-3"
+    class="flex justify-between border-b border-line px-3.5 py-2 font-mono text-xs text-ink-3"
   >
     <span>{excerpt.source}</span>
     <span>extrait</span>
   </figcaption>
   <Code
-    class="!bg-code overflow-x-auto p-[0.9rem] text-code"
+    class="!bg-code overflow-x-auto p-3.5 text-code"
     code={excerpt.code}
     lang={excerpt.lang as never}
     theme={codeTheme}
