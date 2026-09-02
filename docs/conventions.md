@@ -43,13 +43,20 @@ See [`decisions/0002-semantic-token-posture.md`](./decisions/0002-semantic-token
 `Record<Variant, classes>` — see `StatePill.astro`. No `tailwind-variants` until there are
 combinatorial variants, slots, or three crossing axes.
 
-## No Zod for now
+## Zod — one boundary, in `portfolio.schema.ts`
 
-`src/data/portfolio.ts` is local data, typed at compile time. There is no external
-boundary: parsing would be revalidation (philosophy §5).
+`src/data/portfolio.schema.ts` holds the content contract: the Zod schema is the source of
+truth, every type is inferred from it, and `PortfolioSchema.parse()` is the **only** place
+content is parsed. Everything downstream trusts it (philosophy §5). No revalidation in a
+component, no `interface Props` restating a schema.
 
-The day content comes from a CMS, this module becomes a Zod schema and a client, and the
-boundary sits there — in one place only.
+It also carries what no single schema can see — the index and the projects describing the
+same three things, a revision pointing at an arbitration that exists. That integrity is
+the reason the root schema exists.
+
+`src/data/portfolio.ts` is still the current content, typed at compile time and not yet
+parsed against the contract. Wiring the CMS replaces it with a client; the boundary does
+not move.
 
 ## No DDD
 
