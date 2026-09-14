@@ -3,7 +3,7 @@
    Tailwind v4. Imported once, from the root layout.
    Every colour, weight and radius used in the project comes from here.
    No hard-coded values in components.
-   Reference: docs/DESIGN.md
+   Reference: docs/design/vocabulaire.md
    ============================================================ */
 
 @import "@fontsource-variable/lexend";
@@ -89,7 +89,7 @@
 
   /* ---------- Motion ----------
      The only ambient motion on the site: the horizontal scroll hint of the
-     landing chapter. Scoped in DESIGN.md §2.
+     landing chapter. Scoped in docs/design/vocabulaire.md.
      The 0% and 100% state is the visible one, so that neutralisation through
      `prefers-reduced-motion` leaves the arrow legible. */
   --animate-scroll-hint: scroll-hint 2.6s ease-in-out infinite;

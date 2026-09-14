@@ -5,7 +5,7 @@ type CodeTheme = Exclude<ShikiConfig['theme'], string | undefined>;
 /**
  * Syntax highlighting derived from the site palette.
  *
- * No imported editor theme (DESIGN.md §2): the six colours come from
+ * No imported editor theme (docs/design/vocabulaire.md): the six colours come from
  * theme.css. Hierarchy comes from lightness and weight, not hue — the pure
  * accent is deliberately absent.
  */

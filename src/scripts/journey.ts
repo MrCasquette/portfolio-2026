@@ -8,7 +8,7 @@
  *
  * Nothing here navigates. The wheel is amplified and smoothed so that one notch
  * covers one step, but it produces a scroll, not a jump to a computed chapter —
- * `scroll-snap` alone decides where it settles (DESIGN.md §7).
+ * `scroll-snap` alone decides where it settles (docs/design/accessibilite.md).
  */
 
 /** One notch, one step. Native scrolling under a mandatory snap has to cross
