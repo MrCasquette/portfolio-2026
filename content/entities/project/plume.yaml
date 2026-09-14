@@ -1,0 +1,12 @@
+moment: build
+name: Plume
+state: shipped
+stakes: Outil d'écriture open source. Ce qu'il fait, il le fait entièrement. Ce qu'il ne fera jamais est écrit dans le dépôt, parce qu'un périmètre non écrit finit toujours par s'étendre.
+facts:
+  - value: ⟨à écrire⟩ nombre de plateformes, ou de releases
+    label: ⟨à écrire⟩ ce que le chiffre compte
+  - value: ⟨à écrire⟩ chiffre exact
+    label: ⟨à écrire⟩ ce que le chiffre compte
+coveredFunctions:
+  - label: ⟨à écrire⟩ rôle réellement tenu sur ce projet
+  - label: ⟨à écrire⟩ rôle réellement tenu sur ce projet

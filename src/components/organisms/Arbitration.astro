@@ -1,0 +1,119 @@
+---
+/**
+ * One step of a descent — and the singular device of the site.
+ *
+ * `settled` and `open` are two shapes, not one shape missing fields, so they are
+ * two renderings rather than one with holes. An unsettled arbitration keeps both
+ * branches at the same weight: no accent bullet, no strikethrough, and the state
+ * is named rather than inferred from a colour (docs/design/composants.md, docs/design/accessibilite.md).
+ */
+import type { Arbitration } from '../../content/load';
+import Prose from '../../content/render/Prose.astro';
+
+interface Props {
+  arbitration: Arbitration;
+}
+
+const { arbitration } = Astro.props;
+
+/*
+  What the decision produced, or what it still owes. The shape rule guarantees one
+  of the two is there — `../../content/parse/rules.ts` refuses a settled
+  arbitration without an observed consequence, and an open one without its
+  opening — but the declaration cannot say so, so the absence is handled rather
+  than asserted.
+*/
+const note =
+  arbitration.status === 'settled' ? arbitration.consequence : arbitration.opening;
+
+/*
+  An open arbitration may have eliminated nothing yet, and the schema allows it —
+  forcing a rejection there would fabricate one. So the second column exists only
+  when something fills it: a column headed « Écarté » standing over nothing reads
+  as a hole in the record rather than as an arbitration that is simply still open.
+*/
+const rejected = arbitration.rejected ?? [];
+const columns = rejected.length > 0 ? 'md:grid-cols-2 md:gap-x-5' : '';
+---
+
+<div class="mt-6 border-t border-line">
+  <div
+    class:list={[
+      'grid grid-cols-1 border-b border-line-soft py-2 font-mono text-xs tracking-widest text-ink-3 uppercase',
+      columns,
+    ]}
+  >
+    <span>{arbitration.status === 'settled' ? 'Retenu' : 'Non tranché'}</span>
+    {rejected.length > 0 && <span>Écarté</span>}
+  </div>
+
+  <div class:list={['grid grid-cols-1 py-3', columns]}>
+    {
+      arbitration.status === 'settled' ? (
+        <p class="flex gap-2 text-body font-normal text-ink">
+          <span class="mt-2 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+          {arbitration.decided}
+        </p>
+      ) : (
+        <div class="flex flex-col gap-1.5">
+          {arbitration.options?.map(option => (
+            <p class="flex gap-2 text-body font-normal text-ink-2">
+              <span class="mt-3 h-px w-1.5 shrink-0 bg-ink-3" aria-hidden="true" />
+              {option.label}
+            </p>
+          ))}
+        </div>
+      )
+    }
+
+    {/* A reason belongs to the option it rejects, never to the set. */}
+    {
+      rejected.length > 0 && (
+        <div class="flex flex-col gap-2.5 pl-3.5 md:pl-0">
+          {rejected.map(entry => (
+            <div>
+              <p class="text-body text-ink-3 line-through decoration-1">{entry.option}</p>
+              <div class="text-sm leading-relaxed text-ink-3">
+                <Prose source={entry.reason} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  {
+    note && (
+      <div
+        class:list={[
+          'mt-2 border-l-2 py-0.5 pl-3 text-sm leading-relaxed text-ink-2',
+          arbitration.status === 'settled' ? 'border-accent-line' : 'border-line',
+        ]}
+      >
+        <Prose source={note} />
+      </div>
+    )
+  }
+
+  {
+    arbitration.revises && (
+      <p class="mt-3 border-l-2 border-line py-0.5 pl-3 text-sm leading-relaxed text-ink-3">
+        Révise <span class="font-mono">{arbitration.revises.arbitration}</span> —{' '}
+        <Prose source={arbitration.revises.whatFalls} inline />
+      </p>
+    )
+  }
+
+  <p class="mt-3 flex flex-wrap gap-x-4 font-mono text-meta text-ink-3">
+    {/* An undated decision is an opinion, so the date is shown, never optional. */}
+    <time datetime={arbitration.date}>{arbitration.date}</time>
+    {
+      arbitration.source && (
+        <a class="text-accent" href={arbitration.source.href}>
+          {arbitration.source.label} →
+        </a>
+      )
+    }
+  </p>
+</div>

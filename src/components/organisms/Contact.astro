@@ -1,0 +1,40 @@
+---
+/**
+ * The last step of the journey.
+ *
+ * Only real channels are listed: a placeholder URL that validates would be worse
+ * than a gap.
+ */
+import type { Section } from '../../content/load';
+import Prose from '../../content/render/Prose.astro';
+import AvailabilityPill from '../atoms/AvailabilityPill.astro';
+import Kicker from '../atoms/Kicker.astro';
+
+interface Props {
+  data: Extract<Section, { type: 'contact' }>['data'];
+}
+
+const { data } = Astro.props;
+---
+
+<Kicker text="03 — Contact" />
+<h2 class="text-h2">{data.title}</h2>
+<div class="mt-4 max-w-prose text-body text-ink-2"><Prose source={data.invitation} /></div>
+{
+  data.availability && (
+    <div class="mt-6">
+      <AvailabilityPill label={data.availability} />
+    </div>
+  )
+}
+<ul class="mt-7.5 flex list-none flex-wrap gap-5.5 font-mono text-sm">
+  {
+    data.channels.map(channel => (
+      <li>
+        <a class="border-b border-accent-line text-accent hover:border-accent" href={channel.href}>
+          {channel.label}
+        </a>
+      </li>
+    ))
+  }
+</ul>

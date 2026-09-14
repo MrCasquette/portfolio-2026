@@ -1,0 +1,75 @@
+---
+/**
+ * The inline half of a prose tree.
+ *
+ * Recurses into itself, because emphasis, a link and an inline directive all wrap
+ * inline content. Nothing here emits markup the design system has not asked for:
+ * an unstyled directive renders its children, so an unknown inflection degrades
+ * to the text it wraps rather than disappearing.
+ */
+import { safeUrl } from '@axiome-apps/atelier-prose';
+import type { ProseInline } from '@axiome-apps/atelier-prose';
+import Self from './ProseInline.astro';
+
+interface Props {
+  nodes: readonly ProseInline[];
+}
+
+const { nodes } = Astro.props;
+---
+
+{
+  nodes.map(node => {
+    switch (node.type) {
+      case 'text':
+        return node.value;
+      case 'emphasis':
+        return (
+          <em>
+            <Self nodes={node.children} />
+          </em>
+        );
+      case 'strong':
+        return (
+          <strong class="font-medium text-ink">
+            <Self nodes={node.children} />
+          </strong>
+        );
+      case 'inlineCode':
+        return <code class="font-mono text-code">{node.value}</code>;
+      case 'link': {
+        /* `safeUrl` refuses what must not become an href. A link whose target is
+           refused keeps its text: the sentence stays readable, and nothing
+           navigates. */
+        const href = safeUrl(node.href);
+        return href === null ? (
+          <Self nodes={node.children} />
+        ) : (
+          <a class="border-b border-accent-line text-accent hover:border-accent" href={href}>
+            <Self nodes={node.children} />
+          </a>
+        );
+      }
+      case 'image': {
+        const src = safeUrl(node.src);
+        return src === null ? null : <img src={src} alt={node.alt} />;
+      }
+      case 'break':
+        return <br />;
+      case 'directive':
+        /*
+          `highlight` is the only inline directive of the closed core, and it is
+          what carries the single accent of the site (docs/design/vocabulaire.md). Every other
+          inflection passes through unstyled rather than inventing a treatment the
+          design system has not granted.
+        */
+        return node.name === 'highlight' ? (
+          <span class="text-accent">
+            <Self nodes={node.children} />
+          </span>
+        ) : (
+          <Self nodes={node.children} />
+        );
+    }
+  })
+}

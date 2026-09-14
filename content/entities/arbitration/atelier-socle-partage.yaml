@@ -1,0 +1,9 @@
+project: atelier
+stakes: "Deux briques sur un modèle de données commun à 80 % : un socle partagé, ou deux applications indépendantes ?"
+date: 0001-01-01
+status: settled
+decided: Un socle partagé, deux briques distinctes
+rejected:
+  - option: Deux applications indépendantes
+    reason: Le modèle de données est commun à 80 %. Le dupliquer, c'est signer pour deux migrations à chaque évolution.
+consequence: ⟨à écrire⟩ ce qui a été constaté depuis — jamais ce qui était prévu

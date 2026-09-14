@@ -1,4 +1,7 @@
 allowBuilds:
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@axiome-apps/atelier-content@0.6.1 || 0.6.2'
+  - '@axiome-apps/atelier-prose@0.1.1'
 onlyBuiltDependencies:
   - esbuild

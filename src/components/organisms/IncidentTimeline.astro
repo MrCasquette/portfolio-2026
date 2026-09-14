@@ -1,23 +1,30 @@
 ---
-import type { IncidentEvent } from '../../data/portfolio';
+/**
+ * A step only an operated system can carry.
+ *
+ * Only the first bullet is accented: the accent marks the trigger, not the
+ * resolution — jade at the end of a timeline would read as a validation tick
+ * (docs/design/vocabulaire.md, docs/design/composants.md).
+ */
+import type { Incident } from '../../content/load';
+import Prose from '../../content/render/Prose.astro';
 
 interface Props {
-  events: IncidentEvent[];
+  incident: Incident;
 }
 
-const { events } = Astro.props;
+const { incident } = Astro.props;
+const { timeline } = incident;
 ---
 
-{/*
-  Only the first bullet is accented: the accent marks the trigger, not the
-  resolution — jade at the end of a timeline would read as a validation tick
-  (DESIGN.md §3, §5.4).
-*/}
+<h3 class="text-h3">{incident.title}</h3>
+<div class="mt-3 max-w-prose text-body text-ink-2"><Prose source={incident.stakes} /></div>
+
 <ol
   class="relative mt-6 list-none pl-5.5 before:absolute before:top-3 before:bottom-3 before:left-0.75 before:w-px before:bg-line before:content-['']"
 >
   {
-    events.map((event, index) => (
+    timeline.map((event, index) => (
       <li class="relative grid grid-cols-1 py-2 md:grid-cols-[4.6rem_1fr] md:gap-4">
         <span
           class:list={[
@@ -29,15 +36,19 @@ const { events } = Astro.props;
         <time class:list={['font-mono text-meta', index === 0 ? 'text-accent' : 'text-ink-3']}>
           {event.at}
         </time>
-        <span
-          class:list={[
-            'text-body',
-            index === events.length - 1 ? 'text-ink' : 'text-ink-2',
-          ]}
-        >
+        <span class:list={['text-body', index === timeline.length - 1 ? 'text-ink' : 'text-ink-2']}>
           {event.label}
         </span>
       </li>
     ))
   }
 </ol>
+
+<div class="mt-4 max-w-prose text-body text-ink"><Prose source={incident.resolution} /></div>
+{
+  incident.lesson && (
+    <div class="mt-3 border-l-2 border-accent-line py-0.5 pl-3 text-sm leading-relaxed text-ink-2">
+      <Prose source={incident.lesson} />
+    </div>
+  )
+}

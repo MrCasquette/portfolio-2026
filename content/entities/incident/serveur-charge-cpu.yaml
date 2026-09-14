@@ -1,0 +1,12 @@
+project: serveur
+title: Charge CPU hors fenêtre planifiée
+stakes: ⟨à écrire⟩ ce qui était réellement en jeu — données, disponibilité, exposition
+timeline:
+  - at: T+0
+    label: Avril 2026 — alerte de charge CPU hors fenêtre de traitement planifiée.
+  - at: T+12 min
+    label: Processus non référencé identifié dans un conteneur. Arrêt, isolation réseau.
+  - at: T+40 min
+    label: "Vecteur remonté : vulnérabilité connue, version en retard de deux correctifs."
+resolution: Image reconstruite depuis une base saine, secrets tournés, absence de persistance vérifiée. T+2 h.
+lesson: Pare-feu restreint, détection affinée par service, veille de mises à jour automatisée sur toutes les images.

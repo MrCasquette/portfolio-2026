@@ -1,0 +1,52 @@
+---
+/**
+ * A rich text field, rendered.
+ *
+ * The tree is the contract, and it is ephemeral: the content holds the Markdown
+ * source byte for byte, and `parseProse` rebuilds the tree on every render
+ * (ADR-0061). `proseToHtml()` is deliberately *not* used — it is a convenience for
+ * the admin preview, and the rendering belongs to the consumer, which is us.
+ *
+ * Raw HTML never reaches here: the tokenizer of `atelier-prose` has `htmlFlow` and
+ * `htmlText` disabled, so a `<script>` written in a field comes out as text and is
+ * escaped like any other. That is an invariant of the parser, and
+ * `render.test.ts` holds us to it too, since we are the ones emitting.
+ *
+ * `inline` is for a field that is one line — a title, a label. It renders the
+ * inline content of the single paragraph, so that an `<h1>` is not handed a `<p>`.
+ */
+import { parseProse, proseIssues, describeIssue } from '@axiome-apps/atelier-prose';
+import ProseBlocks from './ProseBlocks.astro';
+import ProseInline from './ProseInline.astro';
+
+interface Props {
+  source: string;
+  inline?: boolean;
+}
+
+const { source, inline = false } = Astro.props;
+
+const tree = parseProse(source);
+
+/* A directive used wrongly is a content fault, and it fails the build rather than
+   rendering something almost right. */
+const issues = proseIssues(tree);
+if (issues.length > 0) {
+  throw new Error(
+    `Prose fautive :\n${issues.map(issue => `  · ${describeIssue(issue)}`).join('\n')}\n${source}`,
+  );
+}
+
+const single = inline ? tree.children[0] : undefined;
+if (inline && (tree.children.length !== 1 || single?.type !== 'paragraph')) {
+  throw new Error(`Ce champ tient sur une ligne, et en contient plusieurs :\n${source}`);
+}
+---
+
+{
+  inline && single?.type === 'paragraph' ? (
+    <ProseInline nodes={single.children} />
+  ) : (
+    <ProseBlocks blocks={tree.children} />
+  )
+}

@@ -1,11 +1,18 @@
 ---
-import { chapters } from '../../data/journey';
+import type { chaptersOf } from '../../content/journey';
+
+interface Props {
+  /** One entry per chapter, which is one per rightward move of the path. */
+  chapters: ReturnType<typeof chaptersOf>;
+}
+
+const { chapters } = Astro.props;
 ---
 
 {/*
   Real links: the position in the journey stays in the URL, shareable and
   restored on back-navigation. The keyboard works with no code, and the
-  left/right arrows are layered on top (DESIGN.md §7).
+  left/right arrows are layered on top (docs/design/accessibilite.md).
 */}
 <nav
   class="fixed inset-x-0 bottom-0 z-30 flex h-rail items-center overflow-x-auto bg-bg [scrollbar-width:none]"

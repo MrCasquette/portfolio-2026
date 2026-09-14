@@ -1,5 +1,11 @@
 ---
-import { identity } from '../../data/portfolio';
+import type { SiteIdentity } from '../../content/load';
+
+interface Props {
+  identity: SiteIdentity;
+}
+
+const { identity } = Astro.props;
 ---
 
 {/*

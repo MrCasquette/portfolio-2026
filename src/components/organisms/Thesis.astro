@@ -1,0 +1,27 @@
+---
+/**
+ * The only unproven step: no source, no figure.
+ *
+ * The clause comes last, and that is not a layout preference — it is what makes
+ * the rest credible.
+ */
+import type { Section } from '../../content/load';
+import Prose from '../../content/render/Prose.astro';
+import Kicker from '../atoms/Kicker.astro';
+import MomentPanel from '../molecules/MomentPanel.astro';
+
+interface Props {
+  data: Extract<Section, { type: 'thesis' }>['data'];
+}
+
+const { data } = Astro.props;
+---
+
+<div class="cell-head">
+  <Kicker text={`01 — Depuis ${data.since}`} />
+  <div class="text-h2"><Prose source={data.produced} /></div>
+</div>
+<div class="cell-row grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+  {data.moments.map(entry => <MomentPanel moment={entry.moment} costAbsence={entry.costAbsence} />)}
+</div>
+<div class="mt-6 max-w-prose text-body text-ink-3"><Prose source={data.clause} /></div>

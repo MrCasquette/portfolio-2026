@@ -1,0 +1,8 @@
+project: atelier
+stakes: Jusqu'où le socle doit-il aller tant qu'Échoppe en est le seul consommateur ?
+date: 0001-01-01
+status: open
+options:
+  - label: Attendre le deuxième usage réel pour fixer le périmètre du socle
+  - label: Trancher maintenant, sur un seul usage
+opening: Factoriser trop tôt produit une abstraction qui ne sert qu'un cas. La décision reste ouverte tant qu'Échoppe est le seul consommateur.

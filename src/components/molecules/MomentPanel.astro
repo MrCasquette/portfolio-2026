@@ -1,0 +1,27 @@
+---
+/**
+ * What breaks when nobody holds one moment.
+ *
+ * The three panels are the thesis itself: they state a posture, and the projects
+ * are what answers for it.
+ */
+import { type Moment, MOMENT_LABELS } from '../../content/definitions/vocabulary';
+import Prose from '../../content/render/Prose.astro';
+
+interface Props {
+  moment: Moment;
+  costAbsence: string;
+}
+
+const { moment, costAbsence } = Astro.props;
+---
+
+<section class="rounded-card border border-line-soft bg-surface p-5.5">
+  <h3 class="mb-4 font-mono text-meta font-medium tracking-widest text-ink-3 uppercase">
+    {MOMENT_LABELS[moment]}
+  </h3>
+  <div class="flex gap-2 text-body text-ink-2">
+    <span class="mt-2 size-1.5 shrink-0 rounded-full bg-accent-line" aria-hidden="true"></span>
+    <div><Prose source={costAbsence} /></div>
+  </div>
+</section>

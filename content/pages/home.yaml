@@ -1,0 +1,61 @@
+title: Vincent Cottalorda — Développeur
+sections:
+  - type: statement
+    data:
+      title: Ce site montre comment je :highlight[décide], avant de montrer avec quoi.
+      description: "Ce qui suit se lit dans l'ordre : d'abord d'où vient cette manière de travailler, ensuite des systèmes réels et les arbitrages qui les ont faits — y compris ceux qui ne sont pas encore tranchés."
+      identification: Développeur, à distance depuis l'Ardèche.
+      availability: Disponible · CDI ou mission · à distance
+  - type: thesis
+    data:
+      since: "2008"
+      produced: "Pas une reconversion : une pratique continue, menée en parallèle d'autres métiers qui ont payé le loyer et qui ont construit l'autre moitié de ce que je sais faire."
+      moments:
+        - moment: design
+          costAbsence: ⟨à écrire⟩ ce qui casse quand personne ne tient la conception
+        - moment: build
+          costAbsence: ⟨à écrire⟩ ce qui casse quand personne ne tient la construction
+        - moment: operate
+          costAbsence: ⟨à écrire⟩ ce qui casse quand personne ne tient l'exploitation
+      clause: Je ne prétends pas être spécialiste de chacune de ces disciplines.
+  - type: index
+    data:
+      title: Trois pièces, trois états.
+      entries:
+        - project: atelier
+          proves: Qu'on sait arbitrer, avant que le système soit stabilisé.
+        - project: plume
+          proves: Qu'un résultat existe, installable ailleurs que sur ma machine.
+        - project: serveur
+          proves: Qu'on sait l'exploiter dans la durée, incidents compris.
+  - type: descent
+    data:
+      project: atelier
+      arbitrations:
+        - arbitration: atelier-socle-partage
+        - arbitration: atelier-perimetre-socle
+  - type: descent
+    data:
+      project: plume
+      arbitrations:
+        - arbitration: plume-socle-applicatif
+        - arbitration: plume-frontiere-validation
+        - arbitration: plume-autorisation-declarative
+      excerpt: plume-politique-acces
+  - type: descent
+    data:
+      project: serveur
+      arbitrations:
+        - arbitration: serveur-bare-metal
+        - arbitration: serveur-ansible-ssot
+        - arbitration: serveur-restauration-trimestrielle
+      incident: serveur-charge-cpu
+      excerpt: serveur-parser-crowdsec
+  - type: contact
+    data:
+      title: Ce que je cherche
+      invitation: Une équipe ou une structure où quelqu'un doit tenir un système entier et le laisser lisible derrière lui. CDI ou mission, à distance depuis l'Ardèche.
+      availability: Disponible · CDI ou mission · à distance
+      channels:
+        - label: vincent@…
+          href: mailto:cottalorda.vincent@pm.me

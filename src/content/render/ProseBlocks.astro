@@ -1,0 +1,110 @@
+---
+/**
+ * The block half of a prose tree.
+ *
+ * Recurses for a list item, a quote and a container directive. A code block is
+ * handed to Shiki with the site's own theme, the same one `CodeExcerpt` uses —
+ * `docs/design/vocabulaire.md` forbids importing an editor theme, so there is only ever one.
+ */
+import { Code } from 'astro:components';
+import type { ProseBlock } from '@axiome-apps/atelier-prose';
+import { codeTheme } from '../../styles/code-theme';
+import { EXCERPT_LANGUAGES } from '../definitions/vocabulary.ts';
+import ProseInline from './ProseInline.astro';
+import Self from './ProseBlocks.astro';
+
+interface Props {
+  blocks: readonly ProseBlock[];
+}
+
+const { blocks } = Astro.props;
+
+const HEADINGS = {
+  1: 'text-h1',
+  2: 'text-h2',
+  3: 'text-h3',
+  4: 'text-h3',
+  5: 'text-h3',
+  6: 'text-h3',
+};
+
+/**
+ * A fence can claim any language; Shiki only knows some.
+ *
+ * Narrowed against the vocabulary the declaration already names, so an unknown
+ * fence degrades to plain text instead of failing the build. This is what the old
+ * `CodeExcerpt.astro` paid for with `lang={… as never}` — a cast `typescript.md`
+ * §1 forbids, and which hid exactly this question.
+ */
+const shikiLang = (claimed: string | null) =>
+  EXCERPT_LANGUAGES.find(known => known === claimed) ?? 'text';
+---
+
+{
+  blocks.map(block => {
+    switch (block.type) {
+      case 'paragraph':
+        return (
+          <p class="max-w-prose text-body text-ink-2">
+            <ProseInline nodes={block.children} />
+          </p>
+        );
+      case 'heading': {
+        const Tag = `h${block.level}` as const;
+        return (
+          <Tag class={HEADINGS[block.level]}>
+            <ProseInline nodes={block.children} />
+          </Tag>
+        );
+      }
+      case 'list': {
+        const Tag = block.ordered ? 'ol' : 'ul';
+        return (
+          <Tag class="flex list-none flex-col gap-2">
+            {block.items.map(item => (
+              <li class="flex gap-2 text-body text-ink-2">
+                <span class="mt-2 size-1.5 shrink-0 rounded-full bg-accent-line" aria-hidden="true" />
+                <span>
+                  <Self blocks={item} />
+                </span>
+              </li>
+            ))}
+          </Tag>
+        );
+      }
+      case 'quote':
+        return (
+          <blockquote class="border-l-2 border-accent-line pl-3 text-body text-ink-2">
+            <Self blocks={block.children} />
+          </blockquote>
+        );
+      case 'code':
+        return (
+          <div class="overflow-hidden rounded-card border border-line bg-code">
+            <Code
+              class="!bg-code overflow-x-auto p-3.5 text-code"
+              code={block.value}
+              lang={shikiLang(block.language)}
+              theme={codeTheme}
+            />
+          </div>
+        );
+      case 'rule':
+        return <hr class="border-line" />;
+      case 'directive':
+        /*
+          Container and leaf directives pass through unstyled: the portfolio
+          declares none of its own yet, and `docs/design/vocabulaire.md` forbids decoration that
+          does not come out of the composition. Which ones it needs is an open
+          point, recorded rather than guessed.
+        */
+        return block.shape === 'container' ? (
+          <Self blocks={block.children} />
+        ) : (
+          <p class="max-w-prose text-body text-ink-2">
+            <ProseInline nodes={block.children} />
+          </p>
+        );
+    }
+  })
+}

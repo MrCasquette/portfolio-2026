@@ -1,0 +1,55 @@
+---
+/**
+ * The landing of a project: what it answers for, and the figures that back it.
+ *
+ * Depth is deliberately absent — the length of the descent is walked from the
+ * content, and a hand-kept counter drifts on the first arbitration added.
+ */
+import type { Project } from '../../content/load';
+import Prose from '../../content/render/Prose.astro';
+import Chip from '../atoms/Chip.astro';
+import Kicker from '../atoms/Kicker.astro';
+import StatePill from '../atoms/StatePill.astro';
+import { MOMENT_LABELS } from '../../content/definitions/vocabulary';
+
+interface Props {
+  project: Project;
+  number: number;
+}
+
+const { project, number } = Astro.props;
+---
+
+<Kicker text={`Projet ${String(number).padStart(2, '0')} — ${MOMENT_LABELS[project.moment]}`} />
+<div class="flex flex-wrap items-center gap-3">
+  <h2 class="text-h2">{project.name}</h2>
+  <StatePill state={project.state} />
+</div>
+<div class="mt-4 max-w-prose text-body text-ink-2"><Prose source={project.stakes} /></div>
+
+{/* Figures, quoted exactly: rounding a number is already an argument. */}
+<dl class="mt-5 flex flex-wrap gap-x-8 gap-y-3">
+  {
+    project.facts.map(fact => (
+      <div>
+        <dt class="font-mono text-h3 text-ink">{fact.value}</dt>
+        <dd class="font-mono text-meta text-ink-3">{fact.label}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+{
+  project.coveredFunctions && (
+    <ul
+      class="mt-4.5 flex list-none flex-wrap gap-1.5"
+      aria-label={`Fonctions tenues sur ${project.name}`}
+    >
+      {project.coveredFunctions.map(role => (
+        <li>
+          <Chip label={role.label} />
+        </li>
+      ))}
+    </ul>
+  )
+}

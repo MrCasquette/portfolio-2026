@@ -1,0 +1,9 @@
+moment: operate
+name: Mon serveur
+state: in-production
+stakes: La configuration vit dans un dépôt, pas dans ma mémoire. C'est une contrainte que je me suis imposée tôt et qui s'est révélée être la meilleure décision d'exploitation que j'aie prise.
+facts:
+  - value: ⟨à écrire⟩ nombre de services
+    label: services en production
+  - value: ⟨à écrire⟩ durée exacte, en années ou depuis une date
+    label: ⟨à écrire⟩ ce que la durée compte

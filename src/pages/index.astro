@@ -1,24 +1,60 @@
 ---
-import AvailabilityPill from '../components/atoms/AvailabilityPill.astro';
-import Chip from '../components/atoms/Chip.astro';
+/**
+ * The page: walk the steps, hand each one to the component its kind names.
+ *
+ * The dispatch stays here, and stays type-checked, rather than moving into a
+ * record of components: Astro does not check the props of a component looked up
+ * at run time, and trading the types for one less line would give up exactly what
+ * the declaration was built to provide. What *is* a registry lives in
+ * `COMPOSITION` below — the constraints the path imposes on a chapter, in one
+ * place instead of scattered through a cascade.
+ *
+ * Adding a section is a line here and a component beside it.
+ */
 import DepthIndicator from '../components/atoms/DepthIndicator.astro';
 import Kicker from '../components/atoms/Kicker.astro';
-import StatePill from '../components/atoms/StatePill.astro';
-import CapabilityPanel from '../components/molecules/CapabilityPanel.astro';
-import ProjectCard from '../components/molecules/ProjectCard.astro';
+import Arbitration from '../components/organisms/Arbitration.astro';
 import CodeExcerpt from '../components/organisms/CodeExcerpt.astro';
-import DecisionLedger from '../components/organisms/DecisionLedger.astro';
+import Contact from '../components/organisms/Contact.astro';
 import IncidentTimeline from '../components/organisms/IncidentTimeline.astro';
 import NavigationRail from '../components/organisms/NavigationRail.astro';
+import ProjectLanding from '../components/organisms/ProjectLanding.astro';
+import ProofIndex from '../components/organisms/ProofIndex.astro';
 import SiteHeader from '../components/organisms/SiteHeader.astro';
+import Statement from '../components/organisms/Statement.astro';
+import Thesis from '../components/organisms/Thesis.astro';
 import Step from '../components/templates/Step.astro';
-import { steps } from '../data/journey';
-import { contact, identity, landing, profile, projects, work } from '../data/portfolio';
+import { chaptersOf, journeyOf, type StepContent } from '../content/journey';
+import { loadPage } from '../content/load';
+import { yamlSource } from '../content/provider/yaml/index';
 import Layout from '../layouts/Layout.astro';
+
+/**
+ * How each kind of step sits against the path.
+ *
+ * These are not preferences. `docs/decisions/0010` requires a chapter crossing the
+ * horizontal axis to expose a head and a *single* box row; `0006` requires it to
+ * carry a boxed element at the path's height, or the line crosses a bare page.
+ * The constraint used to be spread through the cascade this file replaced.
+ */
+const COMPOSITION: Record<StepContent['kind'], { compose?: 'above' | 'on'; max?: string }> = {
+  statement: { compose: 'above', max: '78rem' },
+  thesis: { compose: 'on' },
+  index: { compose: 'on' },
+  project: {},
+  arbitration: {},
+  incident: {},
+  excerpt: {},
+  contact: { compose: 'above' },
+};
+
+const page = await loadPage(yamlSource('content'), 'home');
+const steps = journeyOf(page);
+const chapters = chaptersOf(steps);
 ---
 
-<Layout title={`${identity.name} — ${identity.tagline}`}>
-  <SiteHeader />
+<Layout title={page.title}>
+  <SiteHeader identity={page.identity} />
 
   {/*
     The scroll driver: one screen of height per step, and nothing else in it.
@@ -35,142 +71,37 @@ import Layout from '../layouts/Layout.astro';
         steps.map(step => {
           const { content } = step;
 
-          if (content.kind === 'landing') {
-            return (
-              <Step {...step} compose="above" max="78rem">
-                <div class="grid items-start gap-x-12 gap-y-10 lg:gap-x-24 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-                  <div>
-                    <h1 class="text-h1">
-                      {landing.title.map(line => (
-                        <Fragment>
-                          {line
-                            .split(landing.emphasis)
-                            .flatMap((part, partIndex) =>
-                              partIndex === 0
-                                ? [part]
-                                : [<span class="text-accent">{landing.emphasis}</span>, part]
-                            )}
-                          <br />
-                        </Fragment>
-                      ))}
-                    </h1>
-                    <p class="mt-8">
-                      <AvailabilityPill label={landing.availability} />
-                    </p>
-                  </div>
-                  <p class="text-lede text-ink-2">{landing.lede}</p>
-                </div>
-              </Step>
-            );
-          }
-
-          if (content.kind === 'profile') {
-            return (
-              <Step {...step} compose="on">
-                <div class="cell-head">
-                  <Kicker text="01 — Profil" />
-                  <h2 class="text-h2">{profile.title}</h2>
-                  <p class="mt-4 max-w-prose text-base text-ink-2">{profile.lede}</p>
-                </div>
-                <div class="cell-row grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-                  {profile.panels.map(panel => (
-                    <CapabilityPanel title={panel.title} items={panel.items} />
-                  ))}
-                </div>
-              </Step>
-            );
-          }
-
-          if (content.kind === 'work') {
-            return (
-              <Step {...step} compose="on">
-                <div class="cell-head">
-                  <Kicker text="02 — Réalisations" />
-                  <h2 class="text-h2">{work.title}</h2>
-                  <p class="mt-4 max-w-prose text-base text-ink-2">{work.lede}</p>
-                </div>
-                <div class="cell-row grid grid-cols-1 gap-4 md:grid-cols-3">
-                  {projects.map((project, cardIndex) => (
-                    <ProjectCard project={project} index={cardIndex + 1} />
-                  ))}
-                </div>
-              </Step>
-            );
-          }
-
-          if (content.kind === 'project') {
-            return (
-              <Step {...step}>
-                <Kicker
-                  text={`Projet ${String(content.number).padStart(2, '0')} — ${content.project.verb}`}
-                />
-                <div class="flex flex-wrap items-center gap-3">
-                  <h2 class="text-h2">{content.project.title}</h2>
-                  <StatePill status={content.project.status} />
-                </div>
-                <p class="mt-4 max-w-prose text-base text-ink-2">
-                  {content.project.intro}
-                </p>
-                <ul
-                  class="mt-4.5 flex list-none flex-wrap gap-1.5"
-                  aria-label={`Technologies employées sur ${content.project.title}`}
-                >
-                  {content.project.stack.map(item => (
-                    <li>
-                      <Chip label={item} />
-                    </li>
-                  ))}
-                </ul>
-              </Step>
-            );
-          }
-
-          if (content.kind === 'decision') {
-            return (
-              <Step {...step}>
-                <Kicker
-                  text={`${content.project.title} — Arbitrage ${String(content.position).padStart(2, '0')} / ${String(content.total).padStart(2, '0')}`}
-                />
-                <DecisionLedger decisions={[content.decision]} />
-              </Step>
-            );
-          }
-
-          if (content.kind === 'incident') {
-            return (
-              <Step {...step}>
-                <Kicker text={`${content.project.title} — Incident`} />
-                <IncidentTimeline events={content.events} />
-              </Step>
-            );
-          }
-
-          if (content.kind === 'excerpt') {
-            return (
-              <Step {...step}>
-                <Kicker text={`${content.project.title} — Extrait`} />
-                <CodeExcerpt excerpt={content.excerpt} />
-              </Step>
-            );
-          }
-
           return (
-            <Step {...step} compose="above">
-              <Kicker text="03 — Contact" />
-              <h2 class="text-h2">{contact.title}</h2>
-              <p class="mt-4 max-w-prose text-base text-ink-2">{contact.lede}</p>
-              <ul class="mt-7.5 flex list-none flex-wrap gap-5.5 font-mono text-sm">
-                {contact.links.map(link => (
-                  <li>
-                    <a
-                      class="border-b border-accent-line text-accent hover:border-accent"
-                      href={link.href}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+            <Step {...step} {...COMPOSITION[content.kind]}>
+              {content.kind === 'statement' && <Statement data={content.data} />}
+              {content.kind === 'thesis' && <Thesis data={content.data} />}
+              {content.kind === 'index' && (
+                <ProofIndex data={content.data} projects={content.projects} />
+              )}
+              {content.kind === 'project' && (
+                <ProjectLanding project={content.project} number={content.number} />
+              )}
+              {content.kind === 'arbitration' && (
+                <>
+                  <Kicker
+                    text={`${content.project.name} — Arbitrage ${String(content.position).padStart(2, '0')} / ${String(content.total).padStart(2, '0')}`}
+                  />
+                  <Arbitration arbitration={content.arbitration} />
+                </>
+              )}
+              {content.kind === 'incident' && (
+                <>
+                  <Kicker text={`${content.project.name} — Incident`} />
+                  <IncidentTimeline incident={content.incident} />
+                </>
+              )}
+              {content.kind === 'excerpt' && (
+                <>
+                  <Kicker text={`${content.project.name} — Extrait`} />
+                  <CodeExcerpt excerpt={content.excerpt} />
+                </>
+              )}
+              {content.kind === 'contact' && <Contact data={content.data} />}
             </Step>
           );
         })
@@ -179,7 +110,7 @@ import Layout from '../layouts/Layout.astro';
   </main>
 
   <DepthIndicator />
-  <NavigationRail />
+  <NavigationRail chapters={chapters} />
 
   <script>
     import '../scripts/journey';

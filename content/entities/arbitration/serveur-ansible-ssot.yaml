@@ -1,0 +1,9 @@
+project: serveur
+stakes: Où vit la configuration de la machine ?
+date: 0001-01-01
+status: settled
+decided: Ansible comme source de vérité unique
+rejected:
+  - option: Configuration manuelle, documentée après coup
+    reason: Une documentation se désynchronise en silence. Un playbook qui échoue se voit tout de suite.
+consequence: ⟨à écrire⟩ ce qui a été constaté depuis

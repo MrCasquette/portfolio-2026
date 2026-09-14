@@ -1,0 +1,33 @@
+---
+/**
+ * The proofs announced.
+ *
+ * Each entry points at a project rather than restating its name and state, so the
+ * card and the landing can no longer disagree.
+ */
+import type { Project, Section } from '../../content/load';
+import Kicker from '../atoms/Kicker.astro';
+import ProjectCard from '../molecules/ProjectCard.astro';
+
+interface Props {
+  data: Extract<Section, { type: 'index' }>['data'];
+  projects: readonly Project[];
+}
+
+const { data, projects } = Astro.props;
+---
+
+<div class="cell-head">
+  <Kicker text="02 — Réalisations" />
+  <h2 class="text-h2">{data.title}</h2>
+</div>
+<div class="cell-row grid grid-cols-1 gap-4 md:grid-cols-3">
+  {
+    data.entries.map((entry, position) => {
+      const project = projects.find(candidate => candidate.slug === entry.project);
+      return project ? (
+        <ProjectCard project={project} proves={entry.proves} index={position + 1} />
+      ) : null;
+    })
+  }
+</div>

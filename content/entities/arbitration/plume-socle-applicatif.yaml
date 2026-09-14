@@ -1,0 +1,9 @@
+project: plume
+stakes: Reconstruire le socle applicatif, ou hériter de Directus ?
+date: 0001-01-01
+status: settled
+decided: Elysia · Bun · Drizzle · Zod · CASL
+rejected:
+  - option: Directus comme socle applicatif
+    reason: Le passage en licence MSCL rendait la dépendance risquée pour un projet destiné à durer. Payer la reconstruction une fois plutôt qu'hériter d'une contrainte que je ne contrôle pas.
+consequence: ⟨à écrire⟩ ce qui a été constaté depuis

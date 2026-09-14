@@ -1,0 +1,34 @@
+---
+/**
+ * The first step. The only place allowed to speak before proving.
+ *
+ * The title is a rich text, and its accent is the `:highlight[…]` directive — the
+ * typographic decision left the renderer, where it used to be a `split()` on a
+ * second field (docs/design/vocabulaire.md: one accent, and only one).
+ */
+import type { Section } from '../../content/load';
+import Prose from '../../content/render/Prose.astro';
+import AvailabilityPill from '../atoms/AvailabilityPill.astro';
+
+interface Props {
+  data: Extract<Section, { type: 'statement' }>['data'];
+}
+
+const { data } = Astro.props;
+---
+
+<div
+  class="grid items-start gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-x-24"
+>
+  <div>
+    <h1 class="text-h1"><Prose source={data.title} inline /></h1>
+    {
+      data.availability && (
+        <div class="mt-8">
+          <AvailabilityPill label={data.availability} />
+        </div>
+      )
+    }
+  </div>
+  <div class="text-lede text-ink-2"><Prose source={data.description} /></div>
+</div>

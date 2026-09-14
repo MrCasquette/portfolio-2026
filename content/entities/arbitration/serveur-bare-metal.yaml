@@ -1,0 +1,9 @@
+project: serveur
+stakes: Serveur dédié ou infrastructure managée ?
+date: 0001-01-01
+status: settled
+decided: Serveur dédié bare metal
+rejected:
+  - option: Infrastructure managée, scalable à la demande
+    reason: La charge est constante et le stockage dominant. Le managé coûtait trois fois plus pour un service identique.
+consequence: ⟨à écrire⟩ ce qui a été constaté depuis

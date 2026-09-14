@@ -1,0 +1,14 @@
+project: serveur
+shows: ⟨à écrire⟩ ce que ce parser prouve et que la prose ne prouvait pas
+path: ⟨à écrire⟩ chemin réel dans le dépôt Ansible
+language: yaml
+code: |-
+  # ne déclenche que sur des codes réellement exploitables
+  filter: "evt.Meta.service == 'web' && evt.Parsed.status in ['401','403','429']"
+  name:   cottalorda/web-probe
+  nodes:
+    - grok:
+        pattern:  '%{IPORHOST:remote} %{WORD:verb} %{URIPATH:path}'
+        apply_on: message
+  leakspeed: 10s
+  capacity:  5   # 5 sondes en 10 s → bannissement

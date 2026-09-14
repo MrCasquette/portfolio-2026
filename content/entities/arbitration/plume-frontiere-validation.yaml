@@ -1,0 +1,9 @@
+project: plume
+stakes: Où la forme des données est-elle déclarée ?
+date: 0001-01-01
+status: settled
+decided: Schéma validé à la frontière, typé de bout en bout
+rejected:
+  - option: Validation applicative au cas par cas
+    reason: Un seul endroit déclare la forme des données, le compilateur propage le reste.
+consequence: ⟨à écrire⟩ ce qui a été constaté depuis

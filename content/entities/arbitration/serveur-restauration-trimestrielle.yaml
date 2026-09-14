@@ -1,0 +1,9 @@
+project: serveur
+stakes: Comment sait-on que les sauvegardes fonctionnent ?
+date: 0001-01-01
+status: settled
+decided: Sauvegardes restaurées à blanc chaque trimestre
+rejected:
+  - option: Snapshots hébergeur seuls
+    reason: Une sauvegarde jamais restaurée est une hypothèse, pas une sauvegarde.
+consequence: ⟨à écrire⟩ ce qui a été constaté depuis

@@ -1,0 +1,15 @@
+project: plume
+shows: ⟨à écrire⟩ ce que ce code prouve et que la prose ne prouvait pas
+path: ⟨à écrire⟩ chemin réel dans le dépôt Plume
+language: typescript
+code: |-
+  export const defineAbility = (user: User) => {
+    const { can, cannot, build } = new AbilityBuilder(createAbility)
+
+    can('read', 'Document', { published: true })
+    can('manage', 'Document', { authorId: user.id })
+    cannot('delete', 'Document', { locked: true })
+      .because('Un document verrouillé se déverrouille avant de se supprimer.')
+
+    return build()
+  }

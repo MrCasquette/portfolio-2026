@@ -1,0 +1,9 @@
+project: plume
+stakes: Où vivent les règles d'accès ?
+date: 0001-01-01
+status: settled
+decided: Autorisation déclarative, testée isolément
+rejected:
+  - option: Contrôles dispersés dans les routes
+    reason: Une règle d'accès éparpillée est une règle qu'on ne peut pas relire. Celle-ci tient dans un fichier.
+consequence: ⟨à écrire⟩ ce qui a été constaté depuis

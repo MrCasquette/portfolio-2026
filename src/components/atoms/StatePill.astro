@@ -1,29 +1,29 @@
 ---
-import { statusLabels, type ProjectStatus } from '../../data/portfolio';
+import { type ProjectState, PROJECT_STATE_LABELS } from '../../content/definitions/vocabulary';
 
 interface Props {
-  status: ProjectStatus;
+  state: ProjectState;
 }
 
-const { status } = Astro.props;
+const { state } = Astro.props;
 
 /**
  * The three states differ by shape as much as by colour: the accent only
  * signals what is running, and information never rests on hue alone
- * (DESIGN.md §5.3, §7).
+ * (docs/design/composants.md, docs/design/accessibilite.md).
  */
-const styles: Record<ProjectStatus, string> = {
-  production: 'text-accent bg-accent-bg border-solid',
-  delivered: 'text-ink-3 border-solid',
-  wip: 'text-ink-2 border-dashed',
+const styles: Record<ProjectState, string> = {
+  'in-production': 'text-accent bg-accent-bg border-solid',
+  shipped: 'text-ink-3 border-solid',
+  'in-progress': 'text-ink-2 border-dashed',
 };
 ---
 
 <span
   class:list={[
     'self-start rounded-full border border-current px-2 py-0.5 font-mono text-xs whitespace-nowrap',
-    styles[status],
+    styles[state],
   ]}
 >
-  {statusLabels[status]}
+  {PROJECT_STATE_LABELS[state]}
 </span>
