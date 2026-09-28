@@ -53,24 +53,38 @@ se sent immédiatement et détruit la crédibilité de l'ensemble
 Le hero est conçu pour un portfolio horizontal, pas comme un hero classique privé de son illustration.
 Deux masses typographiques :
 
-- **à gauche** : le titre, puis la pastille de disponibilité ;
-- **à droite** : le chapô.
+- **à gauche** : le nom, l'intitulé de poste, puis la pastille de disponibilité ;
+- **à droite** : le chapô, puis les deux actions.
 
 Le vide entre les deux masses est un élément de composition. Il ne doit pas être rempli, et surtout
 pas par une illustration ou un aplat.
 
-**Aucun appel à l'action.** Le rail assure déjà la navigation ; un bouton doublerait la fonction et
-ramènerait du vocabulaire de page produit.
+**Exactement deux actions, jamais une ni trois.** Une seule impose son intention ; au-delà de deux
+c'est un menu, et le rail en est déjà un. La déclaration borne le compte, elle ne s'en remet pas à la
+discipline.
+
+**Une seule est pleine.** La paire se lit comme une hiérarchie, pas comme un choix à faire. L'accent
+n'y est pas dépensé : le jade signale déjà les liens, et ce sont des liens.
+
+**Aucun verbe de conversion.** Une action nomme une destination — « Voir les réalisations », « Me
+contacter » —, jamais une promesse. C'est ce qui reste de la règle qui interdisait tout appel à
+l'action, et c'est une discipline d'écriture : seul le compte est vérifié
+(→ [0016](../decisions/0016-deux-actions-sur-l-accueil.md)).
 
 Le chapitre dépasse la colonne de lecture (`--slide-max`), sans quoi les deux masses se serrent et
 l'écart cesse de se lire comme une intention.
 
 Le bloc est **ancré sur le chemin** plutôt que centré dans le chapitre : la ligne est l'horizon de la
-composition, et le titre se tient juste au-dessus. À la hauteur du chemin, la colonne gauche reste
+composition, et le nom se tient juste au-dessus. À la hauteur du chemin, la colonne gauche reste
 vide — vide composé, pas trou.
 
-**Le chapitre d'accueil doit nommer Vincent.** L'en-tête n'apparaît qu'ensuite
-(→ [0007](../decisions/0007-en-tete-differe.md)) : sans cela, rien ne le nomme sur le premier écran.
+**Le chapitre d'accueil nomme Vincent**, et le contrat l'exige : `name` est un champ requis. L'en-tête
+n'apparaît qu'ensuite (→ [0007](../decisions/0007-en-tete-differe.md)), donc sans lui rien ne le
+nomme sur le premier écran.
+
+**L'intitulé de poste porte l'accent** — le seul mot accentué de tout le site, posé par
+`:highlight[…]`. C'est l'exception assumée du registre visuel ; elle a changé de champ, pas de
+nature.
 
 ## Pastilles d'état
 
@@ -121,6 +135,10 @@ Trois contraintes d'implémentation :
   et restaurée au retour arrière ; le clavier, le clic du milieu et l'historique fonctionnent sans
   code. Les flèches gauche/droite se superposent
   (→ [0005](../decisions/0005-le-rail-en-liens-plutot-qu-en-boutons.md)).
+- **Le saut lui-même ne suit pas l'ancre**, ici ni ailleurs : un écouteur délégué déplace le pilote,
+  parce qu'aucune cellule n'est atteignable nativement
+  (→ [0017](../decisions/0017-tout-lien-vers-une-etape-passe-par-le-pilote.md)). Un lien interne
+  écrit dans n'importe quel composant en bénéficie sans rien déclarer.
 - **Le nombre d'étapes n'est jamais codé en dur.** Le rail se dérive du parcours, lui-même dérivé du
   contenu.
 - **Pas de bordure haute.** Elle doublait le filet du connecteur vingt pixels plus bas et

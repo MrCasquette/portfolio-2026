@@ -44,6 +44,26 @@ export const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'kebab-case s
 /** Internal destination, always a fragment on the same document. */
 const anchor = z.string().regex(/^#[a-z0-9]+(?:-[a-z0-9]+)*$/, 'internal anchor');
 
+/**
+ * Where an action may lead: a fragment, a file of this site, or an outside
+ * address.
+ *
+ * The scheme list is a **whitelist**, and that is the point. `z.url()` accepts
+ * `javascript:` — it parses, so it is a URL — and this value lands straight in an
+ * `href` that no renderer sanitises on the way, unlike prose links which go
+ * through `safeUrl`. An open format here would be an injection point one YAML
+ * line wide.
+ */
+const destination = z
+  .string()
+  .refine(
+    value =>
+      /^#[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) ||
+      /^\/[^/]/.test(value) ||
+      /^(?:https?|mailto):/.test(value),
+    'an anchor (#id), a path of this site (/file), or an https / mailto address',
+  );
+
 export const FORMATS: Readonly<Record<string, z.ZodType<string>>> = {
   uri: z.url(),
   email: z.email(),
@@ -51,4 +71,5 @@ export const FORMATS: Readonly<Record<string, z.ZodType<string>>> = {
   year,
   slug,
   anchor,
+  destination,
 };

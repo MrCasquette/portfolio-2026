@@ -84,9 +84,20 @@ progress = scrollY / innerHeight     →  8,4 signifie « 40 % du trajet de l'é
 --x, --y = lerp(layout[8], layout[9], 0,4)
 ```
 
-Le défilement natif est conservé comme plomberie — ancres, clavier, recherche dans la page, inertie
-tactile, `scroll-snap-type: y mandatory` — sa barre étant masquée. La molette est amplifiée pour qu'un
-cran couvre une étape.
+Le défilement natif est conservé comme plomberie — clavier, recherche dans la page, inertie tactile,
+`scroll-snap-type: y mandatory` — sa barre étant masquée. La molette est amplifiée pour qu'un cran
+couvre une étape.
+
+**Aucune ancre ne se suit nativement.** Une cellule est posée loin hors de `.view`, qui ne défile pas
+mais se fait translater : le navigateur n'a donc rien de légitime à défiler pour l'amener dans la vue.
+Un écouteur délégué au document traite tout lien interne dont le fragment nomme une cellule — le rail
+compris — et déplace le pilote à sa place. Le `href` reste la vérité de la destination, et l'URL suit
+le fragment, donc le retour arrière et les liens profonds fonctionnent.
+
+`.view` est en `overflow: clip`, jamais `hidden` : un conteneur `hidden` reste défilable par
+programme, et le navigateur s'en servait pour amener une ancre dans la vue — il décalait `.view` et
+l'y laissait, pendant que `window.scrollY`, seul pilote de la translation, n'avait pas bougé
+(→ [0017](../decisions/0017-tout-lien-vers-une-etape-passe-par-le-pilote.md)).
 
 ## Ce que disent les deux indicateurs
 

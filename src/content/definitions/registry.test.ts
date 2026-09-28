@@ -42,6 +42,7 @@ test('les composants sont collectés tout seuls, en suivant les références', (
   const components = Object.keys(registry.components).sort();
   assert.deepEqual(components, [
     'arbitrationRef',
+    'callToAction',
     'channel',
     'coveredFunction',
     'fact',
@@ -62,7 +63,7 @@ test('les champs sont une séquence, et la position porte l’ordre déclaré', 
   assert.ok(Array.isArray(statement?.fields));
   assert.deepEqual(
     statement.fields.map(field => field.name),
-    ['title', 'description', 'identification', 'availability'],
+    ['name', 'role', 'description', 'availability', 'actions'],
   );
 });
 

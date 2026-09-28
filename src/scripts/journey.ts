@@ -149,27 +149,61 @@ if (grid && cells.length > 1) {
     { passive: false },
   );
 
-  /**
-   * Rail jumps always glide, whatever the distance.
-   *
-   * A long jump does not cut across the grid: it follows the path, cell by
-   * cell, so the reader watches the very journey being skipped. Guarding it by
-   * distance would have cut exactly the survey chapters, which are the most
-   * legible ones to travel — they are purely horizontal.
-   */
-  for (const step of railSteps) {
-    const link = step.querySelector('a');
-    const target = Number(step.dataset.railTarget);
-    if (!link || Number.isNaN(target)) continue;
-
-    link.addEventListener('click', event => {
-      event.preventDefault();
-      window.scrollTo({
-        top: target * window.innerHeight,
-        behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
-      });
+  const jump = (index: number, behavior: ScrollBehavior = 'smooth') =>
+    window.scrollTo({
+      top: index * window.innerHeight,
+      behavior: prefersReducedMotion.matches ? 'auto' : behavior,
     });
-  }
+
+  /** The step a fragment names, or -1. Cells are in the journey's own order. */
+  const stepOf = (hash: string) =>
+    hash.length > 1 ? cells.findIndex(cell => cell.id === decodeURIComponent(hash.slice(1))) : -1;
+
+  /**
+   * Every link to a step moves the driver — the rail's, and any other.
+   *
+   * Native anchor navigation cannot work here: a cell sits far outside `.view`,
+   * which does not scroll but is translated into place, so the browser has
+   * nothing legitimate to scroll and the jump either does nothing or shifts a
+   * container the journey does not read. Delegated rather than bound per link,
+   * so a link written later in a component is carried without having to know
+   * about any of this.
+   *
+   * Jumps always glide, whatever the distance: a long one does not cut across
+   * the grid, it follows the path cell by cell, and the reader watches the very
+   * journey being skipped. Guarding by distance would have cut exactly the
+   * survey chapters, the most legible ones to travel.
+   */
+  document.addEventListener('click', event => {
+    if (event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    const link = (event.target as Element | null)?.closest?.('a[href*="#"]');
+    if (!(link instanceof HTMLAnchorElement) || link.origin !== window.location.origin) return;
+    if (link.pathname !== window.location.pathname) return;
+
+    const index = stepOf(link.hash);
+    if (index < 0) return;
+
+    event.preventDefault();
+    jump(index);
+    /* The href was already the truth of where the link leads; this is what makes
+       the URL say it too — shareable, and restored by the back button below. */
+    if (link.hash !== window.location.hash) history.pushState(null, '', link.hash);
+  });
+
+  /* Back and forward land on the step the URL names, without a transition: the
+     reader asked to go back, not to watch the way back. */
+  window.addEventListener('popstate', () => {
+    const index = stepOf(window.location.hash);
+    if (index >= 0) jump(index, 'auto');
+  });
+
+  /* A deep link opens on its step. The browser has already given up on the
+     fragment by now — nothing it could scroll holds the cell — so this is the
+     only thing that honours it. */
+  const opened = stepOf(window.location.hash);
+  if (opened > 0) jump(opened, 'auto');
 
   /** The arrow keys move by one step, in the journey's own order. */
   window.addEventListener('keydown', event => {

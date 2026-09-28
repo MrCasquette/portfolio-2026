@@ -212,10 +212,17 @@
   scroll-snap-stop: always;
 }
 
+/* `clip`, jamais `hidden` : un conteneur `overflow: hidden` reste défilable par
+   script, et le navigateur s'en sert pour amener une ancre dans la vue. Comme
+   une cellule est posée loin hors de cette boîte — la grille est translatée, elle
+   ne défile pas —, un saut d'ancre décalait `.view` et l'y laissait, pendant que
+   `window.scrollY`, seul pilote de la translation, n'avait pas bougé. Les deux ne
+   s'accordaient plus, et le parcours semblait figé. `clip` ne crée aucun
+   conteneur de défilement : le piège n'existe plus. */
 .view {
   position: fixed;
   inset: var(--spacing-header) 0 var(--spacing-rail) 0;
-  overflow: hidden;
+  overflow: clip;
 }
 
 /* Percentages in `translate` resolve against the element's own size, and the

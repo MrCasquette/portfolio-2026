@@ -40,8 +40,10 @@ type Section = InferSections<typeof content>;
  */
 export type Assertions = [
   // ── `required` produces a required key, its absence an optional one ──────────
-  Assert<AllRequired<Statement, 'title' | 'description' | 'identification'>>,
+  Assert<AllRequired<Statement, 'name' | 'role' | 'description' | 'actions'>>,
   Assert<AllOptional<Statement, 'availability'>>,
+  // ── A bounded list infers an array of the component, required flags intact ──
+  Assert<AllRequired<Statement['actions'][number], 'label' | 'href'>>,
   // ── An enum infers its literals, never `string` ──────────────────────────────
   Assert<Equals<Arbitration['status'], 'settled' | 'open'>>,
   Assert<Equals<Project['moment'], 'design' | 'build' | 'operate'>>,

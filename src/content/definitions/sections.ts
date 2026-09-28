@@ -11,7 +11,7 @@
  * emphasised by naming a directive, never by carrying a class.
  */
 import { defineSection, f } from '@axiome-apps/atelier-content';
-import { arbitrationRef, channel, indexEntry, momentCost } from './components.ts';
+import { arbitrationRef, callToAction, channel, indexEntry, momentCost } from './components.ts';
 
 /**
  * The first step. No destination, no count, nothing has backed it yet.
@@ -19,22 +19,36 @@ import { arbitrationRef, channel, indexEntry, momentCost } from './components.ts
  * It is the only place allowed to speak before proving, because the reader has
  * not yet been given anything to verify.
  *
- * `title` is a rich text so the accent can be a directive — `je :highlight[décide]`
- * — instead of a second field the renderer has to match against the first. The
- * old contract paid for that with an `emphasis` field and a refinement checking
- * `title.includes(emphasis)`; the accent is now a named semantic the design
- * system owns.
+ * `name` is required and it is not decoration: the site header only appears from
+ * the second chapter, so nothing else names Vincent on the first screen
+ * (`docs/decisions/0007-en-tete-differe.md`). The old contract had no field for
+ * it, which is why the name had migrated into the title.
+ *
+ * `role` is the rich text, not a separate heading: it is where the one accented
+ * word of the whole site falls — `:highlight[Ingénieur en solutions]`. The
+ * typographic decision stays a named directive the design system owns, never a
+ * second field the renderer has to match against the first.
+ *
+ * `actions` is exactly two, and that is a composition constraint rather than a
+ * limit: one reads as a product page, three as a menu the rail already is
+ * (`docs/decisions/0016-deux-actions-sur-l-accueil.md`).
  */
 export const statement = defineSection('statement', {
   label: 'Affirmation',
   fields: {
-    title: f.richText({
+    name: f.text({ required: true, hint: 'Le nom, en toutes lettres' }),
+    role: f.richText({
       required: true,
-      hint: 'L’affirmation. L’accent se pose avec :highlight[…]',
+      hint: 'L’intitulé de poste. L’accent se pose avec :highlight[…]',
     }),
     description: f.richText({ required: true }),
-    identification: f.text({ required: true, hint: 'Statut et lieu, délibérément au second rang' }),
     availability: f.text(),
+    actions: f.list(callToAction, {
+      required: true,
+      min: 2,
+      max: 2,
+      hint: 'Deux, jamais une ni trois',
+    }),
   },
 });
 

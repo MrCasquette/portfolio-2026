@@ -133,6 +133,25 @@ export const coveredFunction = defineComponent('coveredFunction', {
   },
 });
 
+/**
+ * An action offered on the landing.
+ *
+ * Deliberately generic — a label and a destination — so the editor decides what
+ * the two buttons do without the declaration having to be reopened. What the
+ * destination may be is said by `format: 'destination'`, on the field.
+ */
+export const callToAction = defineComponent('callToAction', {
+  label: 'Action',
+  fields: {
+    label: f.text({ required: true, hint: 'Ce que le bouton propose de faire' }),
+    href: f.text({
+      required: true,
+      format: 'destination',
+      hint: 'Une ancre (#index), un fichier du site (/cv.pdf), ou une adresse https / mailto',
+    }),
+  },
+});
+
 /** A branch still live in an open arbitration. */
 export const liveOption = defineComponent('liveOption', {
   label: 'Option ouverte',

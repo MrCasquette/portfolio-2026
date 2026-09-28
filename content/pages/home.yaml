@@ -2,19 +2,24 @@ title: Vincent Cottalorda — Développeur
 sections:
   - type: statement
     data:
-      title: Ce site montre comment je :highlight[décide], avant de montrer avec quoi.
-      description: "Ce qui suit se lit dans l'ordre : d'abord d'où vient cette manière de travailler, ensuite des systèmes réels et les arbitrages qui les ont faits — y compris ceux qui ne sont pas encore tranchés."
-      identification: Développeur, à distance depuis l'Ardèche.
-      availability: Disponible · CDI ou mission · à distance
+      name: Vincent Cottalorda
+      role: :highlight[Ingénieur en solutions]
+      description: "Concepteur de problèmes, Créateur de solutions. De l'émergence de l'idée à la fabrication de l'objet, jusqu'à la pérennisation du système. Un problème a toujours une solution."
+      availability: Disponible · à distance ou Ardèche-Drôme
+      actions:
+        - label: Voir les réalisations
+          href: "#index"
+        - label: Me contacter
+          href: "#contact"
   - type: thesis
     data:
       since: "2008"
       produced: "Pas une reconversion : une pratique continue, menée en parallèle d'autres métiers qui ont payé le loyer et qui ont construit l'autre moitié de ce que je sais faire."
       moments:
         - moment: design
-          costAbsence: ⟨à écrire⟩ ce qui casse quand personne ne tient la conception
+          costAbsence: Un système doit répondre à un besoin. Un besoin à des problèmatiques et chaque problématique doit être pensée, analysée, poussée, arbitrée. Lorsque vous avez éliminé l'impossible, ce qui reste, si improbable soit-il, est nécessairement la vérité
         - moment: build
-          costAbsence: ⟨à écrire⟩ ce qui casse quand personne ne tient la construction
+          costAbsence: La construction doit suivre la logique de conception. Puis itérer par phase. De versions en versions, le système répond au besoin qui lui à été soumis. Il évolue avec lui et ses utilisateurs. Il est maintenable, documenté, testable et testée. Il est lisible et compréhensible par tous.
         - moment: operate
           costAbsence: ⟨à écrire⟩ ce qui casse quand personne ne tient l'exploitation
       clause: Je ne prétends pas être spécialiste de chacune de ces disciplines.
@@ -23,9 +28,9 @@ sections:
       title: Trois pièces, trois états.
       entries:
         - project: atelier
-          proves: Qu'on sait arbitrer, avant que le système soit stabilisé.
+          proves: Un système doit répondre à un besoin. Un besoin à des problèmatiques et chaque problématique doit être pensée, analysée, poussée, arbitrée. Lorsque vous avez éliminé l'impossible, ce qui reste, si improbable soit-il, est nécessairement la vérité.
         - project: plume
-          proves: Qu'un résultat existe, installable ailleurs que sur ma machine.
+          proves: La construction doit suivre la logique de conception. Puis itérer par phase. De versions en versions, le système répond au besoin qui lui à été soumis. Il évolue avec lui et ses utilisateurs. Il est maintenable, documenté, testable et testée. Il est lisible et compréhensible par tous.
         - project: serveur
           proves: Qu'on sait l'exploiter dans la durée, incidents compris.
   - type: descent

@@ -1,5 +1,5 @@
 ---
-statut : accepté
+statut : accepté · corrigé par 0016
 date : 2026-08-26
 type : Design
 ---

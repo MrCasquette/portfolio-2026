@@ -2,13 +2,15 @@
 /**
  * The first step. The only place allowed to speak before proving.
  *
- * The title is a rich text, and its accent is the `:highlight[…]` directive — the
- * typographic decision left the renderer, where it used to be a `split()` on a
- * second field (docs/design/vocabulaire.md: one accent, and only one).
+ * It names Vincent, because the header only appears from the second chapter and
+ * nothing else would (docs/decisions/0007-en-tete-differe.md). The role is the
+ * rich text: it carries the one accented word of the whole site, as a
+ * `:highlight[…]` directive rather than a split in the renderer.
  */
 import type { Section } from '../../content/load';
 import Prose from '../../content/render/Prose.astro';
 import AvailabilityPill from '../atoms/AvailabilityPill.astro';
+import ActionLink from '../atoms/ActionLink.astro';
 
 interface Props {
   data: Extract<Section, { type: 'statement' }>['data'];
@@ -21,7 +23,8 @@ const { data } = Astro.props;
   class="grid items-start gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-x-24"
 >
   <div>
-    <h1 class="text-h1"><Prose source={data.title} inline /></h1>
+    <h1 class="text-h1">{data.name}</h1>
+    <p class="mt-2 text-h2 text-ink-2"><Prose source={data.role} inline /></p>
     {
       data.availability && (
         <div class="mt-8">
@@ -30,5 +33,14 @@ const { data } = Astro.props;
       )
     }
   </div>
-  <div class="text-lede text-ink-2"><Prose source={data.description} /></div>
+  <div class="flex flex-col gap-8">
+    <div class="text-lede text-ink-2"><Prose source={data.description} /></div>
+    <div class="flex flex-wrap gap-3">
+      {
+        data.actions.map((action, position) => (
+          <ActionLink label={action.label} href={action.href} primary={position === 0} />
+        ))
+      }
+    </div>
+  </div>
 </div>

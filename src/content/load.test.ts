@@ -98,5 +98,5 @@ test('les trous restent dénombrables, et aucun n’a été comblé par du plaus
 
   /* Le décompte est le verrou : s'il baisse, un trou a été rempli par quelque
      chose de vraisemblable ; s'il monte, la migration a perdu du contenu. */
-  assert.equal(pending.length, 36, pending.join('\n'));
+  assert.equal(pending.length, 34, pending.join('\n'));
 });

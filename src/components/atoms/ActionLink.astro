@@ -1,0 +1,35 @@
+---
+/**
+ * One of the two actions on the landing.
+ *
+ * The accent is legitimate here and does not spend the site's rarity: jade
+ * already signals links (docs/design/vocabulaire.md). Only the first action
+ * fills, so the pair reads as a hierarchy rather than as a pair of equals —
+ * two filled buttons would make the reader choose instead of guiding them.
+ *
+ * `href` was validated at the boundary by `format: 'destination'`, which closes
+ * the scheme list. Nothing is sanitised here, and nothing needs to be.
+ */
+interface Props {
+  label: string;
+  href: string;
+  primary?: boolean;
+}
+
+const { label, href, primary = false } = Astro.props;
+
+const style = primary
+  ? 'bg-accent-bg text-accent border-accent-line hover:border-accent'
+  : 'text-ink-2 border-line hover:border-ink-3 hover:text-ink';
+---
+
+<a
+  href={href}
+  class:list={[
+    'inline-flex items-center gap-2 rounded-card border px-5 py-2.5',
+    'font-mono text-meta transition-colors',
+    style,
+  ]}
+>
+  {label}
+</a>
